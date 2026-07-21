@@ -1,0 +1,136 @@
+# ============================================
+# Content Intelligence Dispatcher - Main Configuration
+# ============================================
+# This file contains all configurable parameters for the system.
+# Priority: Environment Variables > config.yaml > user_prefs.yaml > built-in defaults
+
+# --- OSS (Aliyun Object Storage Service) ---
+oss:
+  endpoint: "${ALIYUN_OSS_ENDPOINT}"
+  bucket_name: "${ALIYUN_BUCKET_NAME}"
+  access_key_id: "${ALIYUN_ACCESS_KEY_ID}"
+  access_key_secret: "${ALIYUN_ACCESS_KEY_SECRET}"
+  # OSS path prefix for uploaded images
+  image_path_prefix: "images"
+  # Allowed image extensions
+  allowed_extensions:
+    - ".jpg"
+    - ".jpeg"
+    - ".png"
+    - ".gif"
+    - ".webp"
+    - ".svg"
+  # Max images per article (excess will be truncated)
+  max_images_per_article: 10
+
+# --- GitHub Pages / Hexo Blog ---
+github:
+  token: "${GITHUB_TOKEN}"
+  username: "${GITHUB_USERNAME}"
+  hexo_repo: "${GITHUB_HEXO_REPO}"
+  # Local path to clone/pull hexo repo (relative to project root)
+  local_repo_path: "temp/hexo_repo"
+  # Posts directory inside hexo repo
+  posts_dir: "source/_posts"
+  # Default git commit message prefix
+  commit_prefix: "publish:"
+
+# --- WeChat Official Account (via wenyan-mcp) ---
+wechat:
+  # Launch command for wenyan-mcp (a standard MCP server).
+  # Use a command+args string, e.g. "npx -y @wenyan-md/mcp" or a local
+  # binary path like "/usr/local/bin/wenyan-mcp". Empty / missing file => MOCK mode.
+  wenyan_path: "${WECHAT_WENYAN_PATH}"
+  # wenyan theme applied when publishing (default, orangeheart, phycat, ...)
+  theme_id: "default"
+  # Whether to use Cloudflare Tunnel for MCP communication
+  tunnel_enabled: ${CLOUDFLARE_TUNNEL_ENABLED}
+  # MCP handshake timeout in seconds (covers first-run npx package download)
+  handshake_timeout: 180
+  # MCP request (tools/call) timeout in seconds
+  timeout_seconds: 60
+  # Max retry attempts for wechat publishing
+  max_retries: 2
+
+# --- Brand Configuration ---
+brand:
+  name: "TechInsight"
+  audience: "tech_enthusiasts_and_practitioners"
+  tone: "professional_yet_approachable"
+  # 博客分类必须使用 Hexo 仓库中已有的分类（否则博客端显示为孤立标签）。
+  # 已有类别：AI与RAG、前端开发、后端与数据库、工程与运维、算法与数据结构、随笔·生活、项目实战
+  default_categories:
+    - "随笔·生活"
+  default_tags_prefix:
+    - "tech"
+    - "learning"
+  # Default language for content
+  language: "zh-CN"
+  # 作者（微信 wenyan front-matter 的 `author` 字段，公众号文章署名）
+  author: "TechInsight"
+  # 原文地址（微信 wenyan front-matter 的 `source_url` 字段，留空则微信端不显示「阅读原文」）
+  source_url: ""
+
+# --- LLM Model Configuration ---
+model:
+  # 模型服务商：openai | deepseek | zhipu | custom
+  # （决定默认 base_url，也可在下方 base_url 手动覆盖）
+  provider: "deepseek"
+  # 模型名称（各平台不同）：
+  #   deepseek: deepseek-chat（推荐）/ deepseek-reasoner
+  #   zhipu   : glm-4-flash（免费）/ glm-4-plus / glm-4-air
+  #   openai  : gpt-4o-mini
+  summary_model: "deepseek-chat"
+  # OpenAI 兼容协议的 API Base URL（留空则根据 provider 自动选择）
+  base_url: ""
+  # API Key：用环境变量占位，避免明文写在仓库里。
+  # 在 .env 中设置 DEEPSEEK_API_KEY（zhipu 用 ZHIPU_API_KEY，openai 用 OPENAI_API_KEY）
+  api_key: "${DEEPSEEK_API_KEY}"
+  # Temperature for structured output (lower = more deterministic)
+  temperature: 0.3
+  # Max tokens for summary output
+  max_tokens: 1024
+
+# --- Format Optimization ---
+# 格式化模式（规则引擎永远作为安全底座先跑）：
+#   mode: rule -> 纯规则，零 LLM 成本、零内容损坏风险【默认】
+#   mode: llm  -> 规则底座后叠加 LLM 语义润色（补过渡句/智能加粗/缺标题生成等）
+#   llm_max_tokens: 仅 mode=llm 生效，LLM 润色最大输出 token 数（长文需调大）
+#   safety_check:   仅 mode=llm 生效，LLM 输出若改坏图片/代码块/公式则回退规则结果
+format_optimize:
+  mode: "rule"
+  llm_max_tokens: 4096
+  safety_check: true
+
+# --- Cover Image (decorative blog cover) ---
+# 封面是「展示层素材」，不走 LLM：用 Unsplash 官方 API 拿主题相关美图，
+# 失败/被墙时自动回退 Picsum（零 key、国内通常可达）。
+# 用文章标题+标签的 hash 作 seed，保证「同文同封面」（重跑不漂移）。
+cover:
+  # 是否启用封面获取（false 时保留 image_process 选出的首图/空封面）
+  enabled: true
+  # true  -> 始终用装饰封面覆盖首图；false -> 有内联图才用首图，没图才取装饰封面
+  always: true
+  # 封面尺寸（Hexo 卡片/微信封面常用 1200x630）
+  width: 1200
+  height: 630
+  # Unsplash Access Key（在 .env 设置 UNSPLASH_ACCESS_KEY）；留空则直接走 Picsum 兜底
+  unsplash_access_key: "${UNSPLASH_ACCESS_KEY}"
+  # 是否把封面也上传到 OSS（与文章内联图同一个文件夹，文件名固定 cover.jpg）。
+  # true  -> 封面最终是 OSS 直链，与正文图片同桶同目录，便于统一管理与 CDN 加速；
+  #          若 OSS 未配置/上传失败，则优雅回退到装饰图远程直链（不阻断流水线）。
+  # false -> 封面直接保留 Unsplash/Picsum 远程直链，不落 OSS。
+  upload_to_oss: true
+
+# --- Default Options ---
+default_options:
+  # Default platforms when not specified
+  platforms:
+    - "blog"
+    - "wechat"
+  # Whether to auto-publish or preview only
+  auto_publish: true
+  # Image processing enabled
+  process_images: true
+  # Format optimization enabled
+  format_optimize: true

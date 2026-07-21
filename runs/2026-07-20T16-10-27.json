@@ -1,0 +1,22 @@
+{
+  "trace_id": "cid_19f7e939092_424a4c5b",
+  "timestamp": "2026-07-20T16:10:27+0800",
+  "source_type": "unknown",
+  "file_name": "健身第六课.md",
+  "platforms_requested": [
+    "blog",
+    "wechat"
+  ],
+  "node_durations": {
+    "ingest": 0.006,
+    "format_optimize": 0.007,
+    "summary_meta": 2.623,
+    "image_process": 21.763,
+    "content_adapt": 0.001,
+    "publish": 44.919
+  },
+  "token_usage": {},
+  "publish_results": [],
+  "total_duration_seconds": 69.33,
+  "oss_uploads": []
+}

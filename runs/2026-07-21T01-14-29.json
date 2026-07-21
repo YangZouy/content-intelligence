@@ -1,0 +1,23 @@
+{
+  "trace_id": "cid_19f8085a41f_95115c79",
+  "timestamp": "2026-07-21T01:14:29+0800",
+  "source_type": "unknown",
+  "file_name": "健身第九课.md",
+  "platforms_requested": [
+    "blog",
+    "wechat"
+  ],
+  "node_durations": {
+    "ingest": 0.003,
+    "format_optimize": 0.01,
+    "summary_meta": 2.928,
+    "image_process": 1.138,
+    "cover_image": 2.59,
+    "content_adapt": 0.002,
+    "publish": 17.164
+  },
+  "token_usage": {},
+  "publish_results": [],
+  "total_duration_seconds": 23.85,
+  "oss_uploads": []
+}

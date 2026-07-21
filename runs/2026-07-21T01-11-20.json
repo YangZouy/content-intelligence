@@ -1,0 +1,23 @@
+{
+  "trace_id": "cid_19f8082bf4b_93cbf9f4",
+  "timestamp": "2026-07-21T01:11:20+0800",
+  "source_type": "unknown",
+  "file_name": "健身第八课.md",
+  "platforms_requested": [
+    "blog",
+    "wechat"
+  ],
+  "node_durations": {
+    "ingest": 0.014,
+    "format_optimize": 4.942,
+    "summary_meta": 2.645,
+    "image_process": 1.119,
+    "cover_image": 2.804,
+    "content_adapt": 0.002,
+    "publish": 15.966
+  },
+  "token_usage": {},
+  "publish_results": [],
+  "total_duration_seconds": 27.51,
+  "oss_uploads": []
+}
