@@ -1,0 +1,135 @@
+2026-07-24T22:10:45.955+08:00 | INFO    | cid_19f9476de43_4c829d3b | src.graph:run:140 | Pipeline started | file=健身第十一课.md | preview=False | platforms=['blog', 'wechat']
+2026-07-24T22:10:45.962+08:00 | INFO    | cid_19f9476de43_4c829d3b | src.observability:node_enter:137 | >>> [ingest] ENTER
+2026-07-24T22:10:45.964+08:00 | INFO    | cid_19f9476de43_4c829d3b | src.nodes.ingest:ingest_node:224 | Ingested '健身第十一课.md' (type=obsidian, images=2, chars=361)
+2026-07-24T22:10:45.965+08:00 | INFO    | cid_19f9476de43_4c829d3b | src.observability:node_exit:149 | <<< [ingest] EXIT (0.00s)
+2026-07-24T22:10:45.967+08:00 | INFO    | cid_19f9476de43_4c829d3b | src.observability:node_enter:137 | >>> [format_optimize] ENTER
+2026-07-24T22:10:45.967+08:00 | DEBUG   | cid_19f9476de43_4c829d3b | src.nodes.format_optimize:format_optimize_node:628 | Starting format optimization pipeline
+2026-07-24T22:10:45.973+08:00 | INFO    | cid_19f9476de43_4c829d3b | src.nodes.format_optimize:format_optimize_node:662 | Format optimization complete (mode=rule, input=361 chars, output=365 chars)
+2026-07-24T22:10:45.975+08:00 | INFO    | cid_19f9476de43_4c829d3b | src.observability:node_exit:149 | <<< [format_optimize] EXIT (0.01s)
+2026-07-24T22:10:45.976+08:00 | INFO    | cid_19f9476de43_4c829d3b | src.observability:node_enter:137 | >>> [summary_meta] ENTER
+2026-07-24T22:10:46.779+08:00 | DEBUG   | cid_19f9476de43_4c829d3b | src.nodes.summary_meta:summary_meta_node:156 | Calling LLM for summary/metadata generation...
+2026-07-24T22:10:48.935+08:00 | INFO    | cid_19f9476de43_4c829d3b | src.nodes.summary_meta:summary_meta_node:181 | Summary/meta generated: title='健身第十一课', tags=['健身', '背部训练', '杠铃俯身划船', '单臂坐姿划船', 'T杆俯身划船', '双手剪刀下拉'], words=213, reading_time=1 min read
+2026-07-24T22:10:48.936+08:00 | INFO    | cid_19f9476de43_4c829d3b | src.observability:node_exit:149 | <<< [summary_meta] EXIT (2.96s)
+2026-07-24T22:10:48.937+08:00 | INFO    | cid_19f9476de43_4c829d3b | src.observability:node_enter:137 | >>> [image_process] ENTER
+2026-07-24T22:10:48.938+08:00 | DEBUG   | cid_19f9476de43_4c829d3b | src.nodes.image_process:_upload_single_image:102 | Uploading local file: D:\wiki\健身第十一课\assets\20260724215347.png -> images/JSDSYK/20260724215347.png
+2026-07-24T22:10:49.266+08:00 | DEBUG   | cid_19f9476de43_4c829d3b | src.nodes.image_process:image_process_node:257 | Image 1/2 processed: ncs.com/images/JSDSYK/20260724215347.png
+2026-07-24T22:10:49.267+08:00 | DEBUG   | cid_19f9476de43_4c829d3b | src.nodes.image_process:_upload_single_image:102 | Uploading local file: D:\wiki\健身第十一课\assets\20260724215619.png -> images/JSDSYK/20260724215619.png
+2026-07-24T22:10:49.501+08:00 | DEBUG   | cid_19f9476de43_4c829d3b | src.nodes.image_process:image_process_node:257 | Image 2/2 processed: ncs.com/images/JSDSYK/20260724215619.png
+2026-07-24T22:10:49.502+08:00 | INFO    | cid_19f9476de43_4c829d3b | src.nodes.image_process:image_process_node:283 | Image processing complete: 2 uploaded, 0 failed, cover=set
+2026-07-24T22:10:49.503+08:00 | INFO    | cid_19f9476de43_4c829d3b | src.observability:node_exit:149 | <<< [image_process] EXIT (0.56s)
+2026-07-24T22:10:49.504+08:00 | INFO    | cid_19f9476de43_4c829d3b | src.observability:node_enter:137 | >>> [cover_image] ENTER
+2026-07-24T22:10:53.305+08:00 | INFO    | cid_19f9476de43_4c829d3b | src.nodes.cover:cover_image_node:233 | Cover uploaded to OSS (same folder as article images): https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/JSDSYK/cover.jpg
+2026-07-24T22:10:53.306+08:00 | INFO    | cid_19f9476de43_4c829d3b | src.nodes.cover:cover_image_node:242 | Cover image resolved: https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/JSDSYK/cover.jpg... (source=oss<-unsplash)
+2026-07-24T22:10:53.307+08:00 | INFO    | cid_19f9476de43_4c829d3b | src.observability:node_exit:149 | <<< [cover_image] EXIT (3.80s)
+2026-07-24T22:10:53.308+08:00 | INFO    | cid_19f9476de43_4c829d3b | src.observability:node_enter:137 | >>> [content_adapt] ENTER
+2026-07-24T22:10:53.310+08:00 | DEBUG   | cid_19f9476de43_4c829d3b | src.nodes.content_adapt:content_adapt_node:117 | Hexo document built (936 chars)
+2026-07-24T22:10:53.310+08:00 | DEBUG   | cid_19f9476de43_4c829d3b | src.nodes.content_adapt:content_adapt_node:126 | WeChat draft built (934 chars)
+2026-07-24T22:10:53.310+08:00 | INFO    | cid_19f9476de43_4c829d3b | src.observability:node_exit:149 | <<< [content_adapt] EXIT (0.00s)
+2026-07-24T22:10:53.311+08:00 | INFO    | cid_19f9476de43_4c829d3b | src.observability:node_enter:137 | >>> [publish] ENTER
+2026-07-24T22:10:53.312+08:00 | INFO    | cid_19f9476de43_4c829d3b | src.nodes.publish:publish_node:170 | Publishing to platforms: ['blog', 'wechat']
+2026-07-24T22:10:55.955+08:00 | ERROR   | cid_19f9476fb05_69fee41e | src.publishers.github_pages:publish:173 | GitHub publish failed: Cmd('git') failed due to: exit code(128)
+  cmdline: git clone -v -- https://*****@github.com/YangZouy/Hexo.git D:\study\content_intelligence_dispatcher\temp\hexo_repo
+  stderr: 'Cloning into 'D:\study\content_intelligence_dispatcher\temp\hexo_repo'...
+fatal: unable to access 'https://github.com/YangZouy/Hexo.git/': Failed to connect to 127.0.0.1 port 7890 after 2046 ms: Connection refused
+'
+2026-07-24T22:11:00.165+08:00 | ERROR   | cid_19f94770d27_806f47db | src.publishers.github_pages:publish:173 | GitHub publish failed: Cmd('git') failed due to: exit code(128)
+  cmdline: git clone -v -- https://*****@github.com/YangZouy/Hexo.git D:\study\content_intelligence_dispatcher\temp\hexo_repo
+  stderr: 'Cloning into 'D:\study\content_intelligence_dispatcher\temp\hexo_repo'...
+fatal: unable to access 'https://github.com/YangZouy/Hexo.git/': Failed to connect to 127.0.0.1 port 7890 after 2049 ms: Connection refused
+'
+2026-07-24T22:11:06.395+08:00 | ERROR   | cid_19f94772569_60787d5e | src.publishers.github_pages:publish:173 | GitHub publish failed: Cmd('git') failed due to: exit code(128)
+  cmdline: git clone -v -- https://*****@github.com/YangZouy/Hexo.git D:\study\content_intelligence_dispatcher\temp\hexo_repo
+  stderr: 'Cloning into 'D:\study\content_intelligence_dispatcher\temp\hexo_repo'...
+fatal: unable to access 'https://github.com/YangZouy/Hexo.git/': Failed to connect to 127.0.0.1 port 7890 after 2074 ms: Connection refused
+'
+2026-07-24T22:11:06.396+08:00 | WARNING |  | src.nodes.publish:_run_single_publish:95 | [blog] Attempt 1 failed: GitHub Pages publish failed: Cmd('git') failed due to: exit code(128)
+  cmdline: git clone -v -- https://*****@github.com/YangZouy/Hexo.git D:\study\content_intelligence_dispatcher\temp\hexo_repo
+  stderr: 'Cloning into 'D:\study\content_intelligence_dispatcher\temp\hexo_repo'...
+fatal: unable to access 'https://github.com/YangZouy/Hexo.git/': Failed to connect to 127.0.0.1 port 7890 after 2074 ms: Connection refused
+'
+2026-07-24T22:11:06.397+08:00 | DEBUG   |  | src.nodes.publish:_run_single_publish:111 | [blog] Retrying in 2s...
+2026-07-24T22:11:10.617+08:00 | ERROR   | cid_19f947735ed_5ae4bfe6 | src.publishers.github_pages:publish:173 | GitHub publish failed: Cmd('git') failed due to: exit code(128)
+  cmdline: git clone -v -- https://*****@github.com/YangZouy/Hexo.git D:\study\content_intelligence_dispatcher\temp\hexo_repo
+  stderr: 'Cloning into 'D:\study\content_intelligence_dispatcher\temp\hexo_repo'...
+fatal: unable to access 'https://github.com/YangZouy/Hexo.git/': Failed to connect to 127.0.0.1 port 7890 after 2060 ms: Connection refused
+'
+2026-07-24T22:11:14.818+08:00 | ERROR   | cid_19f9477466b_5d1514ab | src.publishers.github_pages:publish:173 | GitHub publish failed: Cmd('git') failed due to: exit code(128)
+  cmdline: git clone -v -- https://*****@github.com/YangZouy/Hexo.git D:\study\content_intelligence_dispatcher\temp\hexo_repo
+  stderr: 'Cloning into 'D:\study\content_intelligence_dispatcher\temp\hexo_repo'...
+fatal: unable to access 'https://github.com/YangZouy/Hexo.git/': Failed to connect to 127.0.0.1 port 7890 after 2041 ms: Connection refused
+'
+2026-07-24T22:11:21.061+08:00 | ERROR   | cid_19f94775ea5_da621617 | src.publishers.github_pages:publish:173 | GitHub publish failed: Cmd('git') failed due to: exit code(128)
+  cmdline: git clone -v -- https://*****@github.com/YangZouy/Hexo.git D:\study\content_intelligence_dispatcher\temp\hexo_repo
+  stderr: 'Cloning into 'D:\study\content_intelligence_dispatcher\temp\hexo_repo'...
+fatal: unable to access 'https://github.com/YangZouy/Hexo.git/': Failed to connect to 127.0.0.1 port 7890 after 2075 ms: Connection refused
+'
+2026-07-24T22:11:21.063+08:00 | WARNING |  | src.nodes.publish:_run_single_publish:95 | [blog] Attempt 2 failed: GitHub Pages publish failed: Cmd('git') failed due to: exit code(128)
+  cmdline: git clone -v -- https://*****@github.com/YangZouy/Hexo.git D:\study\content_intelligence_dispatcher\temp\hexo_repo
+  stderr: 'Cloning into 'D:\study\content_intelligence_dispatcher\temp\hexo_repo'...
+fatal: unable to access 'https://github.com/YangZouy/Hexo.git/': Failed to connect to 127.0.0.1 port 7890 after 2075 ms: Connection refused
+'
+2026-07-24T22:11:21.064+08:00 | DEBUG   |  | src.nodes.publish:_run_single_publish:111 | [blog] Retrying in 4s...
+2026-07-24T22:11:27.269+08:00 | ERROR   | cid_19f94777709_d9499f39 | src.publishers.github_pages:publish:173 | GitHub publish failed: Cmd('git') failed due to: exit code(128)
+  cmdline: git clone -v -- https://*****@github.com/YangZouy/Hexo.git D:\study\content_intelligence_dispatcher\temp\hexo_repo
+  stderr: 'Cloning into 'D:\study\content_intelligence_dispatcher\temp\hexo_repo'...
+fatal: unable to access 'https://github.com/YangZouy/Hexo.git/': Failed to connect to 127.0.0.1 port 7890 after 2052 ms: Connection refused
+'
+2026-07-24T22:11:31.489+08:00 | ERROR   | cid_19f94778777_7866431c | src.publishers.github_pages:publish:173 | GitHub publish failed: Cmd('git') failed due to: exit code(128)
+  cmdline: git clone -v -- https://*****@github.com/YangZouy/Hexo.git D:\study\content_intelligence_dispatcher\temp\hexo_repo
+  stderr: 'Cloning into 'D:\study\content_intelligence_dispatcher\temp\hexo_repo'...
+fatal: unable to access 'https://github.com/YangZouy/Hexo.git/': Failed to connect to 127.0.0.1 port 7890 after 2050 ms: Connection refused
+'
+2026-07-24T22:11:37.766+08:00 | ERROR   | cid_19f94779fc5_01bd6ad5 | src.publishers.github_pages:publish:173 | GitHub publish failed: Cmd('git') failed due to: exit code(128)
+  cmdline: git clone -v -- https://*****@github.com/YangZouy/Hexo.git D:\study\content_intelligence_dispatcher\temp\hexo_repo
+  stderr: 'Cloning into 'D:\study\content_intelligence_dispatcher\temp\hexo_repo'...
+fatal: unable to access 'https://github.com/YangZouy/Hexo.git/': Failed to connect to 127.0.0.1 port 7890 after 2086 ms: Connection refused
+'
+2026-07-24T22:11:37.768+08:00 | WARNING |  | src.nodes.publish:_run_single_publish:95 | [blog] Attempt 3 failed: GitHub Pages publish failed: Cmd('git') failed due to: exit code(128)
+  cmdline: git clone -v -- https://*****@github.com/YangZouy/Hexo.git D:\study\content_intelligence_dispatcher\temp\hexo_repo
+  stderr: 'Cloning into 'D:\study\content_intelligence_dispatcher\temp\hexo_repo'...
+fatal: unable to access 'https://github.com/YangZouy/Hexo.git/': Failed to connect to 127.0.0.1 port 7890 after 2086 ms: Connection refused
+'
+2026-07-24T22:12:30.649+08:00 | WARNING |  | src.nodes.publish:_run_single_publish:95 | [wechat] Attempt 1 failed: wenyan publish_article failed: 执行工具失败: 40164: invalid ip 39.144.144.199 ipv6 ::ffff:39.144.144.199, not in whitelist rid: 6a6372ce-15f5c69b-20c7316f
+2026-07-24T22:12:30.651+08:00 | DEBUG   |  | src.nodes.publish:_run_single_publish:111 | [wechat] Retrying in 2s...
+2026-07-24T22:12:39.238+08:00 | WARNING |  | src.nodes.publish:_run_single_publish:95 | [wechat] Attempt 2 failed: wenyan publish_article failed: 执行工具失败: 40164: invalid ip 39.144.144.199 ipv6 ::ffff:39.144.144.199, not in whitelist rid: 6a6372d7-297da695-3e6e8c4a
+2026-07-24T22:12:39.240+08:00 | DEBUG   |  | src.nodes.publish:_run_single_publish:111 | [wechat] Retrying in 4s...
+2026-07-24T22:12:49.798+08:00 | WARNING |  | src.nodes.publish:_run_single_publish:95 | [wechat] Attempt 3 failed: wenyan publish_article failed: 执行工具失败: 40164: invalid ip 39.144.144.199 ipv6 ::ffff:39.144.144.199, not in whitelist rid: 6a6372e1-4c6e247c-7b3b16fa
+2026-07-24T22:12:49.799+08:00 | INFO    | cid_19f9476de43_4c829d3b | src.nodes.publish:publish_node:238 | Publish complete: 0/2 platforms succeeded
+2026-07-24T22:12:49.800+08:00 | INFO    | cid_19f9476de43_4c829d3b | src.observability:node_exit:149 | <<< [publish] EXIT (116.49s)
+2026-07-24T22:12:49.802+08:00 | INFO    | cid_19f9476de43_4c829d3b | src.observability:write_run_log:191 | Run log written to runs\2026-07-24T22-10-45.json
+2026-07-24T22:12:49.803+08:00 | SUCCESS | cid_19f9476de43_4c829d3b | src.graph:run:165 | Pipeline completed successfully in 123.85s | log=2026-07-24T22-10-45.json
+2026-07-24T22:15:28.884+08:00 | INFO    | cid_19f947b2f74_80a97e0a | src.graph:run:140 | Pipeline started | file=健身第十一课.md | preview=False | platforms=['blog']
+2026-07-24T22:15:28.890+08:00 | INFO    | cid_19f947b2f74_80a97e0a | src.observability:node_enter:137 | >>> [ingest] ENTER
+2026-07-24T22:15:28.902+08:00 | INFO    | cid_19f947b2f74_80a97e0a | src.nodes.ingest:ingest_node:224 | Ingested '健身第十一课.md' (type=obsidian, images=2, chars=361)
+2026-07-24T22:15:28.903+08:00 | INFO    | cid_19f947b2f74_80a97e0a | src.observability:node_exit:149 | <<< [ingest] EXIT (0.01s)
+2026-07-24T22:15:28.905+08:00 | INFO    | cid_19f947b2f74_80a97e0a | src.observability:node_enter:137 | >>> [format_optimize] ENTER
+2026-07-24T22:15:28.906+08:00 | DEBUG   | cid_19f947b2f74_80a97e0a | src.nodes.format_optimize:format_optimize_node:628 | Starting format optimization pipeline
+2026-07-24T22:15:28.912+08:00 | INFO    | cid_19f947b2f74_80a97e0a | src.nodes.format_optimize:format_optimize_node:662 | Format optimization complete (mode=rule, input=361 chars, output=365 chars)
+2026-07-24T22:15:28.913+08:00 | INFO    | cid_19f947b2f74_80a97e0a | src.observability:node_exit:149 | <<< [format_optimize] EXIT (0.01s)
+2026-07-24T22:15:28.914+08:00 | INFO    | cid_19f947b2f74_80a97e0a | src.observability:node_enter:137 | >>> [summary_meta] ENTER
+2026-07-24T22:15:29.708+08:00 | DEBUG   | cid_19f947b2f74_80a97e0a | src.nodes.summary_meta:summary_meta_node:156 | Calling LLM for summary/metadata generation...
+2026-07-24T22:15:32.311+08:00 | INFO    | cid_19f947b2f74_80a97e0a | src.nodes.summary_meta:summary_meta_node:181 | Summary/meta generated: title='健身第十一课', tags=['健身', '背部训练', '杠铃俯身划船', '单臂坐姿划船', 'T杆俯身划船', '双手剪刀下拉'], words=237, reading_time=1 min read
+2026-07-24T22:15:32.313+08:00 | INFO    | cid_19f947b2f74_80a97e0a | src.observability:node_exit:149 | <<< [summary_meta] EXIT (3.40s)
+2026-07-24T22:15:32.315+08:00 | INFO    | cid_19f947b2f74_80a97e0a | src.observability:node_enter:137 | >>> [image_process] ENTER
+2026-07-24T22:15:32.317+08:00 | DEBUG   | cid_19f947b2f74_80a97e0a | src.nodes.image_process:_upload_single_image:102 | Uploading local file: D:\wiki\健身第十一课\assets\20260724215347.png -> images/JSDSYK/20260724215347.png
+2026-07-24T22:15:32.635+08:00 | DEBUG   | cid_19f947b2f74_80a97e0a | src.nodes.image_process:image_process_node:257 | Image 1/2 processed: ncs.com/images/JSDSYK/20260724215347.png
+2026-07-24T22:15:32.635+08:00 | DEBUG   | cid_19f947b2f74_80a97e0a | src.nodes.image_process:_upload_single_image:102 | Uploading local file: D:\wiki\健身第十一课\assets\20260724215619.png -> images/JSDSYK/20260724215619.png
+2026-07-24T22:15:32.917+08:00 | DEBUG   | cid_19f947b2f74_80a97e0a | src.nodes.image_process:image_process_node:257 | Image 2/2 processed: ncs.com/images/JSDSYK/20260724215619.png
+2026-07-24T22:15:32.917+08:00 | INFO    | cid_19f947b2f74_80a97e0a | src.nodes.image_process:image_process_node:283 | Image processing complete: 2 uploaded, 0 failed, cover=set
+2026-07-24T22:15:32.918+08:00 | INFO    | cid_19f947b2f74_80a97e0a | src.observability:node_exit:149 | <<< [image_process] EXIT (0.60s)
+2026-07-24T22:15:32.920+08:00 | INFO    | cid_19f947b2f74_80a97e0a | src.observability:node_enter:137 | >>> [cover_image] ENTER
+2026-07-24T22:15:35.137+08:00 | INFO    | cid_19f947b2f74_80a97e0a | src.nodes.cover:cover_image_node:233 | Cover uploaded to OSS (same folder as article images): https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/JSDSYK/cover.jpg
+2026-07-24T22:15:35.138+08:00 | INFO    | cid_19f947b2f74_80a97e0a | src.nodes.cover:cover_image_node:242 | Cover image resolved: https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/JSDSYK/cover.jpg... (source=oss<-unsplash)
+2026-07-24T22:15:35.138+08:00 | INFO    | cid_19f947b2f74_80a97e0a | src.observability:node_exit:149 | <<< [cover_image] EXIT (2.22s)
+2026-07-24T22:15:35.140+08:00 | INFO    | cid_19f947b2f74_80a97e0a | src.observability:node_enter:137 | >>> [content_adapt] ENTER
+2026-07-24T22:15:35.141+08:00 | DEBUG   | cid_19f947b2f74_80a97e0a | src.nodes.content_adapt:content_adapt_node:117 | Hexo document built (963 chars)
+2026-07-24T22:15:35.141+08:00 | DEBUG   | cid_19f947b2f74_80a97e0a | src.nodes.content_adapt:content_adapt_node:126 | WeChat draft built (961 chars)
+2026-07-24T22:15:35.142+08:00 | INFO    | cid_19f947b2f74_80a97e0a | src.observability:node_exit:149 | <<< [content_adapt] EXIT (0.00s)
+2026-07-24T22:15:35.142+08:00 | INFO    | cid_19f947b2f74_80a97e0a | src.observability:node_enter:137 | >>> [publish] ENTER
+2026-07-24T22:15:35.143+08:00 | INFO    | cid_19f947b2f74_80a97e0a | src.nodes.publish:publish_node:170 | Publishing to platforms: ['blog']
+2026-07-24T22:15:40.022+08:00 | DEBUG   | cid_19f947b47ec_0f52c6c2 | src.publishers.github_pages:publish:158 | GitHub: created D:\study\content_intelligence_dispatcher\temp\hexo_repo\source\_posts\健身第十一课.md
+2026-07-24T22:15:42.935+08:00 | INFO    |  | src.nodes.publish:_run_single_publish:87 | [blog] Publish succeeded on attempt 1: url=https://github.com/YangZouy/Hexo/blob/main/source/_posts/健身第十一课.md
+2026-07-24T22:15:42.937+08:00 | INFO    | cid_19f947b2f74_80a97e0a | src.nodes.publish:publish_node:238 | Publish complete: 1/1 platforms succeeded
+2026-07-24T22:15:42.939+08:00 | INFO    | cid_19f947b2f74_80a97e0a | src.observability:node_exit:149 | <<< [publish] EXIT (7.80s)
+2026-07-24T22:15:42.942+08:00 | INFO    | cid_19f947b2f74_80a97e0a | src.observability:write_run_log:191 | Run log written to runs\2026-07-24T22-15-28.json
+2026-07-24T22:15:42.943+08:00 | SUCCESS | cid_19f947b2f74_80a97e0a | src.graph:run:165 | Pipeline completed successfully in 14.06s | log=2026-07-24T22-15-28.json

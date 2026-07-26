@@ -60,24 +60,7 @@ _STEP_MARKERS = [
     r'^\d+\)[\s]',
 ]
 
-# Common technical terms that should be bolded when they appear as standalone terms
-_TERM_BOLD_PATTERNS = [
-    # These are applied carefully to avoid over-bolding
-]
-
-
 def _split_long_paragraphs(content: str) -> str:
-    """Split paragraphs exceeding the character limit at sentence boundaries.
-
-    Only splits at sentence endings (.!?!。！？) to preserve meaning.
-    Does NOT touch code blocks or tables.
-
-    Args:
-        content: Full markdown content string.
-
-    Returns:
-        Content with long paragraphs split into shorter ones.
-    """
     lines = content.split('\n')
     result_lines: list[str] = []
 
@@ -592,28 +575,15 @@ def _apply_rule_pipeline(content: str) -> str:
 # ---------------------------------------------------------------------------
 
 def format_optimize_node(state: AgentState) -> Dict[str, Any]:
-    """Apply rule-based formatting optimizations to raw content.
-
-    This node uses ZERO LLM tokens. All transformations are deterministic
-    regex/pattern-based rules that only affect layout and presentation,
-    never modifying knowledge content (arguments, data, conclusions).
-
-    Processing order:
-    1. Split long paragraphs (>200 chars) at sentence boundaries
-    2. Convert parallel items to unordered lists (- )
-    3. Convert sequential steps to ordered lists (1. 2. 3.)
-    4. Bold key technical terms (conservative)
-    5. Convert warnings/tips to blockquotes (> ⚠️ / > 💡)
-    6. Ensure code blocks have language tags
-    7. Add section dividers for long articles (>1500 Chinese chars)
-
-    Node signature follows C1 convention: (state: AgentState) -> dict
-
-    Args:
-        state: Agent state containing raw_content from IngestNode.
-
-    Returns:
-        Partial state update containing {formatted_content}.
+    """对原始内容应用基于规则的格式优化。
+    处理顺序：
+    1. 在句子边界处拆分长段落（超过 200 个字符）
+    2. 将并列项转换为无序列表（- ）
+    3. 将连续步骤转换为有序列表（1. 2. 3.）
+    4. 加粗关键术语（保守处理）
+    5. 将警告/提示转换为引用块（> ⚠️ / > 💡）
+    6. 确保代码块包含语言标签
+    7. 为长文章（超过 1500 个中文字符）添加章节分隔符
     """
     trace_logger = get_trace_logger()
     trace_id = state.get("run_log", {}).get("trace_id", "")
@@ -629,7 +599,8 @@ def format_optimize_node(state: AgentState) -> Dict[str, Any]:
 
         cfg = get_config()
         fmt_cfg = cfg.format_optimize or {}
-        mode = (fmt_cfg.get("mode", "rule") or "rule").lower()
+        cli_mode = (state.get("format_optimize_mode") or "").strip().lower()
+        mode = cli_mode if cli_mode in ("rule", "llm") else (fmt_cfg.get("mode", "rule") or "rule").lower()
 
         # Step A: deterministic rule engine (always runs as safe base)
         content = _apply_rule_pipeline(raw_content)

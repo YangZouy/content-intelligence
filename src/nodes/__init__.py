@@ -9,6 +9,7 @@ from src.nodes.image_process import image_process_node
 from src.nodes.content_adapt import content_adapt_node
 from src.nodes.publish import publish_node
 
+# 声明对外公开的成成
 __all__ = [
     "ingest_node",
     "format_optimize_node",

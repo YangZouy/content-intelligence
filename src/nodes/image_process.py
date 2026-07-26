@@ -192,18 +192,6 @@ def image_process_node(state: AgentState) -> Dict[str, Any]:
     5. 替换formatted_content中的所有图像引用
     6. 选择第一张上传的图像作为封面（可被下游cover_image节点覆盖）
     7. 返回更新后的状态
-
-    节点签名遵循C1约定：(state: AgentState) -> dict
-
-    参数：
-        state: 包含formatted_content和images的代理状态。
-
-    返回：
-        部分状态更新，包含：
-        - content_with_oss_images: 所有图像指向OSS的内容。
-        - cover_url: 封面图像的OSS URL（第一张图像）。
-        - image_mapping: 原始URL到OSS URL的映射字典。
-        - oss_image_count: 成功上传到OSS的图像数量。
     """
     trace_logger = get_trace_logger()
     trace_id = state.get("run_log", {}).get("trace_id", "")

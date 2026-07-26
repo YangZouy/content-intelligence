@@ -1,9 +1,3 @@
-# ============================================
-# Content Intelligence Dispatcher - Main Configuration
-# ============================================
-# This file contains all configurable parameters for the system.
-# Priority: Environment Variables > config.yaml > user_prefs.yaml > built-in defaults
-
 # --- OSS (Aliyun Object Storage Service) ---
 oss:
   endpoint: "${ALIYUN_OSS_ENDPOINT}"
@@ -20,7 +14,7 @@ oss:
     - ".gif"
     - ".webp"
     - ".svg"
-  # Max images per article (excess will be truncated)
+  # 每篇文章图片数量设置
   max_images_per_article: 10
 
 # --- GitHub Pages / Hexo Blog ---
@@ -35,19 +29,15 @@ github:
   # Default git commit message prefix
   commit_prefix: "publish:"
 
-# --- WeChat Official Account (via wenyan-mcp) ---
+# --- WeChat Official Account (via wenyan server HTTP) ---
 wechat:
-  # Launch command for wenyan-mcp (a standard MCP server).
-  # Use a command+args string, e.g. "npx -y @wenyan-md/mcp" or a local
-  # binary path like "/usr/local/bin/wenyan-mcp". Empty / missing file => MOCK mode.
-  wenyan_path: "${WECHAT_WENYAN_PATH}"
+  # wenyan server base URL (local or remote)
+  server_url: "${WECHAT_SERVER_URL}"
+  # API key set when starting wenyan serve --api-key
+  api_key: "${WECHAT_SERVER_API_KEY}"
   # wenyan theme applied when publishing (default, orangeheart, phycat, ...)
   theme_id: "default"
-  # Whether to use Cloudflare Tunnel for MCP communication
-  tunnel_enabled: ${CLOUDFLARE_TUNNEL_ENABLED}
-  # MCP handshake timeout in seconds (covers first-run npx package download)
-  handshake_timeout: 180
-  # MCP request (tools/call) timeout in seconds
+  # HTTP request timeout in seconds
   timeout_seconds: 60
   # Max retry attempts for wechat publishing
   max_retries: 2
@@ -73,22 +63,11 @@ brand:
 
 # --- LLM Model Configuration ---
 model:
-  # 模型服务商：openai | deepseek | zhipu | custom
-  # （决定默认 base_url，也可在下方 base_url 手动覆盖）
   provider: "deepseek"
-  # 模型名称（各平台不同）：
-  #   deepseek: deepseek-chat（推荐）/ deepseek-reasoner
-  #   zhipu   : glm-4-flash（免费）/ glm-4-plus / glm-4-air
-  #   openai  : gpt-4o-mini
   summary_model: "deepseek-chat"
-  # OpenAI 兼容协议的 API Base URL（留空则根据 provider 自动选择）
   base_url: ""
-  # API Key：用环境变量占位，避免明文写在仓库里。
-  # 在 .env 中设置 DEEPSEEK_API_KEY（zhipu 用 ZHIPU_API_KEY，openai 用 OPENAI_API_KEY）
   api_key: "${DEEPSEEK_API_KEY}"
-  # Temperature for structured output (lower = more deterministic)
   temperature: 0.3
-  # Max tokens for summary output
   max_tokens: 1024
 
 # --- Format Optimization ---

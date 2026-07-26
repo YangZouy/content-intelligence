@@ -1,7 +1,6 @@
 """
-Content Intelligence Dispatcher - Personal Knowledge Content Distribution System.
+python将一个目录当成“可import的包”，
+__init__.py的作用相当于这个包的入口文件
 
-A pure Python + LangGraph pipeline that imports content from multiple sources,
-optimizes formatting, generates AI metadata, uploads images to OSS, adapts
-content for different platforms (Hexo blog / WeChat), and publishes in parallel.
+类似于包标记
 """

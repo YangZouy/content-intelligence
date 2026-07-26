@@ -130,42 +130,19 @@ def _display_result_summary(final_state: Dict[str, Any], elapsed: float) -> None
     if token_usage:
         console.print(f"\n[bold]Token Usage:[/bold] {token_usage}")
 
-    # --- Run log file ---
-    trace_id = run_log.get("trace_id", "")
-    if trace_id:
-        console.print(
-            f"\n[dim]Trace ID: {trace_id}[/dim]"
-            f"\n[dim]Run log: runs/{trace_id.replace('cid_', '')[:12]}*.json[/dim]"
-        )
-
-
-# ---------------------------------------------------------------------------
-# Execution helper
-# ---------------------------------------------------------------------------
-
 def _execute_publish(
     file_path: str,
     platforms: List[str],
     format_optimize_mode: Optional[str] = None,
 ) -> Dict[str, Any]:
-    """
-    执行流水线并显示结果（直接发布，无 preview）。
-
-    参数：
-        file_path: 内容文件路径。
-        platforms: 目标平台列表。
-        format_optimize_mode: 覆盖 config.yaml 的 format_optimize.mode
-            （rule | llm）。None 表示沿用配置。
-
-    返回：
-        流水线执行完成后的最终状态字典。
-    """
+    
     start_time = time.time()
 
     try:
         with console.status(
             "[bold green]Processing content...[/bold green]", spinner="dots"
         ):
+            # 开始执行
             final_state = run_pipeline(
                 file_path=file_path,
                 platforms=platforms,
@@ -173,6 +150,7 @@ def _execute_publish(
             )
 
         elapsed = time.time() - start_time
+        # 打印overview信息（标题、来源等）和publish信息
         _display_result_summary(final_state, elapsed)
         return final_state
 
@@ -209,15 +187,6 @@ def publish(
         help="Override format_optimize mode: rule | llm (default: from config.yaml)",
     ),
 ) -> None:
-    """Publish content to configured platforms.
-
-    Usage examples:
-        publish ./article.md                          # Direct publish to all default platforms
-        publish ./article.md --platforms wechat       # WeChat only
-        publish ./article.md --platforms blog,wechat  # Both
-        publish ./article.md -fo llm                  # Enable LLM format optimization
-    """
-    # Parse platforms argument
     parsed_platforms: Optional[List[str]] = None
     if platforms:
         parsed_platforms = [p.strip() for p in platforms.split(",")]

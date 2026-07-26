@@ -1,18 +1,3 @@
-"""
-LLM Factory - provider-aware model instantiation (OpenAI-compatible API).
-
-Supported providers: openai | deepseek | zhipu | custom.
-All providers speak the OpenAI-compatible chat completions protocol,
-so we keep using `langchain_openai.ChatOpenAI` and its
-`with_structured_output()` for the single LLM call in SummaryMetaNode.
-This means switching to a domestic model (DeepSeek / Zhipu) requires
-ZERO new dependencies — just change config.
-
-Usage:
-    from src.llm import get_summary_model
-    model = get_summary_model()
-"""
-
 from __future__ import annotations
 
 from typing import Optional
@@ -44,29 +29,7 @@ def get_summary_model(
     temperature: Optional[float] = None,
     max_tokens: Optional[int] = None,
 ) -> ChatOpenAI:
-    """Create and return a ChatOpenAI(-compatible) instance for summary generation.
-
-    This remains the single LLM entry point for the entire application.
-    All LLM calls (currently only in SummaryMetaNode) must go through
-    this factory to ensure consistent provider / url / key configuration.
-
-    Switching to a domestic model (DeepSeek / Zhipu) requires no code
-    change — simply set `provider` / `summary_model` / `api_key` in
-    config.yaml (or the corresponding environment variable).
-
-    Args:
-        model_name: Model identifier. Defaults to config value or 'gpt-4o-mini'.
-        temperature: Sampling temperature. Lower = more deterministic.
-            Defaults to config value or 0.3.
-        max_tokens: Maximum tokens in response.
-            Defaults to config value or 1024.
-
-    Returns:
-        Configured ChatOpenAI-compatible instance ready for structured output.
-
-    Raises:
-        ValueError: If no API key is configured.
-    """
+    
     config = get_config()
 
     provider = (config.model.get("provider", "openai") or "openai").lower()

@@ -2,17 +2,17 @@
 
 **个人知识内容智能分发系统**
 
-这是一个纯 Python + LangGraph 构建的流水线系统，可导入你撰写的各类内容（Obsidian / 飞书 / Markdown），优化排版格式，生成 AI 元数据，将图片上传至 OSS，并针对不同平台（Hexo 博客 / 微信公众号）进行内容适配，最终实现并行发布。
+这是一个纯 Python + LangGraph 构建的流水线系统，可导入你撰写的各类内容（Obsidian / 带外链的Markdown），优化排版格式，生成 AI 元数据，将图片上传至 OSS，并针对不同平台（Hexo 博客 / 微信公众号）进行内容适配，最终实现并行发布。
 
 > **零 Dify 依赖。零检索增强。纯代码实现。**
 
 ## 核心特性
 
-- **多源导入**：支持本地 Markdown 文件、带附件的 Obsidian 仓库、飞书文档
+- **多源导入**：支持本地 Markdown 文件、带附件的 Obsidian 仓库
 - **基于规则的格式化**：自动段落拆分、列表转换、术语加粗 — 零 LLM Token 消耗
 - **AI 元数据生成**：仅调用一次大模型（默认 DeepSeek，可切换智谱/OpenAI）即可提取标题/摘要/标签（约 ¥0.01/篇）
 - **OSS 图床托管**：自动上传至阿里云 OSS，并以拼音生成英文路径
-- **双平台发布**：支持 GitHub Pages（Hexo）与微信公众号（通过 wenyan-mcp）
+- **双平台发布**：支持 GitHub Pages（Hexo）与微信公众号（通过 wenyan server HTTP 接口）
 - **独立重试机制**：博客和微信各自独立发布 — 一个平台失败不会阻塞另一个
 - **交互式命令行界面**：提供含最近文件列表的向导模式，或直接执行 `publish ./article.md` 命令
 
@@ -37,7 +37,8 @@ CLI (Typer + Rich)
 └─────────────────────────────────────────────┘
   │                    │              │
   ▼                    ▼              ▼
- runs/*.json        Hexo 仓库     wenyan-mcp
+ runs/*.json        Hexo 仓库     wenyan server
+                                (HTTP localhost:3000)
 ```
 
 ## 快速开始
@@ -59,20 +60,34 @@ cp .env.example .env
 # 至少需要：DEEPSEEK_API_KEY（或 ZHIPU_API_KEY / OPENAI_API_KEY）用于生成摘要
 ```
 
-### 3. 运行
+### 3. 启动 wenyan server
+
+微信发布依赖本地运行的 wenyan server，需提前全局安装并启动：
 
 ```bash
-# 直接发布
-python -m src.cli publish ./my-article.md
+# 安装 wenyan CLI（含 server 功能）
+npm install -g @wenyan-md/cli
 
-# 进入交互式向导模式
-python -m src.cli publish
+# 配置微信公众号凭据（仅首次需要）
+wenyan config set WECHAT_APP_ID your-app-id
+wenyan config set WECHAT_APP_SECRET your-app-secret
 
-# 仅预览（不执行发布）
-python -m src.cli preview ./my-article.md
+# 启动 server（建议用 pm2 常驻）
+wenyan serve --port 3000 --api-key your-secret-key
+```
 
-# 仅发布到指定平台
-python -m src.cli publish ./article.md --platforms blog
+确认 server 正常运行：
+
+```bash
+curl http://localhost:3000/health
+```
+
+### 4. 运行
+
+```bash
+# 直接发布：app.command只有一个子命令publish时 命令行必须省略publish
+python -m src.cli ./my-article.md
+
 ```
 
 ## 配置说明
@@ -91,7 +106,8 @@ python -m src.cli publish ./article.md --platforms blog
 | `GITHUB_TOKEN` | 发布博客时需要 | GitHub 个人访问令牌 |
 | `GITHUB_USERNAME` | 发布博客时需要 | GitHub 用户名 |
 | `GITHUB_HEXO_REPO` | 发布博客时需要 | Hexo 仓库（格式：所有者/仓库名） |
-| `WECHAT_WENYAN_PATH` | 发布微信时需要 | wenyan-mcp 可执行文件路径 |
+| `WECHAT_SERVER_URL` | 发布微信时需要 | wenyan server 地址（默认 `http://localhost:3000`） |
+| `WECHAT_SERVER_API_KEY` | 发布微信时需要 | 启动 wenyan server 时设置的 API Key |
 
 ### config.yaml
 
@@ -129,7 +145,7 @@ content_intelligence_dispatcher/
 │   └── publishers/
 │       ├── base.py          # 发布器接口协议
 │       ├── github_pages.py  # GitHub Pages 发布器
-│       └── wechat.py        # 微信公众号 (wenyan-mcp) 发布器
+│       └── wechat.py        # 微信公众号 (wenyan server HTTP) 发布器
 ├── tests/                   # 测试套件
 ├── runs/                    # 运行日志（自动创建）
 └── logs/                    # 应用日志（自动创建）
@@ -179,20 +195,52 @@ content_intelligence_dispatcher/
 - **一个平台发布失败，绝不会阻塞另一个平台的发布**
 - 结果汇总为 `PublishResultItem[]` 列表
 
-## Cloudflare Tunnel（用于微信 MCP）
+## 微信发布架构
 
-在本地运行且无公网访问时，可使用 Cloudflare Tunnel
-代理微信 MCP 通信：
+微信发布通过本地运行的 wenyan server（HTTP 模式）实现，彻底替代原有的 stdio MCP 子进程方案：
 
-```bash
-# 在 .env 文件中配置：
-CLOUDFLARE_TUNNEL_ENABLED=true
-
-# 启动隧道：
-cloudflared tunnel --url http://localhost:8080
+```
+Python 项目
+    │
+    │  HTTP POST /upload  （上传 Markdown）
+    │  HTTP POST /publish （触发渲染+发布）
+    ▼
+wenyan server (localhost:3000)
+    │
+    │  微信公众号 API
+    ▼
+微信草稿箱
 ```
 
-请参阅 config.yaml 中的 `wechat.tunnel_enabled` 设置项。
+**优势**：无需管理子进程生命周期、握手超时和管道通信，发布逻辑简化为两次 HTTP 请求。
+
+### 固定 IP 问题解决方案（Cloudflare Tunnel）
+
+wenyan server 仅监听本机 3000 端口，微信公众号 API 白名单要求固定公网 IP。使用 Cloudflare Tunnel 解决 IP 变动问题：
+
+```bash
+# 安装
+winget install Cloudflare.cloudflared
+
+# 登录并创建隧道
+cloudflared tunnel login
+cloudflared tunnel create wenyan-server
+
+# 写配置 ~/.cloudflared/config.yml
+# tunnel: <tunnel-id>
+# ingress:
+#   - hostname: wenyan.yourdomain.com
+#     service: http://localhost:3000
+#   - service: http_status:404
+
+# 路由域名
+cloudflared tunnel route dns wenyan-server wenyan.yourdomain.com
+
+# 安装为系统服务（开机自启）
+cloudflared service install
+```
+
+配置完成后将 `.env` 中的 `WECHAT_SERVER_URL` 改为 `https://wenyan.yourdomain.com`，本机 IP 变动对发布流程完全透明。
 
 ## 设计决策
 
@@ -206,20 +254,3 @@ cloudflared tunnel --url http://localhost:8080
 | OSS 路径使用 pypinyin | 全 ASCII 安全路径，避免 CDN 编码问题 |
 | 发布器独立重试 | 博客和微信的故障完全解耦 |
 | 采用 Typer + Rich + questionary | 符合现代 Python CLI 最佳实践 |
-
-## 测试
-
-```bash
-# 运行所有测试
-pytest tests/ -v
-
-# 运行特定测试模块
-pytest tests/test_ingest.py -v
-
-# 生成覆盖率报告
-pytest tests/ --cov=src --cov-report=html
-```
-
-## 开源许可
-
-MIT 许可证

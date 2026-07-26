@@ -64,10 +64,6 @@ class BrandConfig(TypedDict, total=False):
 # ---------------------------------------------------------------------------
 
 class InputState(TypedDict, total=False):
-    """Raw input data after content ingestion.
-
-    Set by IngestNode. Read by all downstream nodes.
-    """
     source_type: Literal["obsidian", "markdown_link"]
     raw_content: str
     images: List[ImageRef]
@@ -185,10 +181,8 @@ class AgentState(
     TypedDict,
     total=False,
 ):
-    """Complete agent state combining all pipeline phases.
-
-    This TypedDict is used as the StateGraph state type.
-    Each node reads upstream fields and writes only its own phase fields.
+    """
+    total=False表示每个字段都不是必填的
     """
     publish_results: List[PublishResultItem]
     run_log: RunLogEntry

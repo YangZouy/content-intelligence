@@ -1,19 +1,5 @@
 """
-Observability Module - Logging, tracing, and run log persistence.
-
-Provides:
-- Loguru-based structured logging with trace_id correlation
-- TraceLogger for per-run lifecycle management
-- Automatic run log JSON persistence to runs/<timestamp>.json
-
-Usage:
-    from src.observability import get_trace_logger
-    logger = get_trace_logger()
-    trace_id = logger.generate_trace_id()
-    logger.node_enter("ingest", trace_id)
-    # ... do work ...
-    logger.node_exit("ingest", trace_id)
-    logger.write_run_log(run_data)
+日志配置、追踪、运行日志落盘
 """
 
 from __future__ import annotations
@@ -25,26 +11,16 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Optional
 
+# python的第三方日志库
 from loguru import logger
 
-
-# --- Configure Loguru ---
-
 def _setup_logger() -> None:
-    """Configure loguru with console and file handlers.
-
-    Console: INFO level with color.
-    File: DEBUG level with rotation (5MB) in logs/ directory.
-    """
-    # Remove default handler
+    # 删除默认handler
     logger.remove()
-
-    # Set a default `trace_id` extra so the format string {extra[trace_id]}
-    # never raises KeyError when a module logs without binding trace_id
-    # (e.g. github_pages.py uses the bare root logger for error logs).
+    # 给所有日志加默认字段
     logger.configure(extra={"trace_id": ""})
 
-    # Console handler - human-readable
+    # 人看
     logger.add(
         sink=lambda msg: print(msg, end=""),
         level="INFO",
@@ -57,7 +33,7 @@ def _setup_logger() -> None:
         colorize=True,
     )
 
-    # File handler - structured debug logs
+    # 排查
     log_dir = Path("logs")
     log_dir.mkdir(exist_ok=True)
     logger.add(
@@ -69,20 +45,21 @@ def _setup_logger() -> None:
             "{extra[trace_id]} | "
             "{name}:{function}:{line} | {message}"
         ),
+        # 单文件到5MB自动切新文件，避免一个日志无限膨胀
         rotation="5 MB",
+        # 自动删7天前的日志
         retention="7 days",
         encoding="utf-8",
     )
 
 
-# Run setup on import
+# import时执行 与懒加载相反，日志需要在任何模块打第一条日志之前就配置好
 _setup_logger()
 
-
+# 数据类
 @dataclass
 class NodeTiming:
-    """Records timing information for a single node execution."""
-
+    """记录单个节点执行时间信息"""
     node_name: str
     start_time: float = 0.0
     end_time: float = 0.0
@@ -97,52 +74,28 @@ class NodeTiming:
 
 
 class TraceLogger:
-    """Manages per-run trace logging and run log persistence.
-
-    Each pipeline execution creates a unique trace_id that is included in
-    all log messages for that run, enabling easy log correlation.
-
-    Attributes:
-        _node_timings: Dict tracking start/end times for each node.
-    """
-
     def __init__(self) -> None:
         self._node_timings: Dict[str, NodeTiming] = {}
 
     @staticmethod
     def generate_trace_id() -> str:
-        """Generate a unique trace ID for a pipeline run.
-
-        Format: 'cid_' + 12-char hex timestamp + 8-char random hex.
-
-        Returns:
-            Unique trace identifier string.
+        """
+        uniq trace_id生成：
+        'cid_' + 12-char hex timestamp + 8-char random hex.
         """
         ts = int(time.time() * 1000)
         import secrets
+        # 使用密码学安全随机生成trace_id
         rand = secrets.token_hex(4)
         return f"cid_{ts:x}_{rand}"
 
     def node_enter(self, node_name: str, trace_id: str) -> None:
-        """Record the entry time of a node.
-
-        Also emits an INFO-level log message.
-
-        Args:
-            node_name: Name of the node being entered.
-            trace_id: Current run's trace ID.
-        """
         timing = NodeTiming(node_name=node_name, start_time=time.time())
         self._node_timings[node_name] = timing
+        # 用bind出来的logger打的每条日志输出时都会自动带上trace_id
         logger.bind(trace_id=trace_id).info(f">>> [{node_name}] ENTER")
 
     def node_exit(self, node_name: str, trace_id: str) -> None:
-        """Record the exit time of a node and log duration.
-
-        Args:
-            node_name: Name of the node being exited.
-            trace_id: Current run's trace ID.
-        """
         timing = self._node_timings.get(node_name)
         if timing is not None:
             timing.end_time = time.time()
@@ -155,24 +108,14 @@ class TraceLogger:
             )
 
     def get_node_durations(self) -> Dict[str, float]:
-        """Get all recorded node durations.
-
-        Returns:
-            Dict mapping node name to duration in seconds.
-        """
         return {
             name: timing.duration
             for name, timing in self._node_timings.items()
         }
 
     def write_run_log(self, run_log: Dict[str, Any]) -> Path:
-        """Persist the run log as a JSON file in runs/ directory.
-
-        Args:
-            run_log: Complete run log dictionary to serialize.
-
-        Returns:
-            Path to the written JSON file.
+        """
+        写结构化运行日志/审计trail，可用于事后排查，成本统计，计算性能基线
         """
         runs_dir = Path("runs")
         runs_dir.mkdir(parents=True, exist_ok=True)
@@ -200,14 +143,6 @@ _trace_logger_instance: Optional[TraceLogger] = None
 
 
 def get_trace_logger(force_new: bool = False) -> TraceLogger:
-    """Get the global TraceLogger instance.
-
-    Args:
-        force_new: If True, create fresh instance.
-
-    Returns:
-        Shared TraceLogger instance.
-    """
     global _trace_logger_instance
     if _trace_logger_instance is None or force_new:
         _trace_logger_instance = TraceLogger()

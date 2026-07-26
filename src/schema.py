@@ -1,14 +1,3 @@
-"""
-Pydantic Models - Structured output schemas for LLM and data validation.
-
-Defines:
-- SummaryMetaOutput: Structured LLM output from summary generation
-- HexoFrontMatter: Hexo blog front-matter data model
-
-These models are used with ChatOpenAI's with_structured_output() method
-to ensure the LLM returns valid, typed JSON.
-"""
-
 from __future__ import annotations
 
 from datetime import datetime, timezone

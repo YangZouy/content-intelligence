@@ -1,7 +1,6 @@
 """
-配置加载器 - 带优先级链的YAML + .env加载。
-
-优先级：环境变量 > config.yaml > user_prefs.yaml > 内置默认值
+配置入口
+优先级：环境变量 > config.yaml > 内置默认值
 
 用法：
     from src.config_loader import get_config
@@ -18,7 +17,7 @@ import yaml
 from dotenv import load_dotenv
 
 
-# --- Built-in defaults (lowest priority) ---
+# --- 内置默认 ---
 _DEFAULTS: Dict[str, Any] = {
     "oss": {
         "endpoint": "",
@@ -38,8 +37,9 @@ _DEFAULTS: Dict[str, Any] = {
         "commit_prefix": "publish:",
     },
     "wechat": {
-        "wenyan_path": "",
-        "tunnel_enabled": False,
+        "server_url": "http://localhost:3000",
+        "api_key": "",
+        "theme_id": "default",
         "timeout_seconds": 60,
         "max_retries": 2,
     },
@@ -83,10 +83,7 @@ _DEFAULTS: Dict[str, Any] = {
 
 
 def _resolve_env_vars(value: Any) -> Any:
-    """Recursively resolve ${VAR_NAME} placeholders in configuration values.
-
-    Supports string values like "${ALIYUN_OSS_ENDPOINT}" and falls back to
-    empty string if the environment variable is not set.
+    """解析config配置文件中的${VAR}占位符
     """
     if isinstance(value, str):
         import re
@@ -128,7 +125,6 @@ class ConfigData:
     default_options: Dict[str, Any] = field(default_factory=dict)
     format_optimize: Dict[str, Any] = field(default_factory=dict)
     cover: Dict[str, Any] = field(default_factory=dict)
-    user_prefs: Dict[str, Any] = field(default_factory=dict)
 
     def get_brand_config(self) -> Dict[str, Any]:
         """返回品牌配置字典。
@@ -170,48 +166,38 @@ class ConfigData:
         return section_dict.get(key, default)
 
 
-# Module-level cache for loaded config
+# 全局配置实例 模块加载时是None
 _config_instance: Optional[ConfigData] = None
 
 
 def _find_config_dir() -> Path:
-    """Locate the project config directory.
-
-    Searches relative to this file's location first, then current working directory.
-    Returns:
-        Path to the directory containing config.yaml.
     """
-    # First try relative to this source file (src/ -> project root)
+    定位config目录
+    先找src/../config/config.yaml
+    再找当前工作目录/config/config.yaml
+    """
     src_dir = Path(__file__).resolve().parent
     candidate = src_dir.parent / "config"
     if (candidate / "config.yaml").exists():
         return candidate
 
-    # Fallback to CWD / config
     cwd_candidate = Path.cwd() / "config"
     if (cwd_candidate / "config.yaml").exists():
         return cwd_candidate
-
-    # Last resort: return expected location even if file doesn't exist yet
+    
     return candidate
 
 
 def _load_yaml_file(config_dir: Path, filename: str) -> Dict[str, Any]:
-    """Load a YAML file from the config directory.
-
-    Args:
-        config_dir: Directory containing YAML files.
-        filename: Name of the YAML file to load.
-
-        Returns:
-            Parsed dictionary, or empty dict if file not found/invalid.
-        """
+    """
+    """
     filepath = config_dir / filename
     if not filepath.exists():
         return {}
 
     try:
         with open(filepath, "r", encoding="utf-8") as f:
+            # 把yaml转成嵌套dict
             content = yaml.safe_load(f)
             return content if isinstance(content, dict) else {}
     except (yaml.YAMLError, OSError) as e:
@@ -222,51 +208,33 @@ def _load_yaml_file(config_dir: Path, filename: str) -> Dict[str, Any]:
 
 
 def get_config(force_reload: bool = False) -> ConfigData:
-    """
-    加载并返回完整配置。
-
-    这是整个应用程序中访问配置的主要入口。
-    结果会被缓存；设置 force_reload=True 可强制重新加载。
-
-    优先级顺序：
-        1. 环境变量（.env 文件 + 系统环境变量）
-        2. config.yaml 中的值
-        3. user_prefs.yaml 中的值
-        4. 内置默认值
-
-    参数：
-        force_reload: 若为 True，则绕过缓存并从磁盘重新加载。
-
-    返回：
-        完全解析后的 ConfigData 实例。
-    """
     global _config_instance
 
+    # 命中缓存，直接返回，不读文件
     if _config_instance is not None and not force_reload:
         return _config_instance
 
-    # Step 1: Load .env files (check multiple locations)
+    # Step 1: 加载env文件
     env_locations = [
         Path.cwd() / ".env",
         Path(__file__).resolve().parent.parent / ".env",
     ]
     for env_path in env_locations:
         if env_path.exists():
+            # 将.env里的key = value写进os.environ
             load_dotenv(env_path)
             break
 
-    # Step 2: Find config directory
+    # Step 2: 找config配置文件
     config_dir = _find_config_dir()
 
-    # Step 3: Load YAML files
+    # Step 3: 加载config配置文件
     main_config = _load_yaml_file(config_dir, "config.yaml")
-    user_prefs = _load_yaml_file(config_dir, "user_prefs.yaml")
 
-    # Step 4: Merge with priority chain
-    merged = _deep_merge(_DEFAULTS, user_prefs)
-    merged = _deep_merge(merged, main_config)
+    # Step 4: 默认值 → yaml覆盖
+    merged = _deep_merge(_DEFAULTS, main_config)
 
-    # Step 5: Resolve environment variable placeholders
+    # Step 5: 配置文件中的占位符使用os.eviron中的值进行替换
     merged = _resolve_env_vars(merged)
 
     # Step 6: Build and cache ConfigData
@@ -279,32 +247,6 @@ def get_config(force_reload: bool = False) -> ConfigData:
         default_options=merged.get("default_options", {}),
         format_optimize=merged.get("format_optimize", {}),
         cover=merged.get("cover", {}),
-        user_prefs=user_prefs,
     )
 
     return _config_instance
-
-
-def update_user_prefs(updates: Dict[str, Any]) -> None:
-    """Update and persist user preferences to user_prefs.yaml.
-
-    Args:
-        updates: Dictionary of preference updates to merge.
-    """
-    config_dir = _find_config_dir()
-    prefs_path = config_dir / "user_prefs.yaml"
-
-    # Load existing prefs
-    existing = _load_yaml_file(config_dir, "user_prefs.yaml")
-
-    # Deep merge updates
-    updated = _deep_merge(existing, updates)
-
-    # Write back
-    prefs_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(prefs_path, "w", encoding="utf-8") as f:
-        yaml.dump(updated, f, allow_unicode=True, default_flow_style=False)
-
-    # Invalidate cache so next get_config() picks up changes
-    global _config_instance
-    _config_instance = None

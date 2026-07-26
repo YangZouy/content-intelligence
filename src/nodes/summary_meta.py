@@ -1,12 +1,3 @@
-"""
-Summary & Metadata Node - LLM-powered title/summary/tag extraction.
-
-This is the **ONLY** LLM call point in the entire pipeline.
-Uses gpt-4o-mini with structured output to extract metadata from formatted content.
-
-Outputs: {title, summary, tags, word_count, reading_time}
-"""
-
 from __future__ import annotations
 
 import math
@@ -43,16 +34,6 @@ SUMMARY_SYSTEM_PROMPT = """你是一位专业的内容分析师，擅长从技�
 
 
 def _count_words(content: str) -> int:
-    """Count total words in content (Chinese chars + English words).
-
-    Chinese characters are counted individually; English words are split by whitespace.
-
-    Args:
-        content: Text content to count.
-
-    Returns:
-        Total word count.
-    """
     # Count Chinese characters
     chinese_count = len([c for c in content if '\u4e00' <= c <= '\u9fff'])
     # Count English words (split by whitespace, filter non-empty)
@@ -64,16 +45,6 @@ def _count_words(content: str) -> int:
 
 
 def _estimate_reading_time(word_count: int) -> str:
-    """根据字数估算阅读时间。
-
-    中文读者阅读技术内容平均约500字/分钟。
-
-    参数：
-        word_count: 总字数。
-
-    返回：
-        人类可读的字符串，如"3 min read"或"5 min read"。
-    """
     if word_count == 0:
         return "0 min read"
     # Average reading speed for mixed Chinese-English tech content
@@ -84,14 +55,6 @@ def _estimate_reading_time(word_count: int) -> str:
 
 
 def _extract_existing_h1_title(content: str) -> str | None:
-    """Extract the first H1 heading from markdown content.
-
-    Args:
-        content: Markdown text.
-
-    Returns:
-        H1 title string if found, None otherwise.
-    """
     import re
     match = re.match(r'^#\s+(.+)$', content, re.MULTILINE)
     if match:

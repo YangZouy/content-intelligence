@@ -133,17 +133,6 @@ def _extract_images_from_content(content: str, md_path: Path) -> List[ImageRef]:
 
 
 def _read_local_file(file_path: str) -> str:
-    """Read a local file's text content with UTF-8 encoding.
-
-    Args:
-        file_path: Absolute or relative path to file.
-
-    Returns:
-        File contents as string.
-
-    Raises:
-        IngestError: If file cannot be read.
-    """
     path = Path(file_path)
     if not path.exists():
         raise IngestError(f"File not found: {file_path}")
@@ -155,17 +144,6 @@ def _read_local_file(file_path: str) -> str:
 
 
 def _detect_source_type(file_path: str) -> str:
-    """Detect the source type of an input file based on path/context.
-
-    Currently defaults to 'markdown_link' since all local .md files are
-    treated uniformly. Future extension could detect Obsidian vault structure.
-
-    Args:
-        file_path: Path to the input file.
-
-        Returns:
-            Source type string: 'obsidian' or 'markdown_link'.
-    """
     path = Path(file_path)
 
     # Local markdown note (Obsidian vault) by default
@@ -177,25 +155,6 @@ def _detect_source_type(file_path: str) -> str:
 # ---------------------------------------------------------------------------
 
 def ingest_node(state: AgentState) -> Dict[str, Any]:
-    """从指定来源摄取内容到原始流水线状态。
-
-    这是流水线中的第一个节点。它读取输入文件，
-    提取所有图像引用，确定来源类型，并
-    填充InputState字段。
-
-    节点签名遵循C1约定：(state: AgentState) -> dict
-    仅返回部分更新字典（C2规则）。
-
-    参数：
-        state: 当前代理状态。必须至少包含 `file_path` 键。
-
-    返回：
-        部分状态更新，包含：
-        - source_type: 检测到的来源类型字符串。
-        - raw_content: 来源的完整文本内容。
-        - images: 在内容中或内容附近找到的ImageRef列表。
-        - file_path: 确认的文件路径。
-    """
     trace_logger = get_trace_logger()
     trace_id = state.get("run_log", {}).get("trace_id", "")
     trace_logger.node_enter("ingest", trace_id)

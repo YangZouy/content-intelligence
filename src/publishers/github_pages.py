@@ -26,7 +26,6 @@ from typing import Any, Dict, List, Optional, Tuple
 from src.config_loader import get_config
 from src.errors import (
     GitHubPublishError,
-    PublishError,
     retry_with_backoff,
 )
 from src.publishers.base import Publisher
@@ -73,7 +72,6 @@ class GitHubPagesPublisher(Publisher):
 
     @property
     def platform(self) -> str:
-        """Return 'blog' as platform identifier."""
         return "blog"
 
     def validate(
@@ -87,13 +85,6 @@ class GitHubPagesPublisher(Publisher):
         - 内容非空
         - 包含YAML front-matter分隔符（---）
         - front-matter中至少有标题
-
-        参数：
-            content: 要验证的带front-matter的Hexo文档。
-            brand: 品牌配置。
-
-        返回：
-            （是否有效，错误消息列表）的元组。
         """
         errors: List[str] = []
 
@@ -112,6 +103,7 @@ class GitHubPagesPublisher(Publisher):
 
         return len(errors) == 0, errors
 
+    # 函数抛出异常，装饰器自动重试，延迟2s，重试3次
     @retry_with_backoff(max_attempts=3, base_delay=2.0)
     def publish(
         self,
@@ -125,16 +117,6 @@ class GitHubPagesPublisher(Publisher):
         2. 从front-matter中提取标题作为文件名
         3. 将文件写入source/_posts/<清理后的标题>.md
         4. Git add + commit + push
-
-        参数：
-            content: 完整的Hexo文档，包括front-matter。
-            brand: 品牌配置（不直接使用，但属于接口的一部分）。
-
-        返回：
-            包含成功状态和提交信息的PublishResultItem。
-
-        异常：
-            GitHubPublishError: 如果任何Git操作在重试后失败。
         """
         trace_id = get_trace_logger().generate_trace_id()  # fallback
         log = __import__("loguru").logger.bind(trace_id=trace_id)
@@ -177,65 +159,8 @@ class GitHubPagesPublisher(Publisher):
                 attempt=1,
             ) from e
 
-    def retry(
-        self,
-        prev_result: PublishResultItem,
-        max_attempts: int = 3,
-    ) -> PublishResultItem:
-        """Retry a failed GitHub publish with exponential backoff.
-
-        Note: The @retry_with_backoff decorator already handles retries
-        on the publish() method itself. This method provides an additional
-        programmatic retry mechanism for use by PublishNode.
-
-        Args:
-            prev_result: Previous failed result.
-            max_attempts: Maximum total attempts.
-
-        Returns:
-            Result after retry attempts.
-        """
-        last_error = prev_result.get("error", "Unknown error")
-
-        # Simple linear retry using the same publish logic
-        for attempt in range(2, max_attempts + 1):
-            try:
-                import time as _time
-                delay = min(2 ** (attempt - 1), 8)  # 2s, 4s
-                _time.sleep(delay)
-
-                # Re-publish — we'd need original content here; this is a simplified retry
-                raise PublishError(
-                    f"Retry attempt {attempt}: requires stored content reference",
-                    platform=self.platform,
-                    attempt=attempt,
-                )
-            except PublishError as e:
-                last_error = str(e)
-
-        return PublishResultItem(
-            platform="blog",
-            success=False,
-            url=None,
-            attempt=max_attempts,
-            error=f"All {max_attempts} attempts failed. Last: {last_error}",
-        )
-
-    # -----------------------------------------------------------------
-    # Private helpers
-    # -----------------------------------------------------------------
-
+    # 保证本地仓库有一个可用的、最新的Git仓库
     def _ensure_repo(self) -> Any:
-        """Ensure the local Hexo repository is cloned and up-to-date.
-
-        Clones if not present, pulls latest if it exists.
-
-        Returns:
-            GitPython Repo object.
-
-        Raises:
-            GitHubPublishError: If clone/pull fails.
-        """
         try:
             from git import Repo as GitRepo
         except ImportError:
@@ -244,7 +169,7 @@ class GitHubPagesPublisher(Publisher):
                 "Run: pip install GitPython"
             )
 
-        # Construct remote URL with token
+        # 将remote URL刷新成带token的URL（防止旧仓库残留过期token导致push失败）
         remote_url = (
             f"https://{self._token}@github.com/"
             f"{self._repo_owner}/{self._repo_name}.git"
@@ -252,46 +177,46 @@ class GitHubPagesPublisher(Publisher):
 
         if self._local_path.exists():
             try:
+                # 打开本地仓库
                 repo = GitRepo(self._local_path)
-                # Pull latest changes; ANY failure (network, rebase
-                # conflict, corrupted repo) -> force a fresh clone
+                # 获取远程仓库
                 origin = repo.remotes.origin
-                # Refresh credentials: a previously cloned repo may hold a
-                # stale token in its stored remote URL, causing push/pull to
-                # fail later with a bare git exit code 1.
                 try:
+                    # 更新远程仓库（仓库迁移、http协议更换成SSH、token刷新等导致的url更换）
                     origin.set_url(remote_url)
                 except Exception:
                     pass
+                # rebase拉取最新仓库 （保持提交历史线性，避免不必要的merge commit）
                 origin.pull(rebase=True)
                 return repo
             except Exception:
-                # Corrupted OR unreachable repo -> remove and re-clone
+                # 任何失败（网络/冲突/仓库损坏 rmtree删除，强制重试clone）
                 import shutil
                 shutil.rmtree(self._local_path, ignore_errors=True)
 
-        # Fresh clone
+        # 本地不存在直接clone一个新仓库
         self._local_path.parent.mkdir(parents=True, exist_ok=True)
         repo = GitRepo.clone_from(remote_url, str(self._local_path))
         return repo
 
     def _extract_title(self, content: str) -> str:
-        """Extract the title from Hexo front-matter."""
         match = re.search(r'^title:\s*(.+)$', content, re.MULTILINE)
         if match:
             return match.group(1).strip().strip("'\"")
         return "Untitled"
 
+    # 将任务标题转换为安全的文件名
+    # 在任何系统都合法
     @staticmethod
     def _sanitize_filename(title: str) -> str:
         """Convert title to a safe filename (ASCII, no special chars)."""
-        # Remove/replace special characters
+        # 替换特殊字符为-
         safe = re.sub(r'[\\/:*?"<>|\n\r\t]', '-', title)
-        # Collapse multiple dashes
+        # 合并多个连字符----
         safe = re.sub(r'-{2,}', '-', safe)
-        # Strip leading/trailing dashes and spaces
+        # 清除首尾字符
         safe = safe.strip('- ')
-        # Limit length
+        # 截断
         if len(safe) > 100:
             safe = safe[:100]
         return safe or "Untitled"
@@ -302,38 +227,15 @@ class GitHubPagesPublisher(Publisher):
         filepath: str,
         commit_msg: str,
     ) -> Optional[str]:
-        """Stage, commit, and push changes.
-
-        Args:
-            repo: GitPython Repo instance.
-            filepath: Path (absolute or relative) to the file to stage.
-            commit_msg: Commit message.
-
-        Returns:
-            URL to the committed file on GitHub, or None if unavailable.
-
-        Note:
-            GitPython runs `git` from the repository's working-tree root.
-            If `filepath` is expressed relative to the *process* CWD (e.g.
-            ``temp/hexo_repo/source/_posts/x.md``), git looks for it under
-            ``<repo_root>/temp/hexo_repo/...`` which does not exist, raising
-            ``WinError 3: 系统找不到指定的路径``. We therefore resolve the
-            file to an absolute path and re-express it relative to the repo
-            working tree before staging.
-        """
-        # --- Robust path handling -------------------------------------------
-        # Resolve to absolute, then re-express relative to the repo root so
-        # `git add` always receives a path that resolves correctly.
+        
         repo_root = Path(repo.working_tree_dir).resolve()
         abs_file = Path(filepath).resolve()
         if repo_root in abs_file.parents or abs_file == repo_root:
             stage_path = str(abs_file.relative_to(repo_root))
         else:
-            # Not inside the repo (unexpected) -> fall back to absolute path
             stage_path = str(abs_file)
 
-        # Clear a stale index.lock left behind by an interrupted git op,
-        # otherwise the next `index.add` fails with a lock error.
+        # 清理残留所文件：上次Git操作异常中断
         lock_path = Path(repo.git_dir) / "index.lock"
         if lock_path.exists():
             try:
@@ -341,18 +243,17 @@ class GitHubPagesPublisher(Publisher):
             except OSError:
                 pass
 
-        # Stage the specific file
+        # 暂存特定文件
         repo.index.add([stage_path])
 
-        # Check if there are changes to commit
+        # 检查是否有变化
         if not repo.index.diff("HEAD"):
-            # No changes (file content identical) — still push to be safe
             pass
 
-        # Commit
+        # 提交
         repo.index.commit(commit_msg)
 
-        # Push
+        # 推送
         origin = repo.remotes.origin
         push_info = origin.push()[0]
 
@@ -361,7 +262,7 @@ class GitHubPagesPublisher(Publisher):
                 f"Git push failed: {push_info.summary}"
             )
 
-        # Build URL
+        # 构建访问链接
         rel_path = Path(stage_path).as_posix()
         default_branch = repo.active_branch.name
         url = (
@@ -372,5 +273,4 @@ class GitHubPagesPublisher(Publisher):
 
 
 class GitHubPushFailedError(GitHubPublishError):
-    """Raised when git push operation returns an error flag."""
     pass

@@ -83,16 +83,6 @@ def content_adapt_node(state: AgentState) -> Dict[str, Any]:
        - wenyan 工具要求每篇 Markdown 顶部带 front-matter（至少含 title）
        - 正文内容，包含OSS图像链接
        - 可直接通过 wenyan-mcp create_draft API 提交
-
-    节点签名遵循C1约定：(state: AgentState) -> dict
-
-    参数：
-        state: 包含元数据、经OSS处理的内容和品牌配置的代理状态。
-
-    返回：
-        部分状态更新，包含：
-        - hexo_document: 带front-matter的完整Hexo文章。
-        - wechat_draft: 兼容微信的草稿内容。
     """
     trace_logger = get_trace_logger()
     trace_id = state.get("run_log", {}).get("trace_id", "")
