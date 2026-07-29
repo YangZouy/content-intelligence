@@ -214,33 +214,9 @@ wenyan server (localhost:3000)
 
 **优势**：无需管理子进程生命周期、握手超时和管道通信，发布逻辑简化为两次 HTTP 请求。
 
-### 固定 IP 问题解决方案（Cloudflare Tunnel）
+### 固定 IP 问题解决方案（服务器部署wenyan server）
 
-wenyan server 仅监听本机 3000 端口，微信公众号 API 白名单要求固定公网 IP。使用 Cloudflare Tunnel 解决 IP 变动问题：
-
-```bash
-# 安装
-winget install Cloudflare.cloudflared
-
-# 登录并创建隧道
-cloudflared tunnel login
-cloudflared tunnel create wenyan-server
-
-# 写配置 ~/.cloudflared/config.yml
-# tunnel: <tunnel-id>
-# ingress:
-#   - hostname: wenyan.yourdomain.com
-#     service: http://localhost:3000
-#   - service: http_status:404
-
-# 路由域名
-cloudflared tunnel route dns wenyan-server wenyan.yourdomain.com
-
-# 安装为系统服务（开机自启）
-cloudflared service install
-```
-
-配置完成后将 `.env` 中的 `WECHAT_SERVER_URL` 改为 `https://wenyan.yourdomain.com`，本机 IP 变动对发布流程完全透明。
+服务器配置与本机PC版本一致的wenyan-cli，设置api-key，微信需要的密钥等，服务器上启动服务，默认端口为3000，修改成了8080，防火墙中放开8080端口，本机PC命令行中添加 --server表示与服务器通信
 
 ## 设计决策
 

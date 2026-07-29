@@ -329,26 +329,26 @@ def _convert_warnings_to_blockquote(content: str) -> str:
 
 
 def _ensure_code_block_language(content: str) -> str:
-    """Ensure code blocks have language annotations.
-
-    If a code block opens with ``` without a language tag, attempt to
-    infer from content or default to 'text'.
-
-    Args:
-        content: Markdown content.
-
-        Returns:
-            Content with all code blocks having language tags.
-    """
     lines = content.split('\n')
     result: list[str] = []
+    in_code_block = False
 
     for i, line in enumerate(lines):
-        # Detect opening fence without language
-        if re.match(r'^```\s*$', line):
-            # Peek ahead to guess language
-            guessed_lang = _guess_code_language(lines, i + 1)
-            result.append(f"```{guessed_lang}")
+        if line.strip().startswith('```'):
+            if in_code_block:
+                # This is a closing fence — it must stay bare.
+                result.append('```')
+                in_code_block = False
+            else:
+                # This is an opening fence.
+                if re.match(r'^```\s*$', line):
+                    # Bare opening fence: guess a language and add it.
+                    guessed_lang = _guess_code_language(lines, i + 1)
+                    result.append(f"```{guessed_lang}")
+                else:
+                    # Already has a language tag — keep as-is.
+                    result.append(line)
+                in_code_block = True
         else:
             result.append(line)
 

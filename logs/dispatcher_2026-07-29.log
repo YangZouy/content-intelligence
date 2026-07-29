@@ -1,0 +1,144 @@
+2026-07-29T01:24:35.084+08:00 | INFO    | cid_19fa9c1c08c_8fe5bcf5 | src.graph:run:104 | Pipeline started | file=Python-1-基础.md | platforms=['blog', 'wechat']
+2026-07-29T01:24:35.090+08:00 | INFO    | cid_19fa9c1c08c_8fe5bcf5 | src.observability:node_enter:96 | >>> [ingest] ENTER
+2026-07-29T01:24:35.091+08:00 | INFO    | cid_19fa9c1c08c_8fe5bcf5 | src.nodes.ingest:ingest_node:183 | Ingested 'Python-1-基础.md' (type=obsidian, images=0, chars=9671)
+2026-07-29T01:24:35.092+08:00 | INFO    | cid_19fa9c1c08c_8fe5bcf5 | src.observability:node_exit:102 | <<< [ingest] EXIT (0.00s)
+2026-07-29T01:24:35.093+08:00 | INFO    | cid_19fa9c1c08c_8fe5bcf5 | src.observability:node_enter:96 | >>> [format_optimize] ENTER
+2026-07-29T01:24:35.094+08:00 | DEBUG   | cid_19fa9c1c08c_8fe5bcf5 | src.nodes.format_optimize:format_optimize_node:598 | Starting format optimization pipeline
+2026-07-29T01:24:35.103+08:00 | INFO    | cid_19fa9c1c08c_8fe5bcf5 | src.nodes.format_optimize:format_optimize_node:633 | Format optimization complete (mode=rule, input=9671 chars, output=9769 chars)
+2026-07-29T01:24:35.104+08:00 | INFO    | cid_19fa9c1c08c_8fe5bcf5 | src.observability:node_exit:102 | <<< [format_optimize] EXIT (0.01s)
+2026-07-29T01:24:35.105+08:00 | INFO    | cid_19fa9c1c08c_8fe5bcf5 | src.observability:node_enter:96 | >>> [summary_meta] ENTER
+2026-07-29T01:24:35.940+08:00 | DEBUG   | cid_19fa9c1c08c_8fe5bcf5 | src.nodes.summary_meta:summary_meta_node:119 | Calling LLM for summary/metadata generation...
+2026-07-29T01:24:38.757+08:00 | INFO    | cid_19fa9c1c08c_8fe5bcf5 | src.nodes.summary_meta:summary_meta_node:144 | Summary/meta generated: title='Python-1-基础', tags=['Python', 'Type Hints', 'Pydantic', 'BaseModel', '数据校验', 'LLM'], words=2840, reading_time=6 min read
+2026-07-29T01:24:38.758+08:00 | INFO    | cid_19fa9c1c08c_8fe5bcf5 | src.observability:node_exit:102 | <<< [summary_meta] EXIT (3.65s)
+2026-07-29T01:24:38.759+08:00 | INFO    | cid_19fa9c1c08c_8fe5bcf5 | src.observability:node_enter:96 | >>> [image_process] ENTER
+2026-07-29T01:24:38.760+08:00 | INFO    | cid_19fa9c1c08c_8fe5bcf5 | src.nodes.image_process:image_process_node:209 | No images found, skipping processing
+2026-07-29T01:24:38.760+08:00 | INFO    | cid_19fa9c1c08c_8fe5bcf5 | src.observability:node_exit:102 | <<< [image_process] EXIT (0.00s)
+2026-07-29T01:24:38.761+08:00 | INFO    | cid_19fa9c1c08c_8fe5bcf5 | src.observability:node_enter:96 | >>> [cover_image] ENTER
+2026-07-29T01:24:40.951+08:00 | INFO    | cid_19fa9c1c08c_8fe5bcf5 | src.nodes.cover:cover_image_node:233 | Cover uploaded to OSS (same folder as article images): https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/PYTHON1JC/cover.jpg
+2026-07-29T01:24:40.952+08:00 | INFO    | cid_19fa9c1c08c_8fe5bcf5 | src.nodes.cover:cover_image_node:242 | Cover image resolved: https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/PYTHON1JC/cover.jp... (source=oss<-unsplash)
+2026-07-29T01:24:40.953+08:00 | INFO    | cid_19fa9c1c08c_8fe5bcf5 | src.observability:node_exit:102 | <<< [cover_image] EXIT (2.19s)
+2026-07-29T01:24:40.954+08:00 | INFO    | cid_19fa9c1c08c_8fe5bcf5 | src.observability:node_enter:96 | >>> [content_adapt] ENTER
+2026-07-29T01:24:40.956+08:00 | DEBUG   | cid_19fa9c1c08c_8fe5bcf5 | src.nodes.content_adapt:content_adapt_node:107 | Hexo document built (10348 chars)
+2026-07-29T01:24:40.956+08:00 | DEBUG   | cid_19fa9c1c08c_8fe5bcf5 | src.nodes.content_adapt:content_adapt_node:116 | WeChat draft built (10347 chars)
+2026-07-29T01:24:40.956+08:00 | INFO    | cid_19fa9c1c08c_8fe5bcf5 | src.observability:node_exit:102 | <<< [content_adapt] EXIT (0.00s)
+2026-07-29T01:24:40.957+08:00 | INFO    | cid_19fa9c1c08c_8fe5bcf5 | src.observability:node_enter:96 | >>> [publish] ENTER
+2026-07-29T01:24:40.957+08:00 | INFO    | cid_19fa9c1c08c_8fe5bcf5 | src.nodes.publish:publish_node:117 | Publishing to platforms: ['blog', 'wechat']
+2026-07-29T01:24:42.768+08:00 | DEBUG   | cid_19fa9c1d797_b2e810fc | src.publishers.github_pages:publish:140 | GitHub: created D:\study\content_intelligence_dispatcher\temp\hexo_repo\source\_posts\Python-1-基础.md
+2026-07-29T01:24:46.126+08:00 | INFO    |  | src.nodes.publish:_run_single_publish:58 | [blog] Publish succeeded on attempt 1: url=https://github.com/YangZouy/Hexo/blob/main/source/_posts/Python-1-基础.md
+2026-07-29T01:24:49.723+08:00 | ERROR   |  | src.publishers.wechat:publish:63 | WeChat publish failed: Client error '400 Bad Request' for url 'https://wenyan.zyydgrbk.top/publish'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400
+2026-07-29T01:24:49.724+08:00 | WARNING |  | src.nodes.publish:_run_single_publish:66 | [wechat] Attempt 1 failed: WeChat draft creation failed: Client error '400 Bad Request' for url 'https://wenyan.zyydgrbk.top/publish'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400
+2026-07-29T01:24:49.724+08:00 | DEBUG   |  | src.nodes.publish:_run_single_publish:82 | [wechat] Retrying in 2s...
+2026-07-29T01:24:54.178+08:00 | ERROR   |  | src.publishers.wechat:publish:63 | WeChat publish failed: Client error '400 Bad Request' for url 'https://wenyan.zyydgrbk.top/publish'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400
+2026-07-29T01:24:54.179+08:00 | WARNING |  | src.nodes.publish:_run_single_publish:66 | [wechat] Attempt 2 failed: WeChat draft creation failed: Client error '400 Bad Request' for url 'https://wenyan.zyydgrbk.top/publish'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400
+2026-07-29T01:24:54.180+08:00 | DEBUG   |  | src.nodes.publish:_run_single_publish:82 | [wechat] Retrying in 4s...
+2026-07-29T01:25:01.330+08:00 | ERROR   |  | src.publishers.wechat:publish:63 | WeChat publish failed: Client error '400 Bad Request' for url 'https://wenyan.zyydgrbk.top/publish'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400
+2026-07-29T01:25:01.331+08:00 | WARNING |  | src.nodes.publish:_run_single_publish:66 | [wechat] Attempt 3 failed: WeChat draft creation failed: Client error '400 Bad Request' for url 'https://wenyan.zyydgrbk.top/publish'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400
+2026-07-29T01:25:01.333+08:00 | INFO    | cid_19fa9c1c08c_8fe5bcf5 | src.nodes.publish:publish_node:185 | Publish complete: 1/2 platforms succeeded
+2026-07-29T01:25:01.334+08:00 | INFO    | cid_19fa9c1c08c_8fe5bcf5 | src.observability:node_exit:102 | <<< [publish] EXIT (20.38s)
+2026-07-29T01:25:01.336+08:00 | INFO    | cid_19fa9c1c08c_8fe5bcf5 | src.observability:write_run_log:134 | Run log written to runs\2026-07-29T01-24-35.json
+2026-07-29T01:25:01.336+08:00 | SUCCESS | cid_19fa9c1c08c_8fe5bcf5 | src.graph:run:127 | Pipeline completed successfully in 26.25s | log=2026-07-29T01-24-35.json
+2026-07-29T02:21:28.830+08:00 | INFO    | cid_19fa9f5d77e_106c203b | src.graph:run:104 | Pipeline started | file=Python-1-基础.md | platforms=['wechat']
+2026-07-29T02:21:28.835+08:00 | INFO    | cid_19fa9f5d77e_106c203b | src.observability:node_enter:96 | >>> [ingest] ENTER
+2026-07-29T02:21:28.836+08:00 | INFO    | cid_19fa9f5d77e_106c203b | src.nodes.ingest:ingest_node:183 | Ingested 'Python-1-基础.md' (type=obsidian, images=0, chars=9671)
+2026-07-29T02:21:28.837+08:00 | INFO    | cid_19fa9f5d77e_106c203b | src.observability:node_exit:102 | <<< [ingest] EXIT (0.00s)
+2026-07-29T02:21:28.838+08:00 | INFO    | cid_19fa9f5d77e_106c203b | src.observability:node_enter:96 | >>> [format_optimize] ENTER
+2026-07-29T02:21:28.839+08:00 | DEBUG   | cid_19fa9f5d77e_106c203b | src.nodes.format_optimize:format_optimize_node:598 | Starting format optimization pipeline
+2026-07-29T02:21:28.848+08:00 | INFO    | cid_19fa9f5d77e_106c203b | src.nodes.format_optimize:format_optimize_node:633 | Format optimization complete (mode=rule, input=9671 chars, output=9769 chars)
+2026-07-29T02:21:28.849+08:00 | INFO    | cid_19fa9f5d77e_106c203b | src.observability:node_exit:102 | <<< [format_optimize] EXIT (0.01s)
+2026-07-29T02:21:28.850+08:00 | INFO    | cid_19fa9f5d77e_106c203b | src.observability:node_enter:96 | >>> [summary_meta] ENTER
+2026-07-29T02:21:29.606+08:00 | DEBUG   | cid_19fa9f5d77e_106c203b | src.nodes.summary_meta:summary_meta_node:119 | Calling LLM for summary/metadata generation...
+2026-07-29T02:21:32.087+08:00 | INFO    | cid_19fa9f5d77e_106c203b | src.nodes.summary_meta:summary_meta_node:144 | Summary/meta generated: title='Python-1-基础', tags=['Python', 'Type Hints', 'Pydantic', '数据校验', 'LLM', 'BaseModel', '类型标注'], words=3278, reading_time=7 min read
+2026-07-29T02:21:32.089+08:00 | INFO    | cid_19fa9f5d77e_106c203b | src.observability:node_exit:102 | <<< [summary_meta] EXIT (3.24s)
+2026-07-29T02:21:32.090+08:00 | INFO    | cid_19fa9f5d77e_106c203b | src.observability:node_enter:96 | >>> [image_process] ENTER
+2026-07-29T02:21:32.091+08:00 | INFO    | cid_19fa9f5d77e_106c203b | src.nodes.image_process:image_process_node:209 | No images found, skipping processing
+2026-07-29T02:21:32.091+08:00 | INFO    | cid_19fa9f5d77e_106c203b | src.observability:node_exit:102 | <<< [image_process] EXIT (0.00s)
+2026-07-29T02:21:32.092+08:00 | INFO    | cid_19fa9f5d77e_106c203b | src.observability:node_enter:96 | >>> [cover_image] ENTER
+2026-07-29T02:21:34.235+08:00 | INFO    | cid_19fa9f5d77e_106c203b | src.nodes.cover:cover_image_node:233 | Cover uploaded to OSS (same folder as article images): https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/PYTHON1JC/cover.jpg
+2026-07-29T02:21:34.236+08:00 | INFO    | cid_19fa9f5d77e_106c203b | src.nodes.cover:cover_image_node:242 | Cover image resolved: https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/PYTHON1JC/cover.jp... (source=oss<-unsplash)
+2026-07-29T02:21:34.237+08:00 | INFO    | cid_19fa9f5d77e_106c203b | src.observability:node_exit:102 | <<< [cover_image] EXIT (2.15s)
+2026-07-29T02:21:34.238+08:00 | INFO    | cid_19fa9f5d77e_106c203b | src.observability:node_enter:96 | >>> [content_adapt] ENTER
+2026-07-29T02:21:34.240+08:00 | DEBUG   | cid_19fa9f5d77e_106c203b | src.nodes.content_adapt:content_adapt_node:107 | Hexo document built (10378 chars)
+2026-07-29T02:21:34.240+08:00 | DEBUG   | cid_19fa9f5d77e_106c203b | src.nodes.content_adapt:content_adapt_node:116 | WeChat draft built (10377 chars)
+2026-07-29T02:21:34.240+08:00 | INFO    | cid_19fa9f5d77e_106c203b | src.observability:node_exit:102 | <<< [content_adapt] EXIT (0.00s)
+2026-07-29T02:21:34.241+08:00 | INFO    | cid_19fa9f5d77e_106c203b | src.observability:node_enter:96 | >>> [publish] ENTER
+2026-07-29T02:21:34.241+08:00 | INFO    | cid_19fa9f5d77e_106c203b | src.nodes.publish:publish_node:117 | Publishing to platforms: ['wechat']
+2026-07-29T02:21:43.450+08:00 | WARNING |  | src.nodes.publish:_run_single_publish:66 | [wechat] Attempt 1 failed: Wenyan CLI publish failed (exit 1): ϵͳ�Ҳ���ָ����·����
+Remote Publish Failed: 40164: invalid ip 39.144.144.181 ipv6 ::ffff:39.144.144.181, not in whitelist rid: 6a68f336-7367eff0-3954bcc2
+2026-07-29T02:21:43.452+08:00 | DEBUG   |  | src.nodes.publish:_run_single_publish:82 | [wechat] Retrying in 2s...
+2026-07-29T02:21:52.615+08:00 | WARNING |  | src.nodes.publish:_run_single_publish:66 | [wechat] Attempt 2 failed: Wenyan CLI publish failed (exit 1): ϵͳ�Ҳ���ָ����·����
+Remote Publish Failed: 40164: invalid ip 39.144.144.181 ipv6 ::ffff:39.144.144.181, not in whitelist rid: 6a68f33f-249735d1-705722e8
+2026-07-29T02:21:52.615+08:00 | DEBUG   |  | src.nodes.publish:_run_single_publish:82 | [wechat] Retrying in 4s...
+2026-07-29T02:22:05.808+08:00 | WARNING |  | src.nodes.publish:_run_single_publish:66 | [wechat] Attempt 3 failed: Wenyan CLI publish failed (exit 1): ϵͳ�Ҳ���ָ����·����
+Remote Publish Failed: 40164: invalid ip 39.144.144.181 ipv6 ::ffff:39.144.144.181, not in whitelist rid: 6a68f34c-53edd46d-794e2d71
+2026-07-29T02:22:05.809+08:00 | INFO    | cid_19fa9f5d77e_106c203b | src.nodes.publish:publish_node:185 | Publish complete: 0/1 platforms succeeded
+2026-07-29T02:22:05.809+08:00 | INFO    | cid_19fa9f5d77e_106c203b | src.observability:node_exit:102 | <<< [publish] EXIT (31.57s)
+2026-07-29T02:22:05.811+08:00 | INFO    | cid_19fa9f5d77e_106c203b | src.observability:write_run_log:134 | Run log written to runs\2026-07-29T02-21-28.json
+2026-07-29T02:22:05.811+08:00 | SUCCESS | cid_19fa9f5d77e_106c203b | src.graph:run:127 | Pipeline completed successfully in 36.98s | log=2026-07-29T02-21-28.json
+2026-07-29T20:00:13.928+08:00 | INFO    | cid_19fadbf2868_dbd737f4 | src.graph:run:104 | Pipeline started | file=Python-1-基础.md | platforms=['wechat']
+2026-07-29T20:00:13.935+08:00 | INFO    | cid_19fadbf2868_dbd737f4 | src.observability:node_enter:96 | >>> [ingest] ENTER
+2026-07-29T20:00:13.937+08:00 | INFO    | cid_19fadbf2868_dbd737f4 | src.nodes.ingest:ingest_node:183 | Ingested 'Python-1-基础.md' (type=obsidian, images=0, chars=9671)
+2026-07-29T20:00:13.938+08:00 | INFO    | cid_19fadbf2868_dbd737f4 | src.observability:node_exit:102 | <<< [ingest] EXIT (0.00s)
+2026-07-29T20:00:13.939+08:00 | INFO    | cid_19fadbf2868_dbd737f4 | src.observability:node_enter:96 | >>> [format_optimize] ENTER
+2026-07-29T20:00:13.940+08:00 | DEBUG   | cid_19fadbf2868_dbd737f4 | src.nodes.format_optimize:format_optimize_node:598 | Starting format optimization pipeline
+2026-07-29T20:00:13.950+08:00 | INFO    | cid_19fadbf2868_dbd737f4 | src.nodes.format_optimize:format_optimize_node:633 | Format optimization complete (mode=rule, input=9671 chars, output=9769 chars)
+2026-07-29T20:00:13.951+08:00 | INFO    | cid_19fadbf2868_dbd737f4 | src.observability:node_exit:102 | <<< [format_optimize] EXIT (0.01s)
+2026-07-29T20:00:13.953+08:00 | INFO    | cid_19fadbf2868_dbd737f4 | src.observability:node_enter:96 | >>> [summary_meta] ENTER
+2026-07-29T20:00:15.008+08:00 | DEBUG   | cid_19fadbf2868_dbd737f4 | src.nodes.summary_meta:summary_meta_node:119 | Calling LLM for summary/metadata generation...
+2026-07-29T20:00:17.920+08:00 | INFO    | cid_19fadbf2868_dbd737f4 | src.nodes.summary_meta:summary_meta_node:144 | Summary/meta generated: title='Python-1-基础', tags=['Python', 'Type Hints', 'Pydantic', '数据校验', 'LLM', '类型标注'], words=2776, reading_time=6 min read
+2026-07-29T20:00:17.922+08:00 | INFO    | cid_19fadbf2868_dbd737f4 | src.observability:node_exit:102 | <<< [summary_meta] EXIT (3.97s)
+2026-07-29T20:00:17.924+08:00 | INFO    | cid_19fadbf2868_dbd737f4 | src.observability:node_enter:96 | >>> [image_process] ENTER
+2026-07-29T20:00:17.924+08:00 | INFO    | cid_19fadbf2868_dbd737f4 | src.nodes.image_process:image_process_node:209 | No images found, skipping processing
+2026-07-29T20:00:17.925+08:00 | INFO    | cid_19fadbf2868_dbd737f4 | src.observability:node_exit:102 | <<< [image_process] EXIT (0.00s)
+2026-07-29T20:00:17.927+08:00 | INFO    | cid_19fadbf2868_dbd737f4 | src.observability:node_enter:96 | >>> [cover_image] ENTER
+2026-07-29T20:00:22.908+08:00 | INFO    | cid_19fadbf2868_dbd737f4 | src.nodes.cover:cover_image_node:233 | Cover uploaded to OSS (same folder as article images): https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/PYTHON1JC/cover.jpg
+2026-07-29T20:00:22.909+08:00 | INFO    | cid_19fadbf2868_dbd737f4 | src.nodes.cover:cover_image_node:242 | Cover image resolved: https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/PYTHON1JC/cover.jp... (source=oss<-unsplash)
+2026-07-29T20:00:22.910+08:00 | INFO    | cid_19fadbf2868_dbd737f4 | src.observability:node_exit:102 | <<< [cover_image] EXIT (4.98s)
+2026-07-29T20:00:22.911+08:00 | INFO    | cid_19fadbf2868_dbd737f4 | src.observability:node_enter:96 | >>> [content_adapt] ENTER
+2026-07-29T20:00:22.913+08:00 | DEBUG   | cid_19fadbf2868_dbd737f4 | src.nodes.content_adapt:content_adapt_node:107 | Hexo document built (10357 chars)
+2026-07-29T20:00:22.914+08:00 | DEBUG   | cid_19fadbf2868_dbd737f4 | src.nodes.content_adapt:content_adapt_node:116 | WeChat draft built (10356 chars)
+2026-07-29T20:00:22.914+08:00 | INFO    | cid_19fadbf2868_dbd737f4 | src.observability:node_exit:102 | <<< [content_adapt] EXIT (0.00s)
+2026-07-29T20:00:22.915+08:00 | INFO    | cid_19fadbf2868_dbd737f4 | src.observability:node_enter:96 | >>> [publish] ENTER
+2026-07-29T20:00:22.916+08:00 | INFO    | cid_19fadbf2868_dbd737f4 | src.nodes.publish:publish_node:117 | Publishing to platforms: ['wechat']
+2026-07-29T20:00:30.614+08:00 | INFO    |  | src.nodes.publish:_run_single_publish:58 | [wechat] Publish succeeded on attempt 1: url=media_id:jfIzZbfq-_GGRn2zXIcaH1zBQLJwAzFvpAdEPLkkk7DJjpBVqAyi4lCCp39YQ9-O
+2026-07-29T20:00:30.616+08:00 | INFO    | cid_19fadbf2868_dbd737f4 | src.nodes.publish:publish_node:185 | Publish complete: 1/1 platforms succeeded
+2026-07-29T20:00:30.617+08:00 | INFO    | cid_19fadbf2868_dbd737f4 | src.observability:node_exit:102 | <<< [publish] EXIT (7.70s)
+2026-07-29T20:00:30.621+08:00 | INFO    | cid_19fadbf2868_dbd737f4 | src.observability:write_run_log:134 | Run log written to runs\2026-07-29T20-00-13.json
+2026-07-29T20:00:30.622+08:00 | SUCCESS | cid_19fadbf2868_dbd737f4 | src.graph:run:127 | Pipeline completed successfully in 16.69s | log=2026-07-29T20-00-13.json
+2026-07-29T20:20:51.882+08:00 | INFO    | cid_19fadd20c2a_10e8bd47 | src.graph:run:104 | Pipeline started | file=Python-1-基础.md | platforms=['blog', 'wechat']
+2026-07-29T20:20:51.887+08:00 | INFO    | cid_19fadd20c2a_10e8bd47 | src.observability:node_enter:96 | >>> [ingest] ENTER
+2026-07-29T20:20:51.889+08:00 | INFO    | cid_19fadd20c2a_10e8bd47 | src.nodes.ingest:ingest_node:183 | Ingested 'Python-1-基础.md' (type=obsidian, images=0, chars=9671)
+2026-07-29T20:20:51.890+08:00 | INFO    | cid_19fadd20c2a_10e8bd47 | src.observability:node_exit:102 | <<< [ingest] EXIT (0.00s)
+2026-07-29T20:20:51.891+08:00 | INFO    | cid_19fadd20c2a_10e8bd47 | src.observability:node_enter:96 | >>> [format_optimize] ENTER
+2026-07-29T20:20:51.891+08:00 | DEBUG   | cid_19fadd20c2a_10e8bd47 | src.nodes.format_optimize:format_optimize_node:598 | Starting format optimization pipeline
+2026-07-29T20:20:51.899+08:00 | INFO    | cid_19fadd20c2a_10e8bd47 | src.nodes.format_optimize:format_optimize_node:633 | Format optimization complete (mode=rule, input=9671 chars, output=9699 chars)
+2026-07-29T20:20:51.900+08:00 | INFO    | cid_19fadd20c2a_10e8bd47 | src.observability:node_exit:102 | <<< [format_optimize] EXIT (0.01s)
+2026-07-29T20:20:51.901+08:00 | INFO    | cid_19fadd20c2a_10e8bd47 | src.observability:node_enter:96 | >>> [summary_meta] ENTER
+2026-07-29T20:20:52.528+08:00 | DEBUG   | cid_19fadd20c2a_10e8bd47 | src.nodes.summary_meta:summary_meta_node:119 | Calling LLM for summary/metadata generation...
+2026-07-29T20:20:55.645+08:00 | INFO    | cid_19fadd20c2a_10e8bd47 | src.nodes.summary_meta:summary_meta_node:144 | Summary/meta generated: title='Python-1-基础', tags=['Python', 'Type Hints', 'Pydantic', '数据校验', 'LLM', 'BaseModel'], words=3056, reading_time=7 min read
+2026-07-29T20:20:55.646+08:00 | INFO    | cid_19fadd20c2a_10e8bd47 | src.observability:node_exit:102 | <<< [summary_meta] EXIT (3.74s)
+2026-07-29T20:20:55.647+08:00 | INFO    | cid_19fadd20c2a_10e8bd47 | src.observability:node_enter:96 | >>> [image_process] ENTER
+2026-07-29T20:20:55.648+08:00 | INFO    | cid_19fadd20c2a_10e8bd47 | src.nodes.image_process:image_process_node:209 | No images found, skipping processing
+2026-07-29T20:20:55.648+08:00 | INFO    | cid_19fadd20c2a_10e8bd47 | src.observability:node_exit:102 | <<< [image_process] EXIT (0.00s)
+2026-07-29T20:20:55.649+08:00 | INFO    | cid_19fadd20c2a_10e8bd47 | src.observability:node_enter:96 | >>> [cover_image] ENTER
+2026-07-29T20:20:59.457+08:00 | INFO    | cid_19fadd20c2a_10e8bd47 | src.nodes.cover:cover_image_node:233 | Cover uploaded to OSS (same folder as article images): https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/PYTHON1JC/cover.jpg
+2026-07-29T20:20:59.458+08:00 | INFO    | cid_19fadd20c2a_10e8bd47 | src.nodes.cover:cover_image_node:242 | Cover image resolved: https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/PYTHON1JC/cover.jp... (source=oss<-unsplash)
+2026-07-29T20:20:59.458+08:00 | INFO    | cid_19fadd20c2a_10e8bd47 | src.observability:node_exit:102 | <<< [cover_image] EXIT (3.81s)
+2026-07-29T20:20:59.459+08:00 | INFO    | cid_19fadd20c2a_10e8bd47 | src.observability:node_enter:96 | >>> [content_adapt] ENTER
+2026-07-29T20:20:59.461+08:00 | DEBUG   | cid_19fadd20c2a_10e8bd47 | src.nodes.content_adapt:content_adapt_node:107 | Hexo document built (10275 chars)
+2026-07-29T20:20:59.461+08:00 | DEBUG   | cid_19fadd20c2a_10e8bd47 | src.nodes.content_adapt:content_adapt_node:116 | WeChat draft built (10274 chars)
+2026-07-29T20:20:59.461+08:00 | INFO    | cid_19fadd20c2a_10e8bd47 | src.observability:node_exit:102 | <<< [content_adapt] EXIT (0.00s)
+2026-07-29T20:20:59.462+08:00 | INFO    | cid_19fadd20c2a_10e8bd47 | src.observability:node_enter:96 | >>> [publish] ENTER
+2026-07-29T20:20:59.463+08:00 | INFO    | cid_19fadd20c2a_10e8bd47 | src.nodes.publish:publish_node:117 | Publishing to platforms: ['blog', 'wechat']
+2026-07-29T20:21:01.479+08:00 | DEBUG   | cid_19fadd229ca_3c4d148c | src.publishers.github_pages:publish:140 | GitHub: updated D:\study\content_intelligence_dispatcher\temp\hexo_repo\source\_posts\Python-1-基础.md
+2026-07-29T20:21:05.291+08:00 | INFO    |  | src.nodes.publish:_run_single_publish:58 | [blog] Publish succeeded on attempt 1: url=https://github.com/YangZouy/Hexo/blob/main/source/_posts/Python-1-基础.md
+2026-07-29T20:21:12.483+08:00 | INFO    |  | src.nodes.publish:_run_single_publish:58 | [wechat] Publish succeeded on attempt 1: url=media_id:jfIzZbfq-_GGRn2zXIcaH4xWlcsiLhY2Jmq12y3yjUpYkF4Avh-XTEbh9cJsNHj9
+2026-07-29T20:21:12.484+08:00 | INFO    | cid_19fadd20c2a_10e8bd47 | src.nodes.publish:publish_node:185 | Publish complete: 2/2 platforms succeeded
+2026-07-29T20:21:12.484+08:00 | INFO    | cid_19fadd20c2a_10e8bd47 | src.observability:node_exit:102 | <<< [publish] EXIT (13.02s)
+2026-07-29T20:21:12.486+08:00 | INFO    | cid_19fadd20c2a_10e8bd47 | src.observability:write_run_log:134 | Run log written to runs\2026-07-29T20-20-51.json
+2026-07-29T20:21:12.487+08:00 | SUCCESS | cid_19fadd20c2a_10e8bd47 | src.graph:run:127 | Pipeline completed successfully in 20.6s | log=2026-07-29T20-20-51.json

@@ -1,10 +1,12 @@
 from __future__ import annotations
 
+import os
+import re
+import shutil
+import subprocess
 import tempfile
 from pathlib import Path
 from typing import List, Optional, Tuple
-
-import httpx
 
 from src.config_loader import get_config
 from src.errors import WeChatError
@@ -17,22 +19,14 @@ class WeChatPublisher(Publisher):
         config = get_config()
         self._server_url: str = config.wechat.get("server_url", "http://localhost:3000").rstrip("/")
         self._api_key: Optional[str] = config.wechat.get("api_key") or None
-        # 文章主题样式
         self._theme_id: str = config.wechat.get("theme_id", "default")
-        # HTTP超时请求
+        self._cli_command: str = config.wechat.get("cli_command", "wenyan")
         self._timeout_seconds: int = config.wechat.get("timeout_seconds", 60)
 
     @property
     def platform(self) -> str:
         return "wechat"
 
-    def _headers(self) -> dict:
-        h = {"Content-Type": "application/json"}
-        if self._api_key:
-            h["x-api-key"] = self._api_key
-        return h
-
-    # 内容验证
     def validate(self, content: str, brand: BrandConfig) -> Tuple[bool, List[str]]:
         errors: List[str] = []
         if not content or not content.strip():
@@ -59,59 +53,66 @@ class WeChatPublisher(Publisher):
             )
         except WeChatError:
             raise
-        except Exception as e:
-            log.error(f"WeChat publish failed: {e}")
-            raise WeChatError(f"WeChat draft creation failed: {e}") from e
+        except Exception as exc:
+            log.error(f"WeChat publish failed: {exc}")
+            raise WeChatError(f"WeChat draft creation failed: {exc}") from exc
 
-    # 创建草稿 + 返回媒体id
     def _create_draft(self, content: str) -> str:
-        """Upload markdown to wenyan server and trigger publish, return media_id."""
-        file_id = self._upload(content)
-        return self._publish(file_id)
-
-    # 文件上传
-    def _upload(self, content: str) -> str:
-        # 临时文件创建，delete表示不自动删除
-        with tempfile.NamedTemporaryFile(suffix=".md", delete=False, mode="w", encoding="utf-8") as f:
-            f.write(content)
-            # 获取临时文件路径
-            tmp_path = Path(f.name)
+        """写在系统临时区域中，用完即删"""
+        with tempfile.NamedTemporaryFile(suffix=".md", delete=False, mode="w", encoding="utf-8") as file:
+            file.write(content)
+            temp_path = Path(file.name)
 
         try:
-            # 通过http上传文件
-            with httpx.Client(timeout=self._timeout_seconds) as client:
-                with open(tmp_path, "rb") as fh:
-                    resp = client.post(
-                        # 上传接口
-                        f"{self._server_url}/upload",
-                        # 文件上传的content-type为multipart/form-data，省略的话httpx会自动设置
-                        headers={k: v for k, v in self._headers().items() if k != "Content-Type"},
-                        files={"file": ("article.md", fh, "text/markdown")},
-                    )
-            # 处理响应 httpx内置方法 检查HTTP响应状态码
-            resp.raise_for_status()
-            # 解析json
-            data = resp.json()
-            if not data.get("success"):
-                raise WeChatError(f"Upload failed: {data}")
-            return data["data"]["fileId"]
-        finally:
-            # 资源清理
-            tmp_path.unlink(missing_ok=True)
+            cli_executable = shutil.which(self._cli_command) or self._cli_command
+            command = [
+                cli_executable,
+                "publish",
+                "--file",
+                str(temp_path),
+                "--server",
+                self._server_url,
+                "--theme",
+                self._theme_id,
+            ]
+            if self._api_key:
+                command.extend(["--api-key", self._api_key])
 
-    # 触发发布流程
-    def _publish(self, file_id: str) -> str:
-        # 创建HTTP客户端
-        with httpx.Client(timeout=self._timeout_seconds) as client:
-            resp = client.post(
-                f"{self._server_url}/publish",
-                headers=self._headers(),
-                json={"fileId": file_id, "theme": self._theme_id},
+            # 剥离代理环境变量：wenyan CLI 会自动读取 HTTP(S)_PROXY 并走本地代理，
+            # 而本地代理转发「裸 IP:端口」请求经常不稳定（fetch failed）；
+            # 服务器 IP 国内直连可达，无需代理。
+            env = {
+                key: value
+                for key, value in os.environ.items()
+                if key.upper() not in {"HTTP_PROXY", "HTTPS_PROXY", "ALL_PROXY"}
+            }
+            result = subprocess.run(
+                command,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=self._timeout_seconds,
+                check=False,
+                env=env,
             )
-        resp.raise_for_status()
-        data = resp.json()
-        if not data.get("success"):
-            raise WeChatError(f"Publish failed: {data}")
-
-        draft_id = (data.get("data") or {}).get("draft_id") or (data.get("data") or {}).get("media_id", "")
-        return draft_id
+            output = "\n".join(part for part in (result.stdout.strip(), result.stderr.strip()) if part)
+            # 成功判定以 Media ID 为准，而非退出码：
+            # Windows 下 npm 的 wenyan.cmd 包装脚本（goto #_undefined_# 技巧）在部分
+            # subprocess 环境会把退出码污染成 1，但 Media ID 只有服务端真正创建
+            # 草稿成功后才会输出，是更可靠的成功信号。
+            media_id_match = re.search(r"Media ID:\s*(\S+)", output)
+            if media_id_match:
+                return media_id_match.group(1)
+            if result.returncode != 0:
+                raise WeChatError(f"Wenyan CLI publish failed (exit {result.returncode}): {output}")
+            raise WeChatError(f"Wenyan CLI did not return a media ID: {output}")
+        except FileNotFoundError as exc:
+            raise WeChatError(
+                f"Wenyan CLI executable not found: {self._cli_command}. "
+                "Install it with: npm install -g @wenyan-md/cli"
+            ) from exc
+        except subprocess.TimeoutExpired as exc:
+            raise WeChatError(f"Wenyan CLI publish timed out after {self._timeout_seconds}s") from exc
+        finally:
+            temp_path.unlink(missing_ok=True)

@@ -35,6 +35,8 @@ wechat:
   server_url: "${WECHAT_SERVER_URL}"
   # API key set when starting wenyan serve --api-key
   api_key: "${WECHAT_SERVER_API_KEY}"
+  # Local Wenyan client used to connect to the configured Server endpoint.
+  cli_command: "wenyan"
   # wenyan theme applied when publishing (default, orangeheart, phycat, ...)
   theme_id: "default"
   # HTTP request timeout in seconds
