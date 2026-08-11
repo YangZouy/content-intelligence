@@ -2,7 +2,7 @@
 Agent State Definition - TypedDict-based pipeline state.
 
 Defines the complete state shape passed between LangGraph nodes.
-The state is partitioned into 6 logical phases, each node writing
+The state is partitioned into logical phases, each node writing
 only its own phase's fields (C2 rule).
 
 State Phases:
@@ -11,6 +11,7 @@ State Phases:
     3. MetaState        - After LLM summary/metadata generation
     4. ImageProcessedState - After OSS image upload
     5. AdaptState       - After platform-specific content adaptation
+    6. QualityState     - After deterministic pre-publish validation
     + RunLogEntry       - Cross-cutting observability data
 """
 
@@ -132,6 +133,25 @@ class AdaptState(TypedDict, total=False):
 
 
 # ---------------------------------------------------------------------------
+# Phase 6: Quality Gate State (set by QualityCheckNode)
+# ---------------------------------------------------------------------------
+
+class QualityIssue(TypedDict, total=False):
+    """A deterministic quality-gate finding."""
+    code: str
+    message: str
+    field: Optional[str]
+    platform: Optional[str]
+
+
+class QualityState(TypedDict, total=False):
+    """Result used by the graph to route content before publishing."""
+    quality_passed: bool
+    quality_issues: List[QualityIssue]
+    quality_check_count: int
+
+
+# ---------------------------------------------------------------------------
 # Publish Result Item (set by PublishNode)
 # ---------------------------------------------------------------------------
 
@@ -178,6 +198,7 @@ class AgentState(
     MetaState,
     ImageProcessedState,
     AdaptState,
+    QualityState,
     TypedDict,
     total=False,
 ):
