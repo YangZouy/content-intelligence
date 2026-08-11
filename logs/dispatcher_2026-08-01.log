@@ -1,0 +1,282 @@
+2026-08-01T17:01:57.780+08:00 | INFO    | cid_19fbc8f0694_e26fdd18 | src.graph:run:104 | Pipeline started | file=01-LangChain简介.md | platforms=['blog', 'wechat']
+2026-08-01T17:01:57.787+08:00 | INFO    | cid_19fbc8f0694_e26fdd18 | src.observability:node_enter:96 | >>> [ingest] ENTER
+2026-08-01T17:01:57.788+08:00 | INFO    | cid_19fbc8f0694_e26fdd18 | src.nodes.ingest:ingest_node:183 | Ingested '01-LangChain简介.md' (type=obsidian, images=0, chars=1384)
+2026-08-01T17:01:57.789+08:00 | INFO    | cid_19fbc8f0694_e26fdd18 | src.observability:node_exit:102 | <<< [ingest] EXIT (0.00s)
+2026-08-01T17:01:57.791+08:00 | INFO    | cid_19fbc8f0694_e26fdd18 | src.observability:node_enter:96 | >>> [format_optimize] ENTER
+2026-08-01T17:01:57.791+08:00 | DEBUG   | cid_19fbc8f0694_e26fdd18 | src.nodes.format_optimize:format_optimize_node:598 | Starting format optimization pipeline
+2026-08-01T17:01:57.798+08:00 | INFO    | cid_19fbc8f0694_e26fdd18 | src.nodes.format_optimize:format_optimize_node:633 | Format optimization complete (mode=rule, input=1384 chars, output=1384 chars)
+2026-08-01T17:01:57.800+08:00 | INFO    | cid_19fbc8f0694_e26fdd18 | src.observability:node_exit:102 | <<< [format_optimize] EXIT (0.01s)
+2026-08-01T17:01:57.801+08:00 | INFO    | cid_19fbc8f0694_e26fdd18 | src.observability:node_enter:96 | >>> [summary_meta] ENTER
+2026-08-01T17:01:58.813+08:00 | DEBUG   | cid_19fbc8f0694_e26fdd18 | src.nodes.summary_meta:summary_meta_node:119 | Calling LLM for summary/metadata generation...
+2026-08-01T17:02:01.485+08:00 | INFO    | cid_19fbc8f0694_e26fdd18 | src.nodes.summary_meta:summary_meta_node:144 | Summary/meta generated: title='LangChain 入门：核心概念、家族分工与模型初始化', tags=['LangChain', '大模型应用', 'Agent', 'RAG', 'LangGraph', '模型初始化'], words=760, reading_time=2 min read
+2026-08-01T17:02:01.487+08:00 | INFO    | cid_19fbc8f0694_e26fdd18 | src.observability:node_exit:102 | <<< [summary_meta] EXIT (3.69s)
+2026-08-01T17:02:01.488+08:00 | INFO    | cid_19fbc8f0694_e26fdd18 | src.observability:node_enter:96 | >>> [image_process] ENTER
+2026-08-01T17:02:01.489+08:00 | INFO    | cid_19fbc8f0694_e26fdd18 | src.nodes.image_process:image_process_node:209 | No images found, skipping processing
+2026-08-01T17:02:01.490+08:00 | INFO    | cid_19fbc8f0694_e26fdd18 | src.observability:node_exit:102 | <<< [image_process] EXIT (0.00s)
+2026-08-01T17:02:01.491+08:00 | INFO    | cid_19fbc8f0694_e26fdd18 | src.observability:node_enter:96 | >>> [cover_image] ENTER
+2026-08-01T17:02:04.661+08:00 | INFO    | cid_19fbc8f0694_e26fdd18 | src.nodes.cover:cover_image_node:233 | Cover uploaded to OSS (same folder as article images): https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/LANGCHAINRMHXGNJZ/cover.jpg
+2026-08-01T17:02:04.663+08:00 | INFO    | cid_19fbc8f0694_e26fdd18 | src.nodes.cover:cover_image_node:242 | Cover image resolved: https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/LANGCHAINRMHXGNJZ/... (source=oss<-picsum)
+2026-08-01T17:02:04.664+08:00 | INFO    | cid_19fbc8f0694_e26fdd18 | src.observability:node_exit:102 | <<< [cover_image] EXIT (3.17s)
+2026-08-01T17:02:04.665+08:00 | INFO    | cid_19fbc8f0694_e26fdd18 | src.observability:node_enter:96 | >>> [content_adapt] ENTER
+2026-08-01T17:02:04.668+08:00 | DEBUG   | cid_19fbc8f0694_e26fdd18 | src.nodes.content_adapt:content_adapt_node:107 | Hexo document built (1976 chars)
+2026-08-01T17:02:04.668+08:00 | DEBUG   | cid_19fbc8f0694_e26fdd18 | src.nodes.content_adapt:content_adapt_node:116 | WeChat draft built (1974 chars)
+2026-08-01T17:02:04.668+08:00 | INFO    | cid_19fbc8f0694_e26fdd18 | src.observability:node_exit:102 | <<< [content_adapt] EXIT (0.00s)
+2026-08-01T17:02:04.670+08:00 | INFO    | cid_19fbc8f0694_e26fdd18 | src.observability:node_enter:96 | >>> [publish] ENTER
+2026-08-01T17:02:04.671+08:00 | INFO    | cid_19fbc8f0694_e26fdd18 | src.nodes.publish:publish_node:117 | Publishing to platforms: ['blog', 'wechat']
+2026-08-01T17:02:07.496+08:00 | DEBUG   | cid_19fbc8f2187_dbc4b17b | src.publishers.github_pages:publish:140 | GitHub: created D:\study\content_intelligence_dispatcher\temp\hexo_repo\source\_posts\LangChain 入门：核心概念、家族分工与模型初始化.md
+2026-08-01T17:02:09.892+08:00 | INFO    |  | src.nodes.publish:_run_single_publish:58 | [blog] Publish succeeded on attempt 1: url=https://github.com/YangZouy/Hexo/blob/main/source/_posts/LangChain 入门：核心概念、家族分工与模型初始化.md
+2026-08-01T17:02:57.066+08:00 | INFO    |  | src.nodes.publish:_run_single_publish:58 | [wechat] Publish succeeded on attempt 1: url=media_id:jfIzZbfq-_GGRn2zXIcaH-9Q6cnaj0CX4domuspQc0EcEF1joc89QIadGF4Bdqx8
+2026-08-01T17:02:57.067+08:00 | INFO    | cid_19fbc8f0694_e26fdd18 | src.nodes.publish:publish_node:185 | Publish complete: 2/2 platforms succeeded
+2026-08-01T17:02:57.069+08:00 | INFO    | cid_19fbc8f0694_e26fdd18 | src.observability:node_exit:102 | <<< [publish] EXIT (52.40s)
+2026-08-01T17:02:57.072+08:00 | INFO    | cid_19fbc8f0694_e26fdd18 | src.observability:write_run_log:134 | Run log written to runs\2026-08-01T17-01-57.json
+2026-08-01T17:02:57.073+08:00 | SUCCESS | cid_19fbc8f0694_e26fdd18 | src.graph:run:127 | Pipeline completed successfully in 59.29s | log=2026-08-01T17-01-57.json
+2026-08-01T17:38:32.821+08:00 | INFO    | cid_19fbcb084f5_6a6e3512 | src.graph:run:104 | Pipeline started | file=03-LangSmith学习导航与实战.md | platforms=['blog', 'wechat']
+2026-08-01T17:38:32.826+08:00 | INFO    | cid_19fbcb084f5_6a6e3512 | src.observability:node_enter:96 | >>> [ingest] ENTER
+2026-08-01T17:38:32.828+08:00 | INFO    | cid_19fbcb084f5_6a6e3512 | src.nodes.ingest:ingest_node:183 | Ingested '03-LangSmith学习导航与实战.md' (type=obsidian, images=0, chars=1598)
+2026-08-01T17:38:32.828+08:00 | INFO    | cid_19fbcb084f5_6a6e3512 | src.observability:node_exit:102 | <<< [ingest] EXIT (0.00s)
+2026-08-01T17:38:32.829+08:00 | INFO    | cid_19fbcb084f5_6a6e3512 | src.observability:node_enter:96 | >>> [format_optimize] ENTER
+2026-08-01T17:38:32.830+08:00 | DEBUG   | cid_19fbcb084f5_6a6e3512 | src.nodes.format_optimize:format_optimize_node:598 | Starting format optimization pipeline
+2026-08-01T17:38:32.836+08:00 | INFO    | cid_19fbcb084f5_6a6e3512 | src.nodes.format_optimize:format_optimize_node:633 | Format optimization complete (mode=rule, input=1598 chars, output=1598 chars)
+2026-08-01T17:38:32.838+08:00 | INFO    | cid_19fbcb084f5_6a6e3512 | src.observability:node_exit:102 | <<< [format_optimize] EXIT (0.01s)
+2026-08-01T17:38:32.840+08:00 | INFO    | cid_19fbcb084f5_6a6e3512 | src.observability:node_enter:96 | >>> [summary_meta] ENTER
+2026-08-01T17:38:33.591+08:00 | DEBUG   | cid_19fbcb084f5_6a6e3512 | src.nodes.summary_meta:summary_meta_node:119 | Calling LLM for summary/metadata generation...
+2026-08-01T17:38:36.374+08:00 | INFO    | cid_19fbcb084f5_6a6e3512 | src.nodes.summary_meta:summary_meta_node:144 | Summary/meta generated: title='LangChain 03 - LangSmith 学习导航与实战', tags=['LangChain', 'LangSmith', '可观测性', 'Tracing', 'AI应用调试'], words=980, reading_time=2 min read
+2026-08-01T17:38:36.375+08:00 | INFO    | cid_19fbcb084f5_6a6e3512 | src.observability:node_exit:102 | <<< [summary_meta] EXIT (3.54s)
+2026-08-01T17:38:36.377+08:00 | INFO    | cid_19fbcb084f5_6a6e3512 | src.observability:node_enter:96 | >>> [image_process] ENTER
+2026-08-01T17:38:36.377+08:00 | INFO    | cid_19fbcb084f5_6a6e3512 | src.nodes.image_process:image_process_node:209 | No images found, skipping processing
+2026-08-01T17:38:36.378+08:00 | INFO    | cid_19fbcb084f5_6a6e3512 | src.observability:node_exit:102 | <<< [image_process] EXIT (0.00s)
+2026-08-01T17:38:36.379+08:00 | INFO    | cid_19fbcb084f5_6a6e3512 | src.observability:node_enter:96 | >>> [cover_image] ENTER
+2026-08-01T17:38:38.902+08:00 | INFO    | cid_19fbcb084f5_6a6e3512 | src.nodes.cover:cover_image_node:233 | Cover uploaded to OSS (same folder as article images): https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/LANGCHAIN03LANGS/cover.jpg
+2026-08-01T17:38:38.903+08:00 | INFO    | cid_19fbcb084f5_6a6e3512 | src.nodes.cover:cover_image_node:242 | Cover image resolved: https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/LANGCHAIN03LANGS/c... (source=oss<-picsum)
+2026-08-01T17:38:38.903+08:00 | INFO    | cid_19fbcb084f5_6a6e3512 | src.observability:node_exit:102 | <<< [cover_image] EXIT (2.52s)
+2026-08-01T17:38:38.905+08:00 | INFO    | cid_19fbcb084f5_6a6e3512 | src.observability:node_enter:96 | >>> [content_adapt] ENTER
+2026-08-01T17:38:38.907+08:00 | DEBUG   | cid_19fbcb084f5_6a6e3512 | src.nodes.content_adapt:content_adapt_node:107 | Hexo document built (2286 chars)
+2026-08-01T17:38:38.907+08:00 | DEBUG   | cid_19fbcb084f5_6a6e3512 | src.nodes.content_adapt:content_adapt_node:116 | WeChat draft built (2285 chars)
+2026-08-01T17:38:38.907+08:00 | INFO    | cid_19fbcb084f5_6a6e3512 | src.observability:node_exit:102 | <<< [content_adapt] EXIT (0.00s)
+2026-08-01T17:38:38.908+08:00 | INFO    | cid_19fbcb084f5_6a6e3512 | src.observability:node_enter:96 | >>> [publish] ENTER
+2026-08-01T17:38:38.909+08:00 | INFO    | cid_19fbcb084f5_6a6e3512 | src.nodes.publish:publish_node:117 | Publishing to platforms: ['blog', 'wechat']
+2026-08-01T17:38:40.953+08:00 | DEBUG   | cid_19fbcb09cc1_07c71902 | src.publishers.github_pages:publish:140 | GitHub: created D:\study\content_intelligence_dispatcher\temp\hexo_repo\source\_posts\LangChain 03 - LangSmith 学习导航与实战.md
+2026-08-01T17:38:43.578+08:00 | INFO    |  | src.nodes.publish:_run_single_publish:58 | [blog] Publish succeeded on attempt 1: url=https://github.com/YangZouy/Hexo/blob/main/source/_posts/LangChain 03 - LangSmith 学习导航与实战.md
+2026-08-01T17:38:50.429+08:00 | INFO    |  | src.nodes.publish:_run_single_publish:58 | [wechat] Publish succeeded on attempt 1: url=media_id:jfIzZbfq-_GGRn2zXIcaHy9s---VgfyyGHXAEBPPS2Pub9f2DCYI-H-HJtt5w_tw
+2026-08-01T17:38:50.430+08:00 | INFO    | cid_19fbcb084f5_6a6e3512 | src.nodes.publish:publish_node:185 | Publish complete: 2/2 platforms succeeded
+2026-08-01T17:38:50.431+08:00 | INFO    | cid_19fbcb084f5_6a6e3512 | src.observability:node_exit:102 | <<< [publish] EXIT (11.52s)
+2026-08-01T17:38:50.434+08:00 | INFO    | cid_19fbcb084f5_6a6e3512 | src.observability:write_run_log:134 | Run log written to runs\2026-08-01T17-38-32.json
+2026-08-01T17:38:50.435+08:00 | SUCCESS | cid_19fbcb084f5_6a6e3512 | src.graph:run:127 | Pipeline completed successfully in 17.61s | log=2026-08-01T17-38-32.json
+2026-08-01T17:39:28.390+08:00 | INFO    | cid_19fbcb15e06_54f6aaae | src.graph:run:104 | Pipeline started | file=04-Message与提示词模板学习导航与实战.md | platforms=['blog', 'wechat']
+2026-08-01T17:39:28.396+08:00 | INFO    | cid_19fbcb15e06_54f6aaae | src.observability:node_enter:96 | >>> [ingest] ENTER
+2026-08-01T17:39:28.398+08:00 | INFO    | cid_19fbcb15e06_54f6aaae | src.nodes.ingest:ingest_node:183 | Ingested '04-Message与提示词模板学习导航与实战.md' (type=obsidian, images=0, chars=2124)
+2026-08-01T17:39:28.399+08:00 | INFO    | cid_19fbcb15e06_54f6aaae | src.observability:node_exit:102 | <<< [ingest] EXIT (0.00s)
+2026-08-01T17:39:28.400+08:00 | INFO    | cid_19fbcb15e06_54f6aaae | src.observability:node_enter:96 | >>> [format_optimize] ENTER
+2026-08-01T17:39:28.402+08:00 | DEBUG   | cid_19fbcb15e06_54f6aaae | src.nodes.format_optimize:format_optimize_node:598 | Starting format optimization pipeline
+2026-08-01T17:39:28.410+08:00 | INFO    | cid_19fbcb15e06_54f6aaae | src.nodes.format_optimize:format_optimize_node:633 | Format optimization complete (mode=rule, input=2124 chars, output=2124 chars)
+2026-08-01T17:39:28.412+08:00 | INFO    | cid_19fbcb15e06_54f6aaae | src.observability:node_exit:102 | <<< [format_optimize] EXIT (0.01s)
+2026-08-01T17:39:28.413+08:00 | INFO    | cid_19fbcb15e06_54f6aaae | src.observability:node_enter:96 | >>> [summary_meta] ENTER
+2026-08-01T17:39:29.138+08:00 | DEBUG   | cid_19fbcb15e06_54f6aaae | src.nodes.summary_meta:summary_meta_node:119 | Calling LLM for summary/metadata generation...
+2026-08-01T17:39:31.788+08:00 | INFO    | cid_19fbcb15e06_54f6aaae | src.nodes.summary_meta:summary_meta_node:144 | Summary/meta generated: title='LangChain 04 - Message 与提示词模板学习导航与实战', tags=['LangChain', '提示词模板', 'Message', 'ChatPromptTemplate', 'AI工程化', 'Prompt管理'], words=1180, reading_time=3 min read
+2026-08-01T17:39:31.789+08:00 | INFO    | cid_19fbcb15e06_54f6aaae | src.observability:node_exit:102 | <<< [summary_meta] EXIT (3.38s)
+2026-08-01T17:39:31.791+08:00 | INFO    | cid_19fbcb15e06_54f6aaae | src.observability:node_enter:96 | >>> [image_process] ENTER
+2026-08-01T17:39:31.792+08:00 | INFO    | cid_19fbcb15e06_54f6aaae | src.nodes.image_process:image_process_node:209 | No images found, skipping processing
+2026-08-01T17:39:31.792+08:00 | INFO    | cid_19fbcb15e06_54f6aaae | src.observability:node_exit:102 | <<< [image_process] EXIT (0.00s)
+2026-08-01T17:39:31.793+08:00 | INFO    | cid_19fbcb15e06_54f6aaae | src.observability:node_enter:96 | >>> [cover_image] ENTER
+2026-08-01T17:39:34.446+08:00 | INFO    | cid_19fbcb15e06_54f6aaae | src.nodes.cover:cover_image_node:233 | Cover uploaded to OSS (same folder as article images): https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/LANGCHAIN04MESSA/cover.jpg
+2026-08-01T17:39:34.447+08:00 | INFO    | cid_19fbcb15e06_54f6aaae | src.nodes.cover:cover_image_node:242 | Cover image resolved: https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/LANGCHAIN04MESSA/c... (source=oss<-picsum)
+2026-08-01T17:39:34.448+08:00 | INFO    | cid_19fbcb15e06_54f6aaae | src.observability:node_exit:102 | <<< [cover_image] EXIT (2.65s)
+2026-08-01T17:39:34.449+08:00 | INFO    | cid_19fbcb15e06_54f6aaae | src.observability:node_enter:96 | >>> [content_adapt] ENTER
+2026-08-01T17:39:34.451+08:00 | DEBUG   | cid_19fbcb15e06_54f6aaae | src.nodes.content_adapt:content_adapt_node:107 | Hexo document built (2767 chars)
+2026-08-01T17:39:34.452+08:00 | DEBUG   | cid_19fbcb15e06_54f6aaae | src.nodes.content_adapt:content_adapt_node:116 | WeChat draft built (2766 chars)
+2026-08-01T17:39:34.452+08:00 | INFO    | cid_19fbcb15e06_54f6aaae | src.observability:node_exit:102 | <<< [content_adapt] EXIT (0.00s)
+2026-08-01T17:39:34.453+08:00 | INFO    | cid_19fbcb15e06_54f6aaae | src.observability:node_enter:96 | >>> [publish] ENTER
+2026-08-01T17:39:34.454+08:00 | INFO    | cid_19fbcb15e06_54f6aaae | src.nodes.publish:publish_node:117 | Publishing to platforms: ['blog', 'wechat']
+2026-08-01T17:39:36.103+08:00 | DEBUG   | cid_19fbcb175ba_83f4fe06 | src.publishers.github_pages:publish:140 | GitHub: created D:\study\content_intelligence_dispatcher\temp\hexo_repo\source\_posts\LangChain 04 - Message 与提示词模板学习导航与实战.md
+2026-08-01T17:39:38.450+08:00 | INFO    |  | src.nodes.publish:_run_single_publish:58 | [blog] Publish succeeded on attempt 1: url=https://github.com/YangZouy/Hexo/blob/main/source/_posts/LangChain 04 - Message 与提示词模板学习导航与实战.md
+2026-08-01T17:39:45.903+08:00 | INFO    |  | src.nodes.publish:_run_single_publish:58 | [wechat] Publish succeeded on attempt 1: url=media_id:jfIzZbfq-_GGRn2zXIcaH18mmx_vwehh6p0Z_W43nzhuh3cVoZzIiv8QgEzDUwrd
+2026-08-01T17:39:45.905+08:00 | INFO    | cid_19fbcb15e06_54f6aaae | src.nodes.publish:publish_node:185 | Publish complete: 2/2 platforms succeeded
+2026-08-01T17:39:45.905+08:00 | INFO    | cid_19fbcb15e06_54f6aaae | src.observability:node_exit:102 | <<< [publish] EXIT (11.45s)
+2026-08-01T17:39:45.907+08:00 | INFO    | cid_19fbcb15e06_54f6aaae | src.observability:write_run_log:134 | Run log written to runs\2026-08-01T17-39-28.json
+2026-08-01T17:39:45.908+08:00 | SUCCESS | cid_19fbcb15e06_54f6aaae | src.graph:run:127 | Pipeline completed successfully in 17.52s | log=2026-08-01T17-39-28.json
+2026-08-01T17:40:41.188+08:00 | INFO    | cid_19fbcb27a64_a06b4218 | src.graph:run:104 | Pipeline started | file=05-Tools学习导航与实战.md | platforms=['blog']
+2026-08-01T17:40:41.193+08:00 | INFO    | cid_19fbcb27a64_a06b4218 | src.observability:node_enter:96 | >>> [ingest] ENTER
+2026-08-01T17:40:41.194+08:00 | INFO    | cid_19fbcb27a64_a06b4218 | src.nodes.ingest:ingest_node:183 | Ingested '05-Tools学习导航与实战.md' (type=obsidian, images=0, chars=3958)
+2026-08-01T17:40:41.195+08:00 | INFO    | cid_19fbcb27a64_a06b4218 | src.observability:node_exit:102 | <<< [ingest] EXIT (0.00s)
+2026-08-01T17:40:41.196+08:00 | INFO    | cid_19fbcb27a64_a06b4218 | src.observability:node_enter:96 | >>> [format_optimize] ENTER
+2026-08-01T17:40:41.197+08:00 | DEBUG   | cid_19fbcb27a64_a06b4218 | src.nodes.format_optimize:format_optimize_node:598 | Starting format optimization pipeline
+2026-08-01T17:40:41.206+08:00 | INFO    | cid_19fbcb27a64_a06b4218 | src.nodes.format_optimize:format_optimize_node:633 | Format optimization complete (mode=rule, input=3958 chars, output=4010 chars)
+2026-08-01T17:40:41.207+08:00 | INFO    | cid_19fbcb27a64_a06b4218 | src.observability:node_exit:102 | <<< [format_optimize] EXIT (0.01s)
+2026-08-01T17:40:41.208+08:00 | INFO    | cid_19fbcb27a64_a06b4218 | src.observability:node_enter:96 | >>> [summary_meta] ENTER
+2026-08-01T17:40:41.903+08:00 | DEBUG   | cid_19fbcb27a64_a06b4218 | src.nodes.summary_meta:summary_meta_node:119 | Calling LLM for summary/metadata generation...
+2026-08-01T17:40:44.481+08:00 | INFO    | cid_19fbcb27a64_a06b4218 | src.nodes.summary_meta:summary_meta_node:144 | Summary/meta generated: title='LangChain 05 - Tools 学习导航与实战', tags=['LangChain', 'Tools工具调用', 'Function Calling', 'tool_choice', 'Agent开发', '大模型应用'], words=2180, reading_time=5 min read
+2026-08-01T17:40:44.482+08:00 | INFO    | cid_19fbcb27a64_a06b4218 | src.observability:node_exit:102 | <<< [summary_meta] EXIT (3.27s)
+2026-08-01T17:40:44.484+08:00 | INFO    | cid_19fbcb27a64_a06b4218 | src.observability:node_enter:96 | >>> [image_process] ENTER
+2026-08-01T17:40:44.485+08:00 | INFO    | cid_19fbcb27a64_a06b4218 | src.nodes.image_process:image_process_node:209 | No images found, skipping processing
+2026-08-01T17:40:44.486+08:00 | INFO    | cid_19fbcb27a64_a06b4218 | src.observability:node_exit:102 | <<< [image_process] EXIT (0.00s)
+2026-08-01T17:40:44.487+08:00 | INFO    | cid_19fbcb27a64_a06b4218 | src.observability:node_enter:96 | >>> [cover_image] ENTER
+2026-08-01T17:40:47.077+08:00 | INFO    | cid_19fbcb27a64_a06b4218 | src.nodes.cover:cover_image_node:233 | Cover uploaded to OSS (same folder as article images): https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/LANGCHAIN05TOOLS/cover.jpg
+2026-08-01T17:40:47.079+08:00 | INFO    | cid_19fbcb27a64_a06b4218 | src.nodes.cover:cover_image_node:242 | Cover image resolved: https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/LANGCHAIN05TOOLS/c... (source=oss<-picsum)
+2026-08-01T17:40:47.080+08:00 | INFO    | cid_19fbcb27a64_a06b4218 | src.observability:node_exit:102 | <<< [cover_image] EXIT (2.59s)
+2026-08-01T17:40:47.081+08:00 | INFO    | cid_19fbcb27a64_a06b4218 | src.observability:node_enter:96 | >>> [content_adapt] ENTER
+2026-08-01T17:40:47.083+08:00 | DEBUG   | cid_19fbcb27a64_a06b4218 | src.nodes.content_adapt:content_adapt_node:107 | Hexo document built (4606 chars)
+2026-08-01T17:40:47.083+08:00 | DEBUG   | cid_19fbcb27a64_a06b4218 | src.nodes.content_adapt:content_adapt_node:116 | WeChat draft built (4605 chars)
+2026-08-01T17:40:47.083+08:00 | INFO    | cid_19fbcb27a64_a06b4218 | src.observability:node_exit:102 | <<< [content_adapt] EXIT (0.00s)
+2026-08-01T17:40:47.085+08:00 | INFO    | cid_19fbcb27a64_a06b4218 | src.observability:node_enter:96 | >>> [publish] ENTER
+2026-08-01T17:40:47.086+08:00 | INFO    | cid_19fbcb27a64_a06b4218 | src.nodes.publish:publish_node:117 | Publishing to platforms: ['blog']
+2026-08-01T17:40:48.756+08:00 | DEBUG   | cid_19fbcb29176_3cef910f | src.publishers.github_pages:publish:140 | GitHub: created D:\study\content_intelligence_dispatcher\temp\hexo_repo\source\_posts\LangChain 05 - Tools 学习导航与实战.md
+2026-08-01T17:40:51.025+08:00 | INFO    |  | src.nodes.publish:_run_single_publish:58 | [blog] Publish succeeded on attempt 1: url=https://github.com/YangZouy/Hexo/blob/main/source/_posts/LangChain 05 - Tools 学习导航与实战.md
+2026-08-01T17:40:51.026+08:00 | INFO    | cid_19fbcb27a64_a06b4218 | src.nodes.publish:publish_node:185 | Publish complete: 1/1 platforms succeeded
+2026-08-01T17:40:51.028+08:00 | INFO    | cid_19fbcb27a64_a06b4218 | src.observability:node_exit:102 | <<< [publish] EXIT (3.94s)
+2026-08-01T17:40:51.030+08:00 | INFO    | cid_19fbcb27a64_a06b4218 | src.observability:write_run_log:134 | Run log written to runs\2026-08-01T17-40-41.json
+2026-08-01T17:40:51.031+08:00 | SUCCESS | cid_19fbcb27a64_a06b4218 | src.graph:run:127 | Pipeline completed successfully in 9.84s | log=2026-08-01T17-40-41.json
+2026-08-01T18:05:43.993+08:00 | INFO    | cid_19fbcc968b8_119caaaf | src.graph:run:104 | Pipeline started | file=06-结构化输出学习导航与实战.md | platforms=['blog']
+2026-08-01T18:05:43.998+08:00 | INFO    | cid_19fbcc968b8_119caaaf | src.observability:node_enter:96 | >>> [ingest] ENTER
+2026-08-01T18:05:43.999+08:00 | INFO    | cid_19fbcc968b8_119caaaf | src.nodes.ingest:ingest_node:183 | Ingested '06-结构化输出学习导航与实战.md' (type=obsidian, images=0, chars=5557)
+2026-08-01T18:05:44.000+08:00 | INFO    | cid_19fbcc968b8_119caaaf | src.observability:node_exit:102 | <<< [ingest] EXIT (0.00s)
+2026-08-01T18:05:44.001+08:00 | INFO    | cid_19fbcc968b8_119caaaf | src.observability:node_enter:96 | >>> [format_optimize] ENTER
+2026-08-01T18:05:44.002+08:00 | DEBUG   | cid_19fbcc968b8_119caaaf | src.nodes.format_optimize:format_optimize_node:598 | Starting format optimization pipeline
+2026-08-01T18:05:44.009+08:00 | INFO    | cid_19fbcc968b8_119caaaf | src.nodes.format_optimize:format_optimize_node:633 | Format optimization complete (mode=rule, input=5557 chars, output=5618 chars)
+2026-08-01T18:05:44.010+08:00 | INFO    | cid_19fbcc968b8_119caaaf | src.observability:node_exit:102 | <<< [format_optimize] EXIT (0.01s)
+2026-08-01T18:05:44.011+08:00 | INFO    | cid_19fbcc968b8_119caaaf | src.observability:node_enter:96 | >>> [summary_meta] ENTER
+2026-08-01T18:05:44.916+08:00 | DEBUG   | cid_19fbcc968b8_119caaaf | src.nodes.summary_meta:summary_meta_node:119 | Calling LLM for summary/metadata generation...
+2026-08-01T18:05:47.946+08:00 | INFO    | cid_19fbcc968b8_119caaaf | src.nodes.summary_meta:summary_meta_node:144 | Summary/meta generated: title='LangChain 06 - 结构化输出学习导航与实战', tags=['LangChain', '结构化输出', 'Pydantic', 'JSON Schema', 'LLM应用开发', 'TypedDict'], words=2480, reading_time=5 min read
+2026-08-01T18:05:47.948+08:00 | INFO    | cid_19fbcc968b8_119caaaf | src.observability:node_exit:102 | <<< [summary_meta] EXIT (3.94s)
+2026-08-01T18:05:47.949+08:00 | INFO    | cid_19fbcc968b8_119caaaf | src.observability:node_enter:96 | >>> [image_process] ENTER
+2026-08-01T18:05:47.950+08:00 | INFO    | cid_19fbcc968b8_119caaaf | src.nodes.image_process:image_process_node:209 | No images found, skipping processing
+2026-08-01T18:05:47.950+08:00 | INFO    | cid_19fbcc968b8_119caaaf | src.observability:node_exit:102 | <<< [image_process] EXIT (0.00s)
+2026-08-01T18:05:47.951+08:00 | INFO    | cid_19fbcc968b8_119caaaf | src.observability:node_enter:96 | >>> [cover_image] ENTER
+2026-08-01T18:05:50.534+08:00 | INFO    | cid_19fbcc968b8_119caaaf | src.nodes.cover:cover_image_node:233 | Cover uploaded to OSS (same folder as article images): https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/LANGCHAIN06JGHSC/cover.jpg
+2026-08-01T18:05:50.535+08:00 | INFO    | cid_19fbcc968b8_119caaaf | src.nodes.cover:cover_image_node:242 | Cover image resolved: https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/LANGCHAIN06JGHSC/c... (source=oss<-picsum)
+2026-08-01T18:05:50.536+08:00 | INFO    | cid_19fbcc968b8_119caaaf | src.observability:node_exit:102 | <<< [cover_image] EXIT (2.58s)
+2026-08-01T18:05:50.537+08:00 | INFO    | cid_19fbcc968b8_119caaaf | src.observability:node_enter:96 | >>> [content_adapt] ENTER
+2026-08-01T18:05:50.540+08:00 | DEBUG   | cid_19fbcc968b8_119caaaf | src.nodes.content_adapt:content_adapt_node:107 | Hexo document built (6417 chars)
+2026-08-01T18:05:50.540+08:00 | DEBUG   | cid_19fbcc968b8_119caaaf | src.nodes.content_adapt:content_adapt_node:116 | WeChat draft built (6416 chars)
+2026-08-01T18:05:50.540+08:00 | INFO    | cid_19fbcc968b8_119caaaf | src.observability:node_exit:102 | <<< [content_adapt] EXIT (0.00s)
+2026-08-01T18:05:50.542+08:00 | INFO    | cid_19fbcc968b8_119caaaf | src.observability:node_enter:96 | >>> [publish] ENTER
+2026-08-01T18:05:50.543+08:00 | INFO    | cid_19fbcc968b8_119caaaf | src.nodes.publish:publish_node:117 | Publishing to platforms: ['blog']
+2026-08-01T18:05:52.409+08:00 | DEBUG   | cid_19fbcc98254_4b7d154e | src.publishers.github_pages:publish:140 | GitHub: created D:\study\content_intelligence_dispatcher\temp\hexo_repo\source\_posts\LangChain 06 - 结构化输出学习导航与实战.md
+2026-08-01T18:05:55.196+08:00 | INFO    |  | src.nodes.publish:_run_single_publish:58 | [blog] Publish succeeded on attempt 1: url=https://github.com/YangZouy/Hexo/blob/main/source/_posts/LangChain 06 - 结构化输出学习导航与实战.md
+2026-08-01T18:05:55.197+08:00 | INFO    | cid_19fbcc968b8_119caaaf | src.nodes.publish:publish_node:185 | Publish complete: 1/1 platforms succeeded
+2026-08-01T18:05:55.200+08:00 | INFO    | cid_19fbcc968b8_119caaaf | src.observability:node_exit:102 | <<< [publish] EXIT (4.66s)
+2026-08-01T18:05:55.202+08:00 | INFO    | cid_19fbcc968b8_119caaaf | src.observability:write_run_log:134 | Run log written to runs\2026-08-01T18-05-43.json
+2026-08-01T18:05:55.203+08:00 | SUCCESS | cid_19fbcc968b8_119caaaf | src.graph:run:127 | Pipeline completed successfully in 11.21s | log=2026-08-01T18-05-43.json
+2026-08-01T18:07:56.362+08:00 | INFO    | cid_19fbccb6dca_1868f2f5 | src.graph:run:104 | Pipeline started | file=07-智能体学习导航与实战.md | platforms=['blog']
+2026-08-01T18:07:56.367+08:00 | INFO    | cid_19fbccb6dca_1868f2f5 | src.observability:node_enter:96 | >>> [ingest] ENTER
+2026-08-01T18:07:56.369+08:00 | INFO    | cid_19fbccb6dca_1868f2f5 | src.nodes.ingest:ingest_node:183 | Ingested '07-智能体学习导航与实战.md' (type=obsidian, images=0, chars=17653)
+2026-08-01T18:07:56.369+08:00 | INFO    | cid_19fbccb6dca_1868f2f5 | src.observability:node_exit:102 | <<< [ingest] EXIT (0.00s)
+2026-08-01T18:07:56.371+08:00 | INFO    | cid_19fbccb6dca_1868f2f5 | src.observability:node_enter:96 | >>> [format_optimize] ENTER
+2026-08-01T18:07:56.371+08:00 | DEBUG   | cid_19fbccb6dca_1868f2f5 | src.nodes.format_optimize:format_optimize_node:598 | Starting format optimization pipeline
+2026-08-01T18:07:56.384+08:00 | INFO    | cid_19fbccb6dca_1868f2f5 | src.nodes.format_optimize:format_optimize_node:633 | Format optimization complete (mode=rule, input=17653 chars, output=17739 chars)
+2026-08-01T18:07:56.385+08:00 | INFO    | cid_19fbccb6dca_1868f2f5 | src.observability:node_exit:102 | <<< [format_optimize] EXIT (0.01s)
+2026-08-01T18:07:56.387+08:00 | INFO    | cid_19fbccb6dca_1868f2f5 | src.observability:node_enter:96 | >>> [summary_meta] ENTER
+2026-08-01T18:07:57.100+08:00 | DEBUG   | cid_19fbccb6dca_1868f2f5 | src.nodes.summary_meta:summary_meta_node:119 | Calling LLM for summary/metadata generation...
+2026-08-01T18:07:59.815+08:00 | INFO    | cid_19fbccb6dca_1868f2f5 | src.nodes.summary_meta:summary_meta_node:144 | Summary/meta generated: title='LangChain 07 - 智能体学习导航与实战', tags=['LangChain', 'Agent智能体', 'LangGraph', 'ReAct', '工具调用', '结构化输出'], words=2800, reading_time=6 min read
+2026-08-01T18:07:59.817+08:00 | INFO    | cid_19fbccb6dca_1868f2f5 | src.observability:node_exit:102 | <<< [summary_meta] EXIT (3.43s)
+2026-08-01T18:07:59.818+08:00 | INFO    | cid_19fbccb6dca_1868f2f5 | src.observability:node_enter:96 | >>> [image_process] ENTER
+2026-08-01T18:07:59.819+08:00 | INFO    | cid_19fbccb6dca_1868f2f5 | src.nodes.image_process:image_process_node:209 | No images found, skipping processing
+2026-08-01T18:07:59.820+08:00 | INFO    | cid_19fbccb6dca_1868f2f5 | src.observability:node_exit:102 | <<< [image_process] EXIT (0.00s)
+2026-08-01T18:07:59.821+08:00 | INFO    | cid_19fbccb6dca_1868f2f5 | src.observability:node_enter:96 | >>> [cover_image] ENTER
+2026-08-01T18:08:02.404+08:00 | INFO    | cid_19fbccb6dca_1868f2f5 | src.nodes.cover:cover_image_node:233 | Cover uploaded to OSS (same folder as article images): https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/LANGCHAIN07ZNTXX/cover.jpg
+2026-08-01T18:08:02.405+08:00 | INFO    | cid_19fbccb6dca_1868f2f5 | src.nodes.cover:cover_image_node:242 | Cover image resolved: https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/LANGCHAIN07ZNTXX/c... (source=oss<-picsum)
+2026-08-01T18:08:02.406+08:00 | INFO    | cid_19fbccb6dca_1868f2f5 | src.observability:node_exit:102 | <<< [cover_image] EXIT (2.58s)
+2026-08-01T18:08:02.407+08:00 | INFO    | cid_19fbccb6dca_1868f2f5 | src.observability:node_enter:96 | >>> [content_adapt] ENTER
+2026-08-01T18:08:02.409+08:00 | DEBUG   | cid_19fbccb6dca_1868f2f5 | src.nodes.content_adapt:content_adapt_node:107 | Hexo document built (18342 chars)
+2026-08-01T18:08:02.409+08:00 | DEBUG   | cid_19fbccb6dca_1868f2f5 | src.nodes.content_adapt:content_adapt_node:116 | WeChat draft built (18341 chars)
+2026-08-01T18:08:02.409+08:00 | INFO    | cid_19fbccb6dca_1868f2f5 | src.observability:node_exit:102 | <<< [content_adapt] EXIT (0.00s)
+2026-08-01T18:08:02.410+08:00 | INFO    | cid_19fbccb6dca_1868f2f5 | src.observability:node_enter:96 | >>> [publish] ENTER
+2026-08-01T18:08:02.410+08:00 | INFO    | cid_19fbccb6dca_1868f2f5 | src.nodes.publish:publish_node:117 | Publishing to platforms: ['blog']
+2026-08-01T18:08:04.141+08:00 | DEBUG   | cid_19fbccb856f_4bfae873 | src.publishers.github_pages:publish:140 | GitHub: created D:\study\content_intelligence_dispatcher\temp\hexo_repo\source\_posts\LangChain 07 - 智能体学习导航与实战.md
+2026-08-01T18:08:06.666+08:00 | INFO    |  | src.nodes.publish:_run_single_publish:58 | [blog] Publish succeeded on attempt 1: url=https://github.com/YangZouy/Hexo/blob/main/source/_posts/LangChain 07 - 智能体学习导航与实战.md
+2026-08-01T18:08:06.668+08:00 | INFO    | cid_19fbccb6dca_1868f2f5 | src.nodes.publish:publish_node:185 | Publish complete: 1/1 platforms succeeded
+2026-08-01T18:08:06.669+08:00 | INFO    | cid_19fbccb6dca_1868f2f5 | src.observability:node_exit:102 | <<< [publish] EXIT (4.26s)
+2026-08-01T18:08:06.672+08:00 | INFO    | cid_19fbccb6dca_1868f2f5 | src.observability:write_run_log:134 | Run log written to runs\2026-08-01T18-07-56.json
+2026-08-01T18:08:06.673+08:00 | SUCCESS | cid_19fbccb6dca_1868f2f5 | src.graph:run:127 | Pipeline completed successfully in 10.31s | log=2026-08-01T18-07-56.json
+2026-08-01T18:10:28.883+08:00 | INFO    | cid_19fbccdc193_6c780f24 | src.graph:run:104 | Pipeline started | file=08-中间件学习导航与实战.md | platforms=['blog']
+2026-08-01T18:10:28.889+08:00 | INFO    | cid_19fbccdc193_6c780f24 | src.observability:node_enter:96 | >>> [ingest] ENTER
+2026-08-01T18:10:28.890+08:00 | INFO    | cid_19fbccdc193_6c780f24 | src.nodes.ingest:ingest_node:183 | Ingested '08-中间件学习导航与实战.md' (type=obsidian, images=0, chars=20952)
+2026-08-01T18:10:28.891+08:00 | INFO    | cid_19fbccdc193_6c780f24 | src.observability:node_exit:102 | <<< [ingest] EXIT (0.00s)
+2026-08-01T18:10:28.893+08:00 | INFO    | cid_19fbccdc193_6c780f24 | src.observability:node_enter:96 | >>> [format_optimize] ENTER
+2026-08-01T18:10:28.894+08:00 | DEBUG   | cid_19fbccdc193_6c780f24 | src.nodes.format_optimize:format_optimize_node:598 | Starting format optimization pipeline
+2026-08-01T18:10:28.913+08:00 | INFO    | cid_19fbccdc193_6c780f24 | src.nodes.format_optimize:format_optimize_node:633 | Format optimization complete (mode=rule, input=20952 chars, output=21021 chars)
+2026-08-01T18:10:28.914+08:00 | INFO    | cid_19fbccdc193_6c780f24 | src.observability:node_exit:102 | <<< [format_optimize] EXIT (0.02s)
+2026-08-01T18:10:28.916+08:00 | INFO    | cid_19fbccdc193_6c780f24 | src.observability:node_enter:96 | >>> [summary_meta] ENTER
+2026-08-01T18:10:29.750+08:00 | DEBUG   | cid_19fbccdc193_6c780f24 | src.nodes.summary_meta:summary_meta_node:119 | Calling LLM for summary/metadata generation...
+2026-08-01T18:10:32.147+08:00 | INFO    | cid_19fbccdc193_6c780f24 | src.nodes.summary_meta:summary_meta_node:144 | Summary/meta generated: title='LangChain 08 - 中间件学习导航与实战', tags=['LangChain', '中间件', 'Agent', 'Python', 'AI开发'], words=2860, reading_time=6 min read
+2026-08-01T18:10:32.148+08:00 | INFO    | cid_19fbccdc193_6c780f24 | src.observability:node_exit:102 | <<< [summary_meta] EXIT (3.23s)
+2026-08-01T18:10:32.150+08:00 | INFO    | cid_19fbccdc193_6c780f24 | src.observability:node_enter:96 | >>> [image_process] ENTER
+2026-08-01T18:10:32.151+08:00 | INFO    | cid_19fbccdc193_6c780f24 | src.nodes.image_process:image_process_node:209 | No images found, skipping processing
+2026-08-01T18:10:32.151+08:00 | INFO    | cid_19fbccdc193_6c780f24 | src.observability:node_exit:102 | <<< [image_process] EXIT (0.00s)
+2026-08-01T18:10:32.152+08:00 | INFO    | cid_19fbccdc193_6c780f24 | src.observability:node_enter:96 | >>> [cover_image] ENTER
+2026-08-01T18:10:34.777+08:00 | INFO    | cid_19fbccdc193_6c780f24 | src.nodes.cover:cover_image_node:233 | Cover uploaded to OSS (same folder as article images): https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/LANGCHAIN08ZJJXX/cover.jpg
+2026-08-01T18:10:34.778+08:00 | INFO    | cid_19fbccdc193_6c780f24 | src.nodes.cover:cover_image_node:242 | Cover image resolved: https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/LANGCHAIN08ZJJXX/c... (source=oss<-picsum)
+2026-08-01T18:10:34.778+08:00 | INFO    | cid_19fbccdc193_6c780f24 | src.observability:node_exit:102 | <<< [cover_image] EXIT (2.63s)
+2026-08-01T18:10:34.780+08:00 | INFO    | cid_19fbccdc193_6c780f24 | src.observability:node_enter:96 | >>> [content_adapt] ENTER
+2026-08-01T18:10:34.781+08:00 | DEBUG   | cid_19fbccdc193_6c780f24 | src.nodes.content_adapt:content_adapt_node:107 | Hexo document built (21626 chars)
+2026-08-01T18:10:34.781+08:00 | DEBUG   | cid_19fbccdc193_6c780f24 | src.nodes.content_adapt:content_adapt_node:116 | WeChat draft built (21626 chars)
+2026-08-01T18:10:34.781+08:00 | INFO    | cid_19fbccdc193_6c780f24 | src.observability:node_exit:102 | <<< [content_adapt] EXIT (0.00s)
+2026-08-01T18:10:34.782+08:00 | INFO    | cid_19fbccdc193_6c780f24 | src.observability:node_enter:96 | >>> [publish] ENTER
+2026-08-01T18:10:34.783+08:00 | INFO    | cid_19fbccdc193_6c780f24 | src.nodes.publish:publish_node:117 | Publishing to platforms: ['blog']
+2026-08-01T18:10:36.555+08:00 | DEBUG   | cid_19fbccdd8a3_d7d992e2 | src.publishers.github_pages:publish:140 | GitHub: created D:\study\content_intelligence_dispatcher\temp\hexo_repo\source\_posts\LangChain 08 - 中间件学习导航与实战.md
+2026-08-01T18:10:39.195+08:00 | INFO    |  | src.nodes.publish:_run_single_publish:58 | [blog] Publish succeeded on attempt 1: url=https://github.com/YangZouy/Hexo/blob/main/source/_posts/LangChain 08 - 中间件学习导航与实战.md
+2026-08-01T18:10:39.196+08:00 | INFO    | cid_19fbccdc193_6c780f24 | src.nodes.publish:publish_node:185 | Publish complete: 1/1 platforms succeeded
+2026-08-01T18:10:39.199+08:00 | INFO    | cid_19fbccdc193_6c780f24 | src.observability:node_exit:102 | <<< [publish] EXIT (4.42s)
+2026-08-01T18:10:39.201+08:00 | INFO    | cid_19fbccdc193_6c780f24 | src.observability:write_run_log:134 | Run log written to runs\2026-08-01T18-10-28.json
+2026-08-01T18:10:39.202+08:00 | SUCCESS | cid_19fbccdc193_6c780f24 | src.graph:run:127 | Pipeline completed successfully in 10.32s | log=2026-08-01T18-10-28.json
+2026-08-01T18:11:12.177+08:00 | INFO    | cid_19fbcce6ab1_2ad29980 | src.graph:run:104 | Pipeline started | file=09-上下文与记忆学习导航与实战.md | platforms=['blog']
+2026-08-01T18:11:12.183+08:00 | INFO    | cid_19fbcce6ab1_2ad29980 | src.observability:node_enter:96 | >>> [ingest] ENTER
+2026-08-01T18:11:12.185+08:00 | INFO    | cid_19fbcce6ab1_2ad29980 | src.nodes.ingest:ingest_node:183 | Ingested '09-上下文与记忆学习导航与实战.md' (type=obsidian, images=0, chars=29184)
+2026-08-01T18:11:12.186+08:00 | INFO    | cid_19fbcce6ab1_2ad29980 | src.observability:node_exit:102 | <<< [ingest] EXIT (0.00s)
+2026-08-01T18:11:12.188+08:00 | INFO    | cid_19fbcce6ab1_2ad29980 | src.observability:node_enter:96 | >>> [format_optimize] ENTER
+2026-08-01T18:11:12.188+08:00 | DEBUG   | cid_19fbcce6ab1_2ad29980 | src.nodes.format_optimize:format_optimize_node:598 | Starting format optimization pipeline
+2026-08-01T18:11:12.207+08:00 | INFO    | cid_19fbcce6ab1_2ad29980 | src.nodes.format_optimize:format_optimize_node:633 | Format optimization complete (mode=rule, input=29184 chars, output=29224 chars)
+2026-08-01T18:11:12.208+08:00 | INFO    | cid_19fbcce6ab1_2ad29980 | src.observability:node_exit:102 | <<< [format_optimize] EXIT (0.02s)
+2026-08-01T18:11:12.210+08:00 | INFO    | cid_19fbcce6ab1_2ad29980 | src.observability:node_enter:96 | >>> [summary_meta] ENTER
+2026-08-01T18:11:13.055+08:00 | DEBUG   | cid_19fbcce6ab1_2ad29980 | src.nodes.summary_meta:summary_meta_node:119 | Calling LLM for summary/metadata generation...
+2026-08-01T18:11:15.975+08:00 | INFO    | cid_19fbcce6ab1_2ad29980 | src.nodes.summary_meta:summary_meta_node:144 | Summary/meta generated: title='LangChain 09 - 上下文与记忆学习导航与实战', tags=['LangChain', 'LangGraph', '记忆管理', '上下文工程', 'InMemorySaver', 'PostgresSaver'], words=2800, reading_time=6 min read
+2026-08-01T18:11:15.976+08:00 | INFO    | cid_19fbcce6ab1_2ad29980 | src.observability:node_exit:102 | <<< [summary_meta] EXIT (3.77s)
+2026-08-01T18:11:15.978+08:00 | INFO    | cid_19fbcce6ab1_2ad29980 | src.observability:node_enter:96 | >>> [image_process] ENTER
+2026-08-01T18:11:15.979+08:00 | INFO    | cid_19fbcce6ab1_2ad29980 | src.nodes.image_process:image_process_node:209 | No images found, skipping processing
+2026-08-01T18:11:15.979+08:00 | INFO    | cid_19fbcce6ab1_2ad29980 | src.observability:node_exit:102 | <<< [image_process] EXIT (0.00s)
+2026-08-01T18:11:15.980+08:00 | INFO    | cid_19fbcce6ab1_2ad29980 | src.observability:node_enter:96 | >>> [cover_image] ENTER
+2026-08-01T18:11:18.776+08:00 | INFO    | cid_19fbcce6ab1_2ad29980 | src.nodes.cover:cover_image_node:233 | Cover uploaded to OSS (same folder as article images): https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/LANGCHAIN09SXWYJ/cover.jpg
+2026-08-01T18:11:18.777+08:00 | INFO    | cid_19fbcce6ab1_2ad29980 | src.nodes.cover:cover_image_node:242 | Cover image resolved: https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/LANGCHAIN09SXWYJ/c... (source=oss<-picsum)
+2026-08-01T18:11:18.779+08:00 | INFO    | cid_19fbcce6ab1_2ad29980 | src.observability:node_exit:102 | <<< [cover_image] EXIT (2.80s)
+2026-08-01T18:11:18.781+08:00 | INFO    | cid_19fbcce6ab1_2ad29980 | src.observability:node_enter:96 | >>> [content_adapt] ENTER
+2026-08-01T18:11:18.784+08:00 | DEBUG   | cid_19fbcce6ab1_2ad29980 | src.nodes.content_adapt:content_adapt_node:107 | Hexo document built (29894 chars)
+2026-08-01T18:11:18.785+08:00 | DEBUG   | cid_19fbcce6ab1_2ad29980 | src.nodes.content_adapt:content_adapt_node:116 | WeChat draft built (29894 chars)
+2026-08-01T18:11:18.785+08:00 | INFO    | cid_19fbcce6ab1_2ad29980 | src.observability:node_exit:102 | <<< [content_adapt] EXIT (0.00s)
+2026-08-01T18:11:18.787+08:00 | INFO    | cid_19fbcce6ab1_2ad29980 | src.observability:node_enter:96 | >>> [publish] ENTER
+2026-08-01T18:11:18.788+08:00 | INFO    | cid_19fbcce6ab1_2ad29980 | src.nodes.publish:publish_node:117 | Publishing to platforms: ['blog']
+2026-08-01T18:11:20.603+08:00 | DEBUG   | cid_19fbcce848e_91a966cf | src.publishers.github_pages:publish:140 | GitHub: created D:\study\content_intelligence_dispatcher\temp\hexo_repo\source\_posts\LangChain 09 - 上下文与记忆学习导航与实战.md
+2026-08-01T18:11:23.032+08:00 | INFO    |  | src.nodes.publish:_run_single_publish:58 | [blog] Publish succeeded on attempt 1: url=https://github.com/YangZouy/Hexo/blob/main/source/_posts/LangChain 09 - 上下文与记忆学习导航与实战.md
+2026-08-01T18:11:23.034+08:00 | INFO    | cid_19fbcce6ab1_2ad29980 | src.nodes.publish:publish_node:185 | Publish complete: 1/1 platforms succeeded
+2026-08-01T18:11:23.036+08:00 | INFO    | cid_19fbcce6ab1_2ad29980 | src.observability:node_exit:102 | <<< [publish] EXIT (4.25s)
+2026-08-01T18:11:23.038+08:00 | INFO    | cid_19fbcce6ab1_2ad29980 | src.observability:write_run_log:134 | Run log written to runs\2026-08-01T18-11-12.json
+2026-08-01T18:11:23.039+08:00 | SUCCESS | cid_19fbcce6ab1_2ad29980 | src.graph:run:127 | Pipeline completed successfully in 10.86s | log=2026-08-01T18-11-12.json
+2026-08-01T18:12:00.417+08:00 | INFO    | cid_19fbccf2721_6a1f5390 | src.graph:run:104 | Pipeline started | file=10-RAG学习导航与实战.md | platforms=['blog']
+2026-08-01T18:12:00.422+08:00 | INFO    | cid_19fbccf2721_6a1f5390 | src.observability:node_enter:96 | >>> [ingest] ENTER
+2026-08-01T18:12:00.424+08:00 | INFO    | cid_19fbccf2721_6a1f5390 | src.nodes.ingest:ingest_node:183 | Ingested '10-RAG学习导航与实战.md' (type=obsidian, images=0, chars=21450)
+2026-08-01T18:12:00.424+08:00 | INFO    | cid_19fbccf2721_6a1f5390 | src.observability:node_exit:102 | <<< [ingest] EXIT (0.00s)
+2026-08-01T18:12:00.426+08:00 | INFO    | cid_19fbccf2721_6a1f5390 | src.observability:node_enter:96 | >>> [format_optimize] ENTER
+2026-08-01T18:12:00.427+08:00 | DEBUG   | cid_19fbccf2721_6a1f5390 | src.nodes.format_optimize:format_optimize_node:598 | Starting format optimization pipeline
+2026-08-01T18:12:00.441+08:00 | INFO    | cid_19fbccf2721_6a1f5390 | src.nodes.format_optimize:format_optimize_node:633 | Format optimization complete (mode=rule, input=21450 chars, output=21495 chars)
+2026-08-01T18:12:00.442+08:00 | INFO    | cid_19fbccf2721_6a1f5390 | src.observability:node_exit:102 | <<< [format_optimize] EXIT (0.02s)
+2026-08-01T18:12:00.444+08:00 | INFO    | cid_19fbccf2721_6a1f5390 | src.observability:node_enter:96 | >>> [summary_meta] ENTER
+2026-08-01T18:12:01.188+08:00 | DEBUG   | cid_19fbccf2721_6a1f5390 | src.nodes.summary_meta:summary_meta_node:119 | Calling LLM for summary/metadata generation...
+2026-08-01T18:12:04.058+08:00 | INFO    | cid_19fbccf2721_6a1f5390 | src.nodes.summary_meta:summary_meta_node:144 | Summary/meta generated: title='LangChain 10 - RAG（检索增强生成）学习导航与实战', tags=['LangChain', 'RAG', '检索增强生成', '文档加载器', '文本切分', '向量存储'], words=2800, reading_time=6 min read
+2026-08-01T18:12:04.060+08:00 | INFO    | cid_19fbccf2721_6a1f5390 | src.observability:node_exit:102 | <<< [summary_meta] EXIT (3.62s)
+2026-08-01T18:12:04.062+08:00 | INFO    | cid_19fbccf2721_6a1f5390 | src.observability:node_enter:96 | >>> [image_process] ENTER
+2026-08-01T18:12:04.063+08:00 | INFO    | cid_19fbccf2721_6a1f5390 | src.nodes.image_process:image_process_node:209 | No images found, skipping processing
+2026-08-01T18:12:04.063+08:00 | INFO    | cid_19fbccf2721_6a1f5390 | src.observability:node_exit:102 | <<< [image_process] EXIT (0.00s)
+2026-08-01T18:12:04.065+08:00 | INFO    | cid_19fbccf2721_6a1f5390 | src.observability:node_enter:96 | >>> [cover_image] ENTER
+2026-08-01T18:12:06.771+08:00 | INFO    | cid_19fbccf2721_6a1f5390 | src.nodes.cover:cover_image_node:233 | Cover uploaded to OSS (same folder as article images): https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/LANGCHAIN10RAGJ/cover.jpg
+2026-08-01T18:12:06.772+08:00 | INFO    | cid_19fbccf2721_6a1f5390 | src.nodes.cover:cover_image_node:242 | Cover image resolved: https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/LANGCHAIN10RAGJ/co... (source=oss<-picsum)
+2026-08-01T18:12:06.773+08:00 | INFO    | cid_19fbccf2721_6a1f5390 | src.observability:node_exit:102 | <<< [cover_image] EXIT (2.71s)
+2026-08-01T18:12:06.774+08:00 | INFO    | cid_19fbccf2721_6a1f5390 | src.observability:node_enter:96 | >>> [content_adapt] ENTER
+2026-08-01T18:12:06.776+08:00 | DEBUG   | cid_19fbccf2721_6a1f5390 | src.nodes.content_adapt:content_adapt_node:107 | Hexo document built (22215 chars)
+2026-08-01T18:12:06.776+08:00 | DEBUG   | cid_19fbccf2721_6a1f5390 | src.nodes.content_adapt:content_adapt_node:116 | WeChat draft built (22214 chars)
+2026-08-01T18:12:06.777+08:00 | INFO    | cid_19fbccf2721_6a1f5390 | src.observability:node_exit:102 | <<< [content_adapt] EXIT (0.00s)
+2026-08-01T18:12:06.779+08:00 | INFO    | cid_19fbccf2721_6a1f5390 | src.observability:node_enter:96 | >>> [publish] ENTER
+2026-08-01T18:12:06.780+08:00 | INFO    | cid_19fbccf2721_6a1f5390 | src.nodes.publish:publish_node:117 | Publishing to platforms: ['blog']
+2026-08-01T18:12:08.526+08:00 | DEBUG   | cid_19fbccf4003_8ca8e9f6 | src.publishers.github_pages:publish:140 | GitHub: created D:\study\content_intelligence_dispatcher\temp\hexo_repo\source\_posts\LangChain 10 - RAG（检索增强生成）学习导航与实战.md
+2026-08-01T18:12:10.912+08:00 | INFO    |  | src.nodes.publish:_run_single_publish:58 | [blog] Publish succeeded on attempt 1: url=https://github.com/YangZouy/Hexo/blob/main/source/_posts/LangChain 10 - RAG（检索增强生成）学习导航与实战.md
+2026-08-01T18:12:10.913+08:00 | INFO    | cid_19fbccf2721_6a1f5390 | src.nodes.publish:publish_node:185 | Publish complete: 1/1 platforms succeeded
+2026-08-01T18:12:10.915+08:00 | INFO    | cid_19fbccf2721_6a1f5390 | src.observability:node_exit:102 | <<< [publish] EXIT (4.14s)
+2026-08-01T18:12:10.918+08:00 | INFO    | cid_19fbccf2721_6a1f5390 | src.observability:write_run_log:134 | Run log written to runs\2026-08-01T18-12-00.json
+2026-08-01T18:12:10.918+08:00 | SUCCESS | cid_19fbccf2721_6a1f5390 | src.graph:run:127 | Pipeline completed successfully in 10.5s | log=2026-08-01T18-12-00.json

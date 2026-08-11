@@ -15,6 +15,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Any, Dict, List
 
+from src.categorizer import categorize
 from src.schema import HexoFrontMatter
 from src.state import AgentState
 from src.observability import get_trace_logger
@@ -34,10 +35,16 @@ def _build_hexo_front_matter(state: AgentState) -> HexoFrontMatter:
         已填充的HexoFrontMatter实例。
     """
     brand = state.get("brand", {})
+    tags = state.get("tags", [])
+    # 分类由规则引擎根据 tags 决定（零 LLM 成本、确定性强）；
+    # 全不命中时兜底到 brand.default_categories 的首项。
+    default_cats = brand.get("default_categories", ["随笔·生活"])
+    fallback = default_cats[0] if default_cats else "随笔·生活"
+    chosen_category = categorize(tags, default=fallback)
     return HexoFrontMatter.from_state(
         title=state.get("title", "Untitled"),
-        tags=state.get("tags", []),
-        categories=brand.get("default_categories", ["Technology"]),
+        tags=tags,
+        categories=[chosen_category],
         cover_url=state.get("cover_url", ""),
         summary=state.get("summary", ""),
         author=brand.get("author"),
