@@ -28,6 +28,7 @@ from src.graph import (
     retry_pipeline_publish,
     run_pipeline,
 )
+from src.evaluation import run_evaluation, write_evaluation_report
 
 # --- Typer app instance ---
 # 创建整个CLI应用对象，后续所有的@app.command()
@@ -361,6 +362,36 @@ def retry_publish(
         _display_result_summary(state, time.time() - start_time)
     except Exception as exc:
         console.print(f"[bold red]Unable to retry publishing:[/bold red] {exc}")
+        raise typer.Exit(1)
+
+
+@app.command()
+def evaluate(
+    output: Optional[Path] = typer.Option(
+        None,
+        "--output", "-o",
+        help="Path for the offline evaluation JSON report",
+    ),
+) -> None:
+    """Run the fixed Markdown benchmark without external services."""
+    try:
+        report = run_evaluation()
+        destination = output or Path("eval/reports/latest.json")
+        write_evaluation_report(report, destination)
+        console.print(Panel(
+            "\n".join([
+                f"Samples: {report['sample_count']}",
+                f"Structure retention: {report['format_structure_retention_rate']:.1%}",
+                f"Metadata structured: {report['metadata_structured_success_rate']:.1%}",
+                f"Quality first pass: {report['quality_first_pass_rate']:.1%}",
+                f"Expected outcome match: {report['quality_expectation_match_rate']:.1%}",
+                f"Report: {destination}",
+            ]),
+            title="Offline Evaluation",
+            border_style="cyan",
+        ))
+    except Exception as exc:
+        console.print(f"[bold red]Evaluation failed:[/bold red] {exc}")
         raise typer.Exit(1)
 
 

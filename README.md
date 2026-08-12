@@ -24,6 +24,7 @@
 - **故障隔离**：博客与微信各自独立重试，单平台失败绝不阻塞另一平台
 - **全链路可观测**：`trace_id` 贯穿每次运行，节点耗时、Token 消耗、发布结果持久化为 `runs/<timestamp>.json`
 - **结构化重试轨迹**：OSS 与平台发布重试统一记录操作、次数、异常、退避时间和时间戳
+- **离线评测基线**：20 篇固定 Markdown 样本覆盖正常内容、图片、代码公式表格和异常输入
 
 ## 系统架构
 
@@ -189,6 +190,7 @@ content_intelligence_dispatcher/
 │       ├── github_pages.py  # GitHub Pages 发布器（GitPython）
 │       └── wechat.py        # 微信公众号发布器（wenyan server CLI）
 ├── tests/                   # pytest 自动化测试
+├── eval/                    # 固定样本集、预期结果与离线评测报告
 ├── runs/                    # 运行日志 JSON（每次运行自动创建）
 └── logs/                    # 应用日志（自动创建）
 ```
@@ -357,6 +359,20 @@ WantedBy=multi-user.target
 Token 统计直接读取模型响应中的 `usage_metadata`，并兼容 OpenAI 协议常见的 `prompt_tokens` / `completion_tokens` 字段。质量修复或可选 LLM 排版产生多次模型调用时会累加，而不是只记录最后一次调用。
 
 平台发布只在工作流发布节点保留一层重试，避免发布器装饰器和节点循环叠加造成尝试次数膨胀。OSS 上传继续复用公共退避装饰器，两类重试都会进入同一份 `retry_events` 审计轨迹。
+
+## 离线评测
+
+`eval/samples/` 包含 20 篇固定 Markdown：普通技术文章、多图片文章、代码/公式/表格文章、缺失 Front Matter、异常链接和缺失附件，以及未闭合 Markdown 结构。每篇样本在 `eval/manifest.yaml` 声明预期的质量门禁结果。
+
+执行离线评测：
+
+```bash
+python -m src.cli evaluate
+# 或自定义报告路径
+python -m src.cli evaluate --output eval/reports/baseline.json
+```
+
+评测不调用模型、OSS、GitHub 或微信服务，输出 JSON 报告并统计：格式结构保留率、元数据结构化成功率、质量检查首次通过率和预期结果匹配率。人工接受率、平均修复次数、平台发布成功率、故障恢复成功率、耗时和 Token 成本将在接入真实运行批次后使用 `runs/*.json` 聚合。
 
 终端以 Rich 表格展示执行概览、各平台发布结果与 Token 用量，便于定位慢节点与失败环节。
 
