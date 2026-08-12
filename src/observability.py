@@ -76,6 +76,7 @@ class NodeTiming:
 class TraceLogger:
     def __init__(self) -> None:
         self._node_timings: Dict[str, NodeTiming] = {}
+        self._retry_events: list[Dict[str, Any]] = []
 
     @staticmethod
     def generate_trace_id() -> str:
@@ -112,6 +113,34 @@ class TraceLogger:
             name: timing.duration
             for name, timing in self._node_timings.items()
         }
+
+    def record_retry(
+        self,
+        *,
+        operation: str,
+        attempt: int,
+        max_attempts: int,
+        error: Exception,
+        delay_seconds: float,
+        trace_id: str = "",
+    ) -> None:
+        event = {
+            "operation": operation,
+            "attempt": attempt,
+            "max_attempts": max_attempts,
+            "error_type": type(error).__name__,
+            "error": str(error),
+            "delay_seconds": delay_seconds,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+        self._retry_events.append(event)
+        logger.bind(trace_id=trace_id).warning(
+            f"Retry {attempt}/{max_attempts} for {operation}: {error}; "
+            f"waiting {delay_seconds:.1f}s"
+        )
+
+    def get_retry_events(self) -> list[Dict[str, Any]]:
+        return list(self._retry_events)
 
     def write_run_log(self, run_log: Dict[str, Any]) -> Path:
         """

@@ -57,7 +57,13 @@ def _run_single_publish(
             log.warning(f"[{publisher.platform}] Attempt {attempt} failed: {exc}")
             if attempt <= max_retries:
                 delay = min(2 ** attempt, 4)
-                log.debug(f"[{publisher.platform}] Retrying in {delay}s...")
+                get_trace_logger().record_retry(
+                    operation=f"publish.{publisher.platform}",
+                    attempt=attempt,
+                    max_attempts=max_retries + 1,
+                    error=exc,
+                    delay_seconds=delay,
+                )
                 _time.sleep(delay)
     assert last_result is not None
     return last_result

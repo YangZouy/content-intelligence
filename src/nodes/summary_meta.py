@@ -10,6 +10,7 @@ from src.llm import get_summary_model
 from src.schema import SummaryMetaOutput
 from src.state import AgentState
 from src.observability import get_trace_logger
+from src.usage import extract_token_usage, merge_token_usage
 
 
 # ---------------------------------------------------------------------------
@@ -137,7 +138,9 @@ def summary_meta_node(state: AgentState) -> Dict[str, Any]:
         # Get configured model
         model = get_summary_model()
         structured_model = model.with_structured_output(
-            SummaryMetaOutput, method="function_calling"
+            SummaryMetaOutput,
+            method="function_calling",
+            include_raw=True,
         )
 
         log.bind(trace_id=trace_id).debug("Calling LLM for summary/metadata generation...")
@@ -148,7 +151,12 @@ def summary_meta_node(state: AgentState) -> Dict[str, Any]:
             HumanMessage(content=user_message),
         ]
 
-        result: SummaryMetaOutput = structured_model.invoke(messages)
+        structured_response = structured_model.invoke(messages)
+        result: SummaryMetaOutput = structured_response["parsed"]
+        if result is None:
+            parsing_error = structured_response.get("parsing_error")
+            raise LLMError(f"Structured metadata parsing failed: {parsing_error}")
+        token_usage = extract_token_usage(structured_response.get("raw"))
 
         # Preserve only a compliant H1; an overlong H1 must be repaired.
         final_title = (
@@ -167,6 +175,10 @@ def summary_meta_node(state: AgentState) -> Dict[str, Any]:
             "tags": result.tags,
             "word_count": word_count,
             "reading_time": reading_time,
+            "token_usage_info": merge_token_usage(
+                state.get("token_usage_info", {}),
+                token_usage,
+            ),
         }
 
         log.bind(trace_id=trace_id).info(

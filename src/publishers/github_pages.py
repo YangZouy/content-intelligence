@@ -26,7 +26,6 @@ from typing import Any, Dict, List, Optional, Tuple
 from src.config_loader import get_config
 from src.errors import (
     GitHubPublishError,
-    retry_with_backoff,
 )
 from src.publishers.base import Publisher
 from src.state import BrandConfig, PublishResultItem
@@ -104,7 +103,6 @@ class GitHubPagesPublisher(Publisher):
         return len(errors) == 0, errors
 
     # 函数抛出异常，装饰器自动重试，延迟2s，重试3次
-    @retry_with_backoff(max_attempts=3, base_delay=2.0)
     def publish(
         self,
         content: str,

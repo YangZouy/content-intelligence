@@ -533,7 +533,7 @@ def _llm_output_safe(before: str, after: str) -> bool:
     return True
 
 
-def _llm_polish(content: str, max_tokens: int) -> str:
+def _llm_polish(content: str, max_tokens: int) -> tuple[str, dict[str, int]]:
     """Optional LLM semantic-polish pass on top of the rule output.
 
     Reuses the single LLM factory (get_summary_model); we simply don't wrap
@@ -542,6 +542,7 @@ def _llm_polish(content: str, max_tokens: int) -> str:
     """
     from langchain_core.messages import SystemMessage, HumanMessage
     from src.llm import get_summary_model
+    from src.usage import extract_token_usage
 
     model = get_summary_model(max_tokens=max_tokens)
     resp = model.invoke([
@@ -555,7 +556,8 @@ def _llm_polish(content: str, max_tokens: int) -> str:
             part if isinstance(part, str) else getattr(part, "text", "")
             for part in text
         )
-    return text if isinstance(text, str) else str(text)
+    normalized = text if isinstance(text, str) else str(text)
+    return normalized, extract_token_usage(resp)
 
 
 def _apply_rule_pipeline(content: str) -> str:
@@ -611,7 +613,7 @@ def format_optimize_node(state: AgentState) -> Dict[str, Any]:
                 "format_optimize mode=llm: applying LLM polish"
             )
             try:
-                polished = _llm_polish(
+                polished, polish_usage = _llm_polish(
                     content, int(fmt_cfg.get("llm_max_tokens", 4096))
                 )
                 if fmt_cfg.get("safety_check", True) and not _llm_output_safe(
@@ -624,6 +626,11 @@ def format_optimize_node(state: AgentState) -> Dict[str, Any]:
                     )
                 else:
                     content = polished
+                    from src.usage import merge_token_usage
+                    token_usage_info = merge_token_usage(
+                        state.get("token_usage_info", {}),
+                        polish_usage,
+                    )
                     log.bind(trace_id=trace_id).info("LLM polish applied")
             except Exception as e:
                 log.bind(trace_id=trace_id).warning(
@@ -635,7 +642,10 @@ def format_optimize_node(state: AgentState) -> Dict[str, Any]:
             f"input={len(raw_content)} chars, output={len(content)} chars)"
         )
 
-        return {"formatted_content": content}
+        result = {"formatted_content": content}
+        if mode == "llm" and "token_usage_info" in locals():
+            result["token_usage_info"] = token_usage_info
+        return result
 
     except FormatError:
         raise

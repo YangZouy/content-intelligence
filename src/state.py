@@ -205,6 +205,7 @@ class RunLogEntry(TypedDict, total=False):
     total_duration_seconds: float
     oss_uploads: List[Dict[str, str]]
     quality_gate: Dict[str, Any]
+    retry_events: List[Dict[str, Any]]
 
 
 # ---------------------------------------------------------------------------
@@ -226,4 +227,5 @@ class AgentState(
     total=False表示每个字段都不是必填的
     """
     publish_results: List[PublishResultItem]
+    token_usage_info: Dict[str, int]
     run_log: RunLogEntry

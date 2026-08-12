@@ -276,6 +276,7 @@ class PipelineGraph:
             "note": final_state.get("approval_note", ""),
         }
         run_log["publish_results"] = list(final_state.get("publish_results", []))
+        run_log["retry_events"] = get_trace_logger().get_retry_events()
         if "token_usage_info" in final_state:
             run_log["token_usage"] = final_state.pop("token_usage_info")
         return get_trace_logger().write_run_log(dict(run_log))

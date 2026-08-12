@@ -152,11 +152,13 @@ def retry_with_backoff(
                             base_delay * (exponential_base ** (attempt - 1)),
                             max_delay,
                         )
-                        import logging
-                        logging.getLogger(__name__).warning(
-                            f"Attempt {attempt}/{max_attempts} failed for "
-                            f"{func.__name__}: {e}. "
-                            f"Retrying in {delay:.1f}s..."
+                        from src.observability import get_trace_logger
+                        get_trace_logger().record_retry(
+                            operation=func.__qualname__,
+                            attempt=attempt,
+                            max_attempts=max_attempts,
+                            error=e,
+                            delay_seconds=delay,
                         )
                         time.sleep(delay)
 
