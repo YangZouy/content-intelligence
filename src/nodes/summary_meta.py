@@ -63,6 +63,25 @@ def _extract_existing_h1_title(content: str) -> str | None:
     return None
 
 
+def _normalize_summary(summary: str, max_length: int = 200) -> str:
+    """Normalize model output and enforce the publishing metadata limit.
+
+    The model is instructed to stay within the limit, but structured output
+    validation does not enforce a Pydantic field description at runtime.
+    Keep a complete sentence when a suitable boundary exists; otherwise use a
+    hard character limit so the quality gate never blocks solely on length.
+    """
+    normalized = " ".join(summary.split())
+    if len(normalized) <= max_length:
+        return normalized
+
+    candidate = normalized[:max_length]
+    boundary = max(candidate.rfind(mark) for mark in "。！？.!?")
+    if boundary >= max_length // 2:
+        return candidate[:boundary + 1].rstrip()
+    return candidate.rstrip()
+
+
 def _build_user_message(
     formatted_content: str,
     existing_title: str | None,
@@ -171,7 +190,7 @@ def summary_meta_node(state: AgentState) -> Dict[str, Any]:
 
         output_data = {
             "title": final_title,
-            "summary": result.summary,
+            "summary": _normalize_summary(result.summary),
             "tags": result.tags,
             "word_count": word_count,
             "reading_time": reading_time,

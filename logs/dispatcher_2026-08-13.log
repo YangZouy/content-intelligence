@@ -1,0 +1,479 @@
+2026-08-13T01:12:44.214+08:00 | INFO    | cid_19ff6f64bb6_f4ba3c1d | src.graph:run:148 | Pipeline started | file=健身第十课.md | platforms=['blog', 'wechat']
+2026-08-13T01:12:44.222+08:00 | INFO    | cid_19ff6f64bb6_f4ba3c1d | src.observability:node_enter:97 | >>> [ingest] ENTER
+2026-08-13T01:12:44.226+08:00 | INFO    | cid_19ff6f64bb6_f4ba3c1d | src.nodes.ingest:ingest_node:183 | Ingested '健身第十课.md' (type=obsidian, images=4, chars=457)
+2026-08-13T01:12:44.227+08:00 | INFO    | cid_19ff6f64bb6_f4ba3c1d | src.observability:node_exit:103 | <<< [ingest] EXIT (0.01s)
+2026-08-13T01:12:44.234+08:00 | INFO    | cid_19ff6f64bb6_f4ba3c1d | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:12:44.234+08:00 | DEBUG   | cid_19ff6f64bb6_f4ba3c1d | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:12:44.240+08:00 | INFO    | cid_19ff6f64bb6_f4ba3c1d | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=457 chars, output=461 chars)
+2026-08-13T01:12:44.241+08:00 | INFO    | cid_19ff6f64bb6_f4ba3c1d | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.01s)
+2026-08-13T01:12:44.242+08:00 | INFO    | cid_19ff6f64bb6_f4ba3c1d | src.observability:node_enter:97 | >>> [summary_meta] ENTER
+2026-08-13T01:12:45.302+08:00 | DEBUG   | cid_19ff6f64bb6_f4ba3c1d | src.nodes.summary_meta:summary_meta_node:146 | Calling LLM for summary/metadata generation...
+2026-08-13T01:12:47.376+08:00 | INFO    | cid_19ff6f64bb6_f4ba3c1d | src.nodes.summary_meta:summary_meta_node:184 | Summary/meta generated: title='健身第十课', tags=['健身训练', '臀腿训练', '箭步蹲', '罗马尼亚硬拉', '臀推', '动作要领'], words=220, reading_time=1 min read
+2026-08-13T01:12:47.377+08:00 | INFO    | cid_19ff6f64bb6_f4ba3c1d | src.observability:node_exit:103 | <<< [summary_meta] EXIT (3.13s)
+2026-08-13T01:12:47.378+08:00 | INFO    | cid_19ff6f64bb6_f4ba3c1d | src.observability:node_enter:97 | >>> [image_process] ENTER
+2026-08-13T01:12:47.379+08:00 | DEBUG   | cid_19ff6f64bb6_f4ba3c1d | src.nodes.image_process:_upload_single_image:102 | Uploading local file: D:\wiki\健身\健身第十课\assets\20260721115602.png -> images/JSDSK/20260721115602.png
+2026-08-13T01:12:47.672+08:00 | DEBUG   | cid_19ff6f64bb6_f4ba3c1d | src.nodes.image_process:image_process_node:263 | Image 1/4 processed: uncs.com/images/JSDSK/20260721115602.png
+2026-08-13T01:12:47.672+08:00 | DEBUG   | cid_19ff6f64bb6_f4ba3c1d | src.nodes.image_process:_upload_single_image:102 | Uploading local file: D:\wiki\健身\健身第十课\assets\20260721120638.png -> images/JSDSK/20260721120638.png
+2026-08-13T01:12:47.853+08:00 | DEBUG   | cid_19ff6f64bb6_f4ba3c1d | src.nodes.image_process:image_process_node:263 | Image 2/4 processed: uncs.com/images/JSDSK/20260721120638.png
+2026-08-13T01:12:47.853+08:00 | DEBUG   | cid_19ff6f64bb6_f4ba3c1d | src.nodes.image_process:_upload_single_image:102 | Uploading local file: D:\wiki\健身\健身第十课\assets\20260721121424.png -> images/JSDSK/20260721121424.png
+2026-08-13T01:12:48.091+08:00 | DEBUG   | cid_19ff6f64bb6_f4ba3c1d | src.nodes.image_process:image_process_node:263 | Image 3/4 processed: uncs.com/images/JSDSK/20260721121424.png
+2026-08-13T01:12:48.092+08:00 | DEBUG   | cid_19ff6f64bb6_f4ba3c1d | src.nodes.image_process:_upload_single_image:102 | Uploading local file: D:\wiki\健身\健身第十课\assets\20260721121410.png -> images/JSDSK/20260721121410.png
+2026-08-13T01:12:48.366+08:00 | DEBUG   | cid_19ff6f64bb6_f4ba3c1d | src.nodes.image_process:image_process_node:263 | Image 4/4 processed: uncs.com/images/JSDSK/20260721121410.png
+2026-08-13T01:12:48.367+08:00 | INFO    | cid_19ff6f64bb6_f4ba3c1d | src.nodes.image_process:image_process_node:289 | Image processing complete: 4 uploaded, 0 failed, cover=set
+2026-08-13T01:12:48.368+08:00 | INFO    | cid_19ff6f64bb6_f4ba3c1d | src.observability:node_exit:103 | <<< [image_process] EXIT (0.99s)
+2026-08-13T01:12:48.369+08:00 | INFO    | cid_19ff6f64bb6_f4ba3c1d | src.observability:node_enter:97 | >>> [cover_image] ENTER
+2026-08-13T01:12:50.407+08:00 | INFO    | cid_19ff6f64bb6_f4ba3c1d | src.nodes.cover:cover_image_node:237 | Cover uploaded to OSS (same folder as article images): https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/JSDSK/cover.jpg
+2026-08-13T01:12:50.407+08:00 | INFO    | cid_19ff6f64bb6_f4ba3c1d | src.nodes.cover:cover_image_node:246 | Cover image resolved: https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/JSDSK/cover.jpg... (source=oss<-unsplash)
+2026-08-13T01:12:50.411+08:00 | INFO    | cid_19ff6f64bb6_f4ba3c1d | src.observability:node_exit:103 | <<< [cover_image] EXIT (2.04s)
+2026-08-13T01:12:50.412+08:00 | INFO    | cid_19ff6f64bb6_f4ba3c1d | src.observability:node_enter:97 | >>> [content_adapt] ENTER
+2026-08-13T01:12:50.414+08:00 | DEBUG   | cid_19ff6f64bb6_f4ba3c1d | src.nodes.content_adapt:content_adapt_node:124 | Hexo document built (1147 chars)
+2026-08-13T01:12:50.414+08:00 | DEBUG   | cid_19ff6f64bb6_f4ba3c1d | src.nodes.content_adapt:content_adapt_node:133 | WeChat draft built (1146 chars)
+2026-08-13T01:12:50.414+08:00 | INFO    | cid_19ff6f64bb6_f4ba3c1d | src.observability:node_exit:103 | <<< [content_adapt] EXIT (0.00s)
+2026-08-13T01:12:50.415+08:00 | INFO    | cid_19ff6f64bb6_f4ba3c1d | src.observability:node_enter:97 | >>> [quality_check] ENTER
+2026-08-13T01:12:50.417+08:00 | INFO    | cid_19ff6f64bb6_f4ba3c1d | src.observability:node_exit:103 | <<< [quality_check] EXIT (0.00s)
+2026-08-13T01:12:50.419+08:00 | INFO    | cid_19ff6f64bb6_f4ba3c1d | src.observability:node_enter:97 | >>> [approval] ENTER
+2026-08-13T01:12:50.420+08:00 | INFO    | cid_19ff6f64bb6_f4ba3c1d | src.observability:node_exit:103 | <<< [approval] EXIT (0.00s)
+2026-08-13T01:13:57.279+08:00 | INFO    | cid_19ff6f64bb6_f4ba3c1d | src.observability:node_enter:97 | >>> [approval] ENTER
+2026-08-13T01:13:57.279+08:00 | INFO    | cid_19ff6f64bb6_f4ba3c1d | src.observability:node_exit:103 | <<< [approval] EXIT (0.00s)
+2026-08-13T01:13:57.280+08:00 | INFO    | cid_19ff6f64bb6_f4ba3c1d | src.observability:node_enter:97 | >>> [publish_blog] ENTER
+2026-08-13T01:13:59.939+08:00 | DEBUG   | cid_19ff6f76924_1aca75f2 | src.publishers.github_pages:publish:150 | GitHub: created D:\study\content_intelligence_dispatcher\temp\hexo_repo\source\_posts\健身第十课.md
+2026-08-13T01:14:02.922+08:00 | INFO    | cid_19ff6f64bb6_f4ba3c1d | src.observability:node_exit:103 | <<< [publish_blog] EXIT (5.64s)
+2026-08-13T01:14:02.923+08:00 | INFO    | cid_19ff6f64bb6_f4ba3c1d | src.observability:node_enter:97 | >>> [publish_wechat] ENTER
+2026-08-13T01:14:44.297+08:00 | INFO    | cid_19ff6f64bb6_f4ba3c1d | src.observability:node_exit:103 | <<< [publish_wechat] EXIT (41.37s)
+2026-08-13T01:14:44.301+08:00 | INFO    | cid_19ff6f64bb6_f4ba3c1d | src.observability:write_run_log:163 | Run log written to runs\2026-08-13T01-12-44.json
+2026-08-13T01:16:28.624+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.graph:run:148 | Pipeline started | file=健身第十二课.md | platforms=['blog', 'wechat']
+2026-08-13T01:16:28.631+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:node_enter:97 | >>> [ingest] ENTER
+2026-08-13T01:16:28.643+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.nodes.ingest:ingest_node:183 | Ingested '健身第十二课.md' (type=obsidian, images=4, chars=491)
+2026-08-13T01:16:28.644+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:node_exit:103 | <<< [ingest] EXIT (0.01s)
+2026-08-13T01:16:28.652+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:16:28.653+08:00 | DEBUG   | cid_19ff6f9b850_694909bd | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:16:28.658+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=491 chars, output=495 chars)
+2026-08-13T01:16:28.659+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.01s)
+2026-08-13T01:16:28.660+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:node_enter:97 | >>> [summary_meta] ENTER
+2026-08-13T01:16:29.495+08:00 | DEBUG   | cid_19ff6f9b850_694909bd | src.nodes.summary_meta:summary_meta_node:146 | Calling LLM for summary/metadata generation...
+2026-08-13T01:16:32.356+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.nodes.summary_meta:summary_meta_node:184 | Summary/meta generated: title='健身第十二课', tags=['健身训练', '背部训练', '背阔肌', '力量训练', '动作教学'], words=280, reading_time=1 min read
+2026-08-13T01:16:32.357+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:node_exit:103 | <<< [summary_meta] EXIT (3.70s)
+2026-08-13T01:16:32.359+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:node_enter:97 | >>> [image_process] ENTER
+2026-08-13T01:16:32.360+08:00 | DEBUG   | cid_19ff6f9b850_694909bd | src.nodes.image_process:_upload_single_image:102 | Uploading local file: D:\wiki\健身\健身第十二课\assets\20260803230957.png -> images/JSDSEK/20260803230957.png
+2026-08-13T01:16:32.583+08:00 | DEBUG   | cid_19ff6f9b850_694909bd | src.nodes.image_process:image_process_node:263 | Image 1/4 processed: ncs.com/images/JSDSEK/20260803230957.png
+2026-08-13T01:16:32.584+08:00 | DEBUG   | cid_19ff6f9b850_694909bd | src.nodes.image_process:_upload_single_image:102 | Uploading local file: D:\wiki\健身\健身第十二课\assets\20260803232006.png -> images/JSDSEK/20260803232006.png
+2026-08-13T01:16:32.741+08:00 | DEBUG   | cid_19ff6f9b850_694909bd | src.nodes.image_process:image_process_node:263 | Image 2/4 processed: ncs.com/images/JSDSEK/20260803232006.png
+2026-08-13T01:16:32.741+08:00 | DEBUG   | cid_19ff6f9b850_694909bd | src.nodes.image_process:_upload_single_image:102 | Uploading local file: D:\wiki\健身\健身第十二课\assets\20260803232537.png -> images/JSDSEK/20260803232537.png
+2026-08-13T01:16:33.061+08:00 | DEBUG   | cid_19ff6f9b850_694909bd | src.nodes.image_process:image_process_node:263 | Image 3/4 processed: ncs.com/images/JSDSEK/20260803232537.png
+2026-08-13T01:16:33.062+08:00 | DEBUG   | cid_19ff6f9b850_694909bd | src.nodes.image_process:_upload_single_image:102 | Uploading local file: D:\wiki\健身\健身第十二课\assets\20260803232326.png -> images/JSDSEK/20260803232326.png
+2026-08-13T01:16:33.214+08:00 | DEBUG   | cid_19ff6f9b850_694909bd | src.nodes.image_process:image_process_node:263 | Image 4/4 processed: ncs.com/images/JSDSEK/20260803232326.png
+2026-08-13T01:16:33.215+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.nodes.image_process:image_process_node:289 | Image processing complete: 4 uploaded, 0 failed, cover=set
+2026-08-13T01:16:33.216+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:node_exit:103 | <<< [image_process] EXIT (0.86s)
+2026-08-13T01:16:33.218+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:node_enter:97 | >>> [cover_image] ENTER
+2026-08-13T01:16:35.099+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.nodes.cover:cover_image_node:237 | Cover uploaded to OSS (same folder as article images): https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/JSDSEK/cover.jpg
+2026-08-13T01:16:35.100+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.nodes.cover:cover_image_node:246 | Cover image resolved: https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/JSDSEK/cover.jpg... (source=oss<-unsplash)
+2026-08-13T01:16:35.103+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:node_exit:103 | <<< [cover_image] EXIT (1.89s)
+2026-08-13T01:16:35.105+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:node_enter:97 | >>> [content_adapt] ENTER
+2026-08-13T01:16:35.107+08:00 | DEBUG   | cid_19ff6f9b850_694909bd | src.nodes.content_adapt:content_adapt_node:124 | Hexo document built (1159 chars)
+2026-08-13T01:16:35.107+08:00 | DEBUG   | cid_19ff6f9b850_694909bd | src.nodes.content_adapt:content_adapt_node:133 | WeChat draft built (1158 chars)
+2026-08-13T01:16:35.107+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:node_exit:103 | <<< [content_adapt] EXIT (0.00s)
+2026-08-13T01:16:35.109+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:node_enter:97 | >>> [quality_check] ENTER
+2026-08-13T01:16:35.112+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:node_exit:103 | <<< [quality_check] EXIT (0.00s)
+2026-08-13T01:16:35.114+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:node_enter:97 | >>> [approval] ENTER
+2026-08-13T01:16:35.115+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:node_exit:103 | <<< [approval] EXIT (0.00s)
+2026-08-13T01:17:44.820+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:node_enter:97 | >>> [approval] ENTER
+2026-08-13T01:17:44.820+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:node_exit:103 | <<< [approval] EXIT (0.00s)
+2026-08-13T01:17:44.821+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:node_enter:97 | >>> [content_adapt] ENTER
+2026-08-13T01:17:44.822+08:00 | DEBUG   | cid_19ff6f9b850_694909bd | src.nodes.content_adapt:content_adapt_node:124 | Hexo document built (1152 chars)
+2026-08-13T01:17:44.822+08:00 | DEBUG   | cid_19ff6f9b850_694909bd | src.nodes.content_adapt:content_adapt_node:133 | WeChat draft built (1151 chars)
+2026-08-13T01:17:44.822+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:node_exit:103 | <<< [content_adapt] EXIT (0.00s)
+2026-08-13T01:17:44.823+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:node_enter:97 | >>> [quality_check] ENTER
+2026-08-13T01:17:44.825+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:node_exit:103 | <<< [quality_check] EXIT (0.00s)
+2026-08-13T01:17:44.826+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:node_enter:97 | >>> [approval] ENTER
+2026-08-13T01:17:44.826+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:node_exit:103 | <<< [approval] EXIT (0.00s)
+2026-08-13T01:17:59.189+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:node_enter:97 | >>> [approval] ENTER
+2026-08-13T01:17:59.189+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:node_exit:103 | <<< [approval] EXIT (0.00s)
+2026-08-13T01:17:59.190+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:node_enter:97 | >>> [publish_blog] ENTER
+2026-08-13T01:18:01.864+08:00 | DEBUG   | cid_19ff6fb1a1a_4a11ec45 | src.publishers.github_pages:publish:150 | GitHub: created D:\study\content_intelligence_dispatcher\temp\hexo_repo\source\_posts\健身第十二课.md
+2026-08-13T01:18:04.674+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:node_exit:103 | <<< [publish_blog] EXIT (5.48s)
+2026-08-13T01:18:04.675+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:node_enter:97 | >>> [publish_wechat] ENTER
+2026-08-13T01:18:30.819+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:node_exit:103 | <<< [publish_wechat] EXIT (26.14s)
+2026-08-13T01:18:30.823+08:00 | INFO    | cid_19ff6f9b850_694909bd | src.observability:write_run_log:163 | Run log written to runs\2026-08-13T01-16-28.json
+2026-08-13T01:18:59.278+08:00 | INFO    | cid_19ff6fc04ce_d118713a | src.graph:run:148 | Pipeline started | file=健身第十三课.md | platforms=['blog', 'wechat']
+2026-08-13T01:18:59.287+08:00 | INFO    | cid_19ff6fc04ce_d118713a | src.observability:node_enter:97 | >>> [ingest] ENTER
+2026-08-13T01:18:59.299+08:00 | INFO    | cid_19ff6fc04ce_d118713a | src.nodes.ingest:ingest_node:183 | Ingested '健身第十三课.md' (type=obsidian, images=5, chars=799)
+2026-08-13T01:18:59.300+08:00 | INFO    | cid_19ff6fc04ce_d118713a | src.observability:node_exit:103 | <<< [ingest] EXIT (0.01s)
+2026-08-13T01:18:59.311+08:00 | INFO    | cid_19ff6fc04ce_d118713a | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:18:59.312+08:00 | DEBUG   | cid_19ff6fc04ce_d118713a | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:18:59.318+08:00 | INFO    | cid_19ff6fc04ce_d118713a | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=799 chars, output=799 chars)
+2026-08-13T01:18:59.319+08:00 | INFO    | cid_19ff6fc04ce_d118713a | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.01s)
+2026-08-13T01:18:59.321+08:00 | INFO    | cid_19ff6fc04ce_d118713a | src.observability:node_enter:97 | >>> [summary_meta] ENTER
+2026-08-13T01:19:00.187+08:00 | DEBUG   | cid_19ff6fc04ce_d118713a | src.nodes.summary_meta:summary_meta_node:146 | Calling LLM for summary/metadata generation...
+2026-08-13T01:19:02.740+08:00 | INFO    | cid_19ff6fc04ce_d118713a | src.nodes.summary_meta:summary_meta_node:184 | Summary/meta generated: title='健身第十三课', tags=['健身训练', '肩部训练', '史密斯肩推', '哑铃训练', '三角肌', '动作姿势'], words=420, reading_time=1 min read
+2026-08-13T01:19:02.741+08:00 | INFO    | cid_19ff6fc04ce_d118713a | src.observability:node_exit:103 | <<< [summary_meta] EXIT (3.42s)
+2026-08-13T01:19:02.742+08:00 | INFO    | cid_19ff6fc04ce_d118713a | src.observability:node_enter:97 | >>> [image_process] ENTER
+2026-08-13T01:19:02.743+08:00 | DEBUG   | cid_19ff6fc04ce_d118713a | src.nodes.image_process:_upload_single_image:102 | Uploading local file: D:\wiki\健身\健身第十三课\assets\20260803225138.png -> images/JSDSSK/20260803225138.png
+2026-08-13T01:19:02.983+08:00 | DEBUG   | cid_19ff6fc04ce_d118713a | src.nodes.image_process:image_process_node:263 | Image 1/5 processed: ncs.com/images/JSDSSK/20260803225138.png
+2026-08-13T01:19:02.983+08:00 | DEBUG   | cid_19ff6fc04ce_d118713a | src.nodes.image_process:_upload_single_image:102 | Uploading local file: D:\wiki\健身\健身第十三课\assets\20260803225416.png -> images/JSDSSK/20260803225416.png
+2026-08-13T01:19:03.182+08:00 | DEBUG   | cid_19ff6fc04ce_d118713a | src.nodes.image_process:image_process_node:263 | Image 2/5 processed: ncs.com/images/JSDSSK/20260803225416.png
+2026-08-13T01:19:03.183+08:00 | DEBUG   | cid_19ff6fc04ce_d118713a | src.nodes.image_process:_upload_single_image:102 | Uploading local file: D:\wiki\健身\健身第十三课\assets\20260803230002.png -> images/JSDSSK/20260803230002.png
+2026-08-13T01:19:03.343+08:00 | DEBUG   | cid_19ff6fc04ce_d118713a | src.nodes.image_process:image_process_node:263 | Image 3/5 processed: ncs.com/images/JSDSSK/20260803230002.png
+2026-08-13T01:19:03.343+08:00 | DEBUG   | cid_19ff6fc04ce_d118713a | src.nodes.image_process:_upload_single_image:102 | Uploading local file: D:\wiki\健身\健身第十三课\assets\20260803230009.png -> images/JSDSSK/20260803230009.png
+2026-08-13T01:19:03.531+08:00 | DEBUG   | cid_19ff6fc04ce_d118713a | src.nodes.image_process:image_process_node:263 | Image 4/5 processed: ncs.com/images/JSDSSK/20260803230009.png
+2026-08-13T01:19:03.531+08:00 | DEBUG   | cid_19ff6fc04ce_d118713a | src.nodes.image_process:_upload_single_image:102 | Uploading local file: D:\wiki\健身\健身第十三课\assets\20260803230604.png -> images/JSDSSK/20260803230604.png
+2026-08-13T01:19:03.801+08:00 | DEBUG   | cid_19ff6fc04ce_d118713a | src.nodes.image_process:image_process_node:263 | Image 5/5 processed: ncs.com/images/JSDSSK/20260803230604.png
+2026-08-13T01:19:03.803+08:00 | INFO    | cid_19ff6fc04ce_d118713a | src.nodes.image_process:image_process_node:289 | Image processing complete: 5 uploaded, 0 failed, cover=set
+2026-08-13T01:19:03.804+08:00 | INFO    | cid_19ff6fc04ce_d118713a | src.observability:node_exit:103 | <<< [image_process] EXIT (1.06s)
+2026-08-13T01:19:03.805+08:00 | INFO    | cid_19ff6fc04ce_d118713a | src.observability:node_enter:97 | >>> [cover_image] ENTER
+2026-08-13T01:19:05.662+08:00 | INFO    | cid_19ff6fc04ce_d118713a | src.nodes.cover:cover_image_node:237 | Cover uploaded to OSS (same folder as article images): https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/JSDSSK/cover.jpg
+2026-08-13T01:19:05.663+08:00 | INFO    | cid_19ff6fc04ce_d118713a | src.nodes.cover:cover_image_node:246 | Cover image resolved: https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/JSDSSK/cover.jpg... (source=oss<-unsplash)
+2026-08-13T01:19:05.667+08:00 | INFO    | cid_19ff6fc04ce_d118713a | src.observability:node_exit:103 | <<< [cover_image] EXIT (1.86s)
+2026-08-13T01:19:05.669+08:00 | INFO    | cid_19ff6fc04ce_d118713a | src.observability:node_enter:97 | >>> [content_adapt] ENTER
+2026-08-13T01:19:05.671+08:00 | DEBUG   | cid_19ff6fc04ce_d118713a | src.nodes.content_adapt:content_adapt_node:124 | Hexo document built (1606 chars)
+2026-08-13T01:19:05.671+08:00 | DEBUG   | cid_19ff6fc04ce_d118713a | src.nodes.content_adapt:content_adapt_node:133 | WeChat draft built (1606 chars)
+2026-08-13T01:19:05.671+08:00 | INFO    | cid_19ff6fc04ce_d118713a | src.observability:node_exit:103 | <<< [content_adapt] EXIT (0.00s)
+2026-08-13T01:19:05.673+08:00 | INFO    | cid_19ff6fc04ce_d118713a | src.observability:node_enter:97 | >>> [quality_check] ENTER
+2026-08-13T01:19:05.677+08:00 | INFO    | cid_19ff6fc04ce_d118713a | src.observability:node_exit:103 | <<< [quality_check] EXIT (0.00s)
+2026-08-13T01:19:05.679+08:00 | INFO    | cid_19ff6fc04ce_d118713a | src.observability:node_enter:97 | >>> [approval] ENTER
+2026-08-13T01:19:05.680+08:00 | INFO    | cid_19ff6fc04ce_d118713a | src.observability:node_exit:103 | <<< [approval] EXIT (0.00s)
+2026-08-13T01:23:10.926+08:00 | INFO    | cid_19ff6fc04ce_d118713a | src.observability:node_enter:97 | >>> [approval] ENTER
+2026-08-13T01:23:10.926+08:00 | INFO    | cid_19ff6fc04ce_d118713a | src.observability:node_exit:103 | <<< [approval] EXIT (0.00s)
+2026-08-13T01:23:10.928+08:00 | INFO    | cid_19ff6fc04ce_d118713a | src.observability:node_enter:97 | >>> [publish_blog] ENTER
+2026-08-13T01:23:12.628+08:00 | DEBUG   | cid_19ff6ffdbd4_7e3084da | src.publishers.github_pages:publish:150 | GitHub: created D:\study\content_intelligence_dispatcher\temp\hexo_repo\source\_posts\健身第十三课.md
+2026-08-13T01:23:15.414+08:00 | INFO    | cid_19ff6fc04ce_d118713a | src.observability:node_exit:103 | <<< [publish_blog] EXIT (4.49s)
+2026-08-13T01:23:15.415+08:00 | INFO    | cid_19ff6fc04ce_d118713a | src.observability:node_enter:97 | >>> [publish_wechat] ENTER
+2026-08-13T01:23:25.253+08:00 | INFO    | cid_19ff6fc04ce_d118713a | src.observability:node_exit:103 | <<< [publish_wechat] EXIT (9.84s)
+2026-08-13T01:23:25.256+08:00 | INFO    | cid_19ff6fc04ce_d118713a | src.observability:write_run_log:163 | Run log written to runs\2026-08-13T01-18-59.json
+2026-08-13T01:24:17.677+08:00 | INFO    | cid_19ff700e08d_5d6cb680 | src.graph:run:148 | Pipeline started | file=健身第十五课.md | platforms=['blog', 'wechat']
+2026-08-13T01:24:17.686+08:00 | INFO    | cid_19ff700e08d_5d6cb680 | src.observability:node_enter:97 | >>> [ingest] ENTER
+2026-08-13T01:24:17.690+08:00 | INFO    | cid_19ff700e08d_5d6cb680 | src.nodes.ingest:ingest_node:183 | Ingested '健身第十五课.md' (type=obsidian, images=5, chars=567)
+2026-08-13T01:24:17.690+08:00 | INFO    | cid_19ff700e08d_5d6cb680 | src.observability:node_exit:103 | <<< [ingest] EXIT (0.01s)
+2026-08-13T01:24:17.699+08:00 | INFO    | cid_19ff700e08d_5d6cb680 | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:24:17.700+08:00 | DEBUG   | cid_19ff700e08d_5d6cb680 | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:24:17.706+08:00 | INFO    | cid_19ff700e08d_5d6cb680 | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=567 chars, output=576 chars)
+2026-08-13T01:24:17.707+08:00 | INFO    | cid_19ff700e08d_5d6cb680 | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.01s)
+2026-08-13T01:24:17.708+08:00 | INFO    | cid_19ff700e08d_5d6cb680 | src.observability:node_enter:97 | >>> [summary_meta] ENTER
+2026-08-13T01:24:18.714+08:00 | DEBUG   | cid_19ff700e08d_5d6cb680 | src.nodes.summary_meta:summary_meta_node:146 | Calling LLM for summary/metadata generation...
+2026-08-13T01:24:21.158+08:00 | INFO    | cid_19ff700e08d_5d6cb680 | src.nodes.summary_meta:summary_meta_node:184 | Summary/meta generated: title='臀部训练指南：三个经典动作详解', tags=['健身训练', '臀部训练', '哈克深蹲', '单腿硬拉', '臀推', '力量训练'], words=320, reading_time=1 min read
+2026-08-13T01:24:21.159+08:00 | INFO    | cid_19ff700e08d_5d6cb680 | src.observability:node_exit:103 | <<< [summary_meta] EXIT (3.45s)
+2026-08-13T01:24:21.160+08:00 | INFO    | cid_19ff700e08d_5d6cb680 | src.observability:node_enter:97 | >>> [image_process] ENTER
+2026-08-13T01:24:21.162+08:00 | DEBUG   | cid_19ff700e08d_5d6cb680 | src.nodes.image_process:_upload_single_image:102 | Uploading local file: D:\wiki\健身\健身第十五课\assets\20260810230521.png -> images/TBXLZNSGJDDZXJ/20260810230521.png
+2026-08-13T01:24:21.421+08:00 | DEBUG   | cid_19ff700e08d_5d6cb680 | src.nodes.image_process:image_process_node:263 | Image 1/5 processed: images/TBXLZNSGJDDZXJ/20260810230521.png
+2026-08-13T01:24:21.421+08:00 | DEBUG   | cid_19ff700e08d_5d6cb680 | src.nodes.image_process:_upload_single_image:102 | Uploading local file: D:\wiki\健身\健身第十五课\assets\20260810230511.png -> images/TBXLZNSGJDDZXJ/20260810230511.png
+2026-08-13T01:24:21.660+08:00 | DEBUG   | cid_19ff700e08d_5d6cb680 | src.nodes.image_process:image_process_node:263 | Image 2/5 processed: images/TBXLZNSGJDDZXJ/20260810230511.png
+2026-08-13T01:24:21.661+08:00 | DEBUG   | cid_19ff700e08d_5d6cb680 | src.nodes.image_process:_upload_single_image:102 | Uploading local file: D:\wiki\健身\健身第十五课\assets\20260810231720.png -> images/TBXLZNSGJDDZXJ/20260810231720.png
+2026-08-13T01:24:21.834+08:00 | DEBUG   | cid_19ff700e08d_5d6cb680 | src.nodes.image_process:image_process_node:263 | Image 3/5 processed: images/TBXLZNSGJDDZXJ/20260810231720.png
+2026-08-13T01:24:21.834+08:00 | DEBUG   | cid_19ff700e08d_5d6cb680 | src.nodes.image_process:_upload_single_image:102 | Uploading local file: D:\wiki\健身\健身第十五课\assets\20260810231738.png -> images/TBXLZNSGJDDZXJ/20260810231738.png
+2026-08-13T01:24:22.022+08:00 | DEBUG   | cid_19ff700e08d_5d6cb680 | src.nodes.image_process:image_process_node:263 | Image 4/5 processed: images/TBXLZNSGJDDZXJ/20260810231738.png
+2026-08-13T01:24:22.022+08:00 | DEBUG   | cid_19ff700e08d_5d6cb680 | src.nodes.image_process:_upload_single_image:102 | Uploading local file: D:\wiki\健身\健身第十五课\assets\20260810231459.png -> images/TBXLZNSGJDDZXJ/20260810231459.png
+2026-08-13T01:24:22.160+08:00 | DEBUG   | cid_19ff700e08d_5d6cb680 | src.nodes.image_process:image_process_node:263 | Image 5/5 processed: images/TBXLZNSGJDDZXJ/20260810231459.png
+2026-08-13T01:24:22.161+08:00 | INFO    | cid_19ff700e08d_5d6cb680 | src.nodes.image_process:image_process_node:289 | Image processing complete: 5 uploaded, 0 failed, cover=set
+2026-08-13T01:24:22.162+08:00 | INFO    | cid_19ff700e08d_5d6cb680 | src.observability:node_exit:103 | <<< [image_process] EXIT (1.00s)
+2026-08-13T01:24:22.164+08:00 | INFO    | cid_19ff700e08d_5d6cb680 | src.observability:node_enter:97 | >>> [cover_image] ENTER
+2026-08-13T01:24:23.820+08:00 | INFO    | cid_19ff700e08d_5d6cb680 | src.nodes.cover:cover_image_node:237 | Cover uploaded to OSS (same folder as article images): https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/TBXLZNSGJDDZXJ/cover.jpg
+2026-08-13T01:24:23.821+08:00 | INFO    | cid_19ff700e08d_5d6cb680 | src.nodes.cover:cover_image_node:246 | Cover image resolved: https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/TBXLZNSGJDDZXJ/cov... (source=oss<-unsplash)
+2026-08-13T01:24:23.825+08:00 | INFO    | cid_19ff700e08d_5d6cb680 | src.observability:node_exit:103 | <<< [cover_image] EXIT (1.66s)
+2026-08-13T01:24:23.826+08:00 | INFO    | cid_19ff700e08d_5d6cb680 | src.observability:node_enter:97 | >>> [content_adapt] ENTER
+2026-08-13T01:24:23.829+08:00 | DEBUG   | cid_19ff700e08d_5d6cb680 | src.nodes.content_adapt:content_adapt_node:124 | Hexo document built (1391 chars)
+2026-08-13T01:24:23.829+08:00 | DEBUG   | cid_19ff700e08d_5d6cb680 | src.nodes.content_adapt:content_adapt_node:133 | WeChat draft built (1389 chars)
+2026-08-13T01:24:23.829+08:00 | INFO    | cid_19ff700e08d_5d6cb680 | src.observability:node_exit:103 | <<< [content_adapt] EXIT (0.00s)
+2026-08-13T01:24:23.830+08:00 | INFO    | cid_19ff700e08d_5d6cb680 | src.observability:node_enter:97 | >>> [quality_check] ENTER
+2026-08-13T01:24:23.833+08:00 | INFO    | cid_19ff700e08d_5d6cb680 | src.observability:node_exit:103 | <<< [quality_check] EXIT (0.00s)
+2026-08-13T01:24:23.836+08:00 | INFO    | cid_19ff700e08d_5d6cb680 | src.observability:node_enter:97 | >>> [approval] ENTER
+2026-08-13T01:24:23.837+08:00 | INFO    | cid_19ff700e08d_5d6cb680 | src.observability:node_exit:103 | <<< [approval] EXIT (0.00s)
+2026-08-13T01:24:54.430+08:00 | INFO    | cid_19ff700e08d_5d6cb680 | src.observability:node_enter:97 | >>> [approval] ENTER
+2026-08-13T01:24:54.430+08:00 | INFO    | cid_19ff700e08d_5d6cb680 | src.observability:node_exit:103 | <<< [approval] EXIT (0.00s)
+2026-08-13T01:24:54.431+08:00 | INFO    | cid_19ff700e08d_5d6cb680 | src.observability:node_enter:97 | >>> [publish_blog] ENTER
+2026-08-13T01:24:56.206+08:00 | DEBUG   | cid_19ff7017025_96436201 | src.publishers.github_pages:publish:150 | GitHub: created D:\study\content_intelligence_dispatcher\temp\hexo_repo\source\_posts\臀部训练指南：三个经典动作详解.md
+2026-08-13T01:24:58.736+08:00 | INFO    | cid_19ff700e08d_5d6cb680 | src.observability:node_exit:103 | <<< [publish_blog] EXIT (4.30s)
+2026-08-13T01:24:58.737+08:00 | INFO    | cid_19ff700e08d_5d6cb680 | src.observability:node_enter:97 | >>> [publish_wechat] ENTER
+2026-08-13T01:25:09.525+08:00 | INFO    | cid_19ff700e08d_5d6cb680 | src.observability:node_exit:103 | <<< [publish_wechat] EXIT (10.79s)
+2026-08-13T01:25:09.530+08:00 | INFO    | cid_19ff700e08d_5d6cb680 | src.observability:write_run_log:163 | Run log written to runs\2026-08-13T01-24-17.json
+2026-08-13T01:26:11.159+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.graph:run:148 | Pipeline started | file=Python-1-基础.md | platforms=['blog', 'wechat']
+2026-08-13T01:26:11.170+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.observability:node_enter:97 | >>> [ingest] ENTER
+2026-08-13T01:26:11.172+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.nodes.ingest:ingest_node:183 | Ingested 'Python-1-基础.md' (type=obsidian, images=0, chars=9671)
+2026-08-13T01:26:11.174+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.observability:node_exit:103 | <<< [ingest] EXIT (0.00s)
+2026-08-13T01:26:11.186+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:26:11.187+08:00 | DEBUG   | cid_19ff7029bd7_69fffbd6 | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:26:11.196+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=9671 chars, output=9699 chars)
+2026-08-13T01:26:11.197+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.01s)
+2026-08-13T01:26:11.198+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.observability:node_enter:97 | >>> [summary_meta] ENTER
+2026-08-13T01:26:12.035+08:00 | DEBUG   | cid_19ff7029bd7_69fffbd6 | src.nodes.summary_meta:summary_meta_node:146 | Calling LLM for summary/metadata generation...
+2026-08-13T01:26:14.309+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.nodes.summary_meta:summary_meta_node:184 | Summary/meta generated: title='Python-1-基础', tags=['Python', 'Type Hints', 'Pydantic', '数据校验', 'LLM'], words=2100, reading_time=5 min read
+2026-08-13T01:26:14.310+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.observability:node_exit:103 | <<< [summary_meta] EXIT (3.11s)
+2026-08-13T01:26:14.311+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.observability:node_enter:97 | >>> [image_process] ENTER
+2026-08-13T01:26:14.312+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.nodes.image_process:image_process_node:209 | No images found, skipping processing
+2026-08-13T01:26:14.313+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.observability:node_exit:103 | <<< [image_process] EXIT (0.00s)
+2026-08-13T01:26:14.314+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.observability:node_enter:97 | >>> [cover_image] ENTER
+2026-08-13T01:26:16.707+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.nodes.cover:cover_image_node:237 | Cover uploaded to OSS (same folder as article images): https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/PYTHON1JC/cover.jpg
+2026-08-13T01:26:16.708+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.nodes.cover:cover_image_node:246 | Cover image resolved: https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/PYTHON1JC/cover.jp... (source=oss<-unsplash)
+2026-08-13T01:26:16.711+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.observability:node_exit:103 | <<< [cover_image] EXIT (2.40s)
+2026-08-13T01:26:16.713+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.observability:node_enter:97 | >>> [content_adapt] ENTER
+2026-08-13T01:26:16.715+08:00 | DEBUG   | cid_19ff7029bd7_69fffbd6 | src.nodes.content_adapt:content_adapt_node:124 | Hexo document built (10297 chars)
+2026-08-13T01:26:16.715+08:00 | DEBUG   | cid_19ff7029bd7_69fffbd6 | src.nodes.content_adapt:content_adapt_node:133 | WeChat draft built (10296 chars)
+2026-08-13T01:26:16.716+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.observability:node_exit:103 | <<< [content_adapt] EXIT (0.00s)
+2026-08-13T01:26:16.717+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.observability:node_enter:97 | >>> [quality_check] ENTER
+2026-08-13T01:26:16.721+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.observability:node_exit:103 | <<< [quality_check] EXIT (0.00s)
+2026-08-13T01:26:16.723+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.observability:node_enter:97 | >>> [quality_repair] ENTER
+2026-08-13T01:26:16.724+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.observability:node_exit:103 | <<< [quality_repair] EXIT (0.00s)
+2026-08-13T01:26:16.726+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.observability:node_enter:97 | >>> [summary_meta] ENTER
+2026-08-13T01:26:16.728+08:00 | DEBUG   | cid_19ff7029bd7_69fffbd6 | src.nodes.summary_meta:summary_meta_node:146 | Calling LLM for summary/metadata generation...
+2026-08-13T01:26:18.816+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.nodes.summary_meta:summary_meta_node:184 | Summary/meta generated: title='Python-1-基础', tags=['Python', 'Type Hints', 'Pydantic', '数据校验', 'LLM'], words=2100, reading_time=5 min read
+2026-08-13T01:26:18.817+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.observability:node_exit:103 | <<< [summary_meta] EXIT (2.09s)
+2026-08-13T01:26:18.818+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.observability:node_enter:97 | >>> [image_process] ENTER
+2026-08-13T01:26:18.819+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.nodes.image_process:image_process_node:209 | No images found, skipping processing
+2026-08-13T01:26:18.819+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.observability:node_exit:103 | <<< [image_process] EXIT (0.00s)
+2026-08-13T01:26:18.820+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.observability:node_enter:97 | >>> [cover_image] ENTER
+2026-08-13T01:26:20.103+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.nodes.cover:cover_image_node:237 | Cover uploaded to OSS (same folder as article images): https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/PYTHON1JC/cover.jpg
+2026-08-13T01:26:20.104+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.nodes.cover:cover_image_node:246 | Cover image resolved: https://zyydgrbk.oss-cn-chengdu.aliyuncs.com/images/PYTHON1JC/cover.jp... (source=oss<-unsplash)
+2026-08-13T01:26:20.108+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.observability:node_exit:103 | <<< [cover_image] EXIT (1.29s)
+2026-08-13T01:26:20.109+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.observability:node_enter:97 | >>> [content_adapt] ENTER
+2026-08-13T01:26:20.111+08:00 | DEBUG   | cid_19ff7029bd7_69fffbd6 | src.nodes.content_adapt:content_adapt_node:124 | Hexo document built (10247 chars)
+2026-08-13T01:26:20.111+08:00 | DEBUG   | cid_19ff7029bd7_69fffbd6 | src.nodes.content_adapt:content_adapt_node:133 | WeChat draft built (10246 chars)
+2026-08-13T01:26:20.112+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.observability:node_exit:103 | <<< [content_adapt] EXIT (0.00s)
+2026-08-13T01:26:20.114+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.observability:node_enter:97 | >>> [quality_check] ENTER
+2026-08-13T01:26:20.118+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.observability:node_exit:103 | <<< [quality_check] EXIT (0.00s)
+2026-08-13T01:26:20.126+08:00 | INFO    | cid_19ff7029bd7_69fffbd6 | src.observability:write_run_log:163 | Run log written to runs\2026-08-13T01-26-11.json
+2026-08-13T01:26:20.127+08:00 | WARNING | cid_19ff7029bd7_69fffbd6 | src.graph:run:168 | Pipeline stopped by quality gate after 8.97s | log=2026-08-13T01-26-11.json
+2026-08-13T01:38:09.941+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [quality_check] ENTER
+2026-08-13T01:38:09.943+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [quality_check] EXIT (0.00s)
+2026-08-13T01:38:09.943+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [quality_check] ENTER
+2026-08-13T01:38:09.945+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [quality_check] EXIT (0.00s)
+2026-08-13T01:38:09.947+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [quality_check] ENTER
+2026-08-13T01:38:09.949+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [quality_check] EXIT (0.00s)
+2026-08-13T01:38:09.949+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [quality_check] ENTER
+2026-08-13T01:38:09.951+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [quality_check] EXIT (0.00s)
+2026-08-13T01:38:09.959+08:00 | WARNING |  | src.observability:record_retry:137 | Retry 1/2 for test_retry_decorator_records_structured_event.<locals>.flaky: temporary OSS failure; waiting 1.0s
+2026-08-13T01:38:09.961+08:00 | WARNING |  | src.nodes.publish:_run_single_publish:57 | [wechat] Attempt 1 failed: temporary publish failure
+2026-08-13T01:38:09.961+08:00 | WARNING |  | src.observability:record_retry:137 | Retry 1/2 for publish.wechat: temporary publish failure; waiting 2.0s
+2026-08-13T01:38:09.964+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [summary_meta] ENTER
+2026-08-13T01:38:09.964+08:00 | DEBUG   |  | src.nodes.summary_meta:summary_meta_node:165 | Calling LLM for summary/metadata generation...
+2026-08-13T01:38:09.964+08:00 | INFO    |  | src.nodes.summary_meta:summary_meta_node:203 | Summary/meta generated: title='Article', tags=['one', 'two', 'three'], words=100, reading_time=1 min read
+2026-08-13T01:38:09.964+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [summary_meta] EXIT (0.00s)
+2026-08-13T01:38:40.760+08:00 | INFO    | cid_19ff70e0bf8_14371423 | src.graph:run:148 | Pipeline started | file=article.md | platforms=['blog']
+2026-08-13T01:38:40.771+08:00 | INFO    | cid_19ff70e0bf8_14371423 | src.observability:node_enter:97 | >>> [quality_check] ENTER
+2026-08-13T01:38:40.772+08:00 | INFO    | cid_19ff70e0bf8_14371423 | src.observability:node_exit:103 | <<< [quality_check] EXIT (0.00s)
+2026-08-13T01:38:40.773+08:00 | INFO    | cid_19ff70e0bf8_14371423 | src.observability:node_enter:97 | >>> [approval] ENTER
+2026-08-13T01:38:40.773+08:00 | INFO    | cid_19ff70e0bf8_14371423 | src.observability:node_exit:103 | <<< [approval] EXIT (0.00s)
+2026-08-13T01:38:40.776+08:00 | INFO    | cid_19ff70e0bf8_14371423 | src.observability:node_enter:97 | >>> [approval] ENTER
+2026-08-13T01:38:40.777+08:00 | INFO    | cid_19ff70e0bf8_14371423 | src.observability:node_exit:103 | <<< [approval] EXIT (0.00s)
+2026-08-13T01:38:40.780+08:00 | INFO    | cid_19ff70e0bf8_14371423 | src.observability:write_run_log:163 | Run log written to runs\2026-08-13T01-38-40.json
+2026-08-13T01:38:40.845+08:00 | INFO    | cid_19ff70e0c4d_914b7d19 | src.graph:run:148 | Pipeline started | file=article.md | platforms=['blog']
+2026-08-13T01:38:40.852+08:00 | INFO    | cid_19ff70e0c4d_914b7d19 | src.observability:node_enter:97 | >>> [quality_check] ENTER
+2026-08-13T01:38:40.853+08:00 | INFO    | cid_19ff70e0c4d_914b7d19 | src.observability:node_exit:103 | <<< [quality_check] EXIT (0.00s)
+2026-08-13T01:38:40.854+08:00 | INFO    | cid_19ff70e0c4d_914b7d19 | src.observability:node_enter:97 | >>> [approval] ENTER
+2026-08-13T01:38:40.854+08:00 | INFO    | cid_19ff70e0c4d_914b7d19 | src.observability:node_exit:103 | <<< [approval] EXIT (0.00s)
+2026-08-13T01:38:40.857+08:00 | INFO    | cid_19ff70e0c4d_914b7d19 | src.observability:node_enter:97 | >>> [approval] ENTER
+2026-08-13T01:38:40.857+08:00 | INFO    | cid_19ff70e0c4d_914b7d19 | src.observability:node_exit:103 | <<< [approval] EXIT (0.00s)
+2026-08-13T01:38:40.859+08:00 | INFO    | cid_19ff70e0c4d_914b7d19 | src.observability:write_run_log:163 | Run log written to runs\2026-08-13T01-38-40.json
+2026-08-13T01:38:40.870+08:00 | INFO    | cid_19ff70e0c66_c58d6720 | src.graph:run:148 | Pipeline started | file=article.md | platforms=['blog']
+2026-08-13T01:38:40.877+08:00 | INFO    | cid_19ff70e0c66_c58d6720 | src.observability:node_enter:97 | >>> [quality_check] ENTER
+2026-08-13T01:38:40.877+08:00 | INFO    | cid_19ff70e0c66_c58d6720 | src.observability:node_exit:103 | <<< [quality_check] EXIT (0.00s)
+2026-08-13T01:38:40.878+08:00 | INFO    | cid_19ff70e0c66_c58d6720 | src.observability:node_enter:97 | >>> [approval] ENTER
+2026-08-13T01:38:40.878+08:00 | INFO    | cid_19ff70e0c66_c58d6720 | src.observability:node_exit:103 | <<< [approval] EXIT (0.00s)
+2026-08-13T01:38:40.881+08:00 | INFO    | cid_19ff70e0c66_c58d6720 | src.observability:node_enter:97 | >>> [approval] ENTER
+2026-08-13T01:38:40.881+08:00 | INFO    | cid_19ff70e0c66_c58d6720 | src.observability:node_exit:103 | <<< [approval] EXIT (0.00s)
+2026-08-13T01:38:40.883+08:00 | INFO    | cid_19ff70e0c66_c58d6720 | src.observability:node_enter:97 | >>> [quality_check] ENTER
+2026-08-13T01:38:40.883+08:00 | INFO    | cid_19ff70e0c66_c58d6720 | src.observability:node_exit:103 | <<< [quality_check] EXIT (0.00s)
+2026-08-13T01:38:40.884+08:00 | INFO    | cid_19ff70e0c66_c58d6720 | src.observability:node_enter:97 | >>> [approval] ENTER
+2026-08-13T01:38:40.884+08:00 | INFO    | cid_19ff70e0c66_c58d6720 | src.observability:node_exit:103 | <<< [approval] EXIT (0.00s)
+2026-08-13T01:38:40.886+08:00 | INFO    | cid_19ff70e0c66_c58d6720 | src.observability:node_enter:97 | >>> [approval] ENTER
+2026-08-13T01:38:40.886+08:00 | INFO    | cid_19ff70e0c66_c58d6720 | src.observability:node_exit:103 | <<< [approval] EXIT (0.00s)
+2026-08-13T01:38:40.890+08:00 | INFO    | cid_19ff70e0c66_c58d6720 | src.observability:write_run_log:163 | Run log written to runs\2026-08-13T01-38-40.json
+2026-08-13T01:38:40.902+08:00 | INFO    | cid_19ff70e0c86_79f21b50 | src.graph:run:148 | Pipeline started | file=article.md | platforms=['blog', 'wechat']
+2026-08-13T01:38:40.908+08:00 | INFO    | cid_19ff70e0c86_79f21b50 | src.observability:node_enter:97 | >>> [quality_check] ENTER
+2026-08-13T01:38:40.910+08:00 | INFO    | cid_19ff70e0c86_79f21b50 | src.observability:node_exit:103 | <<< [quality_check] EXIT (0.00s)
+2026-08-13T01:38:40.910+08:00 | INFO    | cid_19ff70e0c86_79f21b50 | src.observability:node_enter:97 | >>> [approval] ENTER
+2026-08-13T01:38:40.911+08:00 | INFO    | cid_19ff70e0c86_79f21b50 | src.observability:node_exit:103 | <<< [approval] EXIT (0.00s)
+2026-08-13T01:38:40.913+08:00 | INFO    | cid_19ff70e0c86_79f21b50 | src.observability:node_enter:97 | >>> [approval] ENTER
+2026-08-13T01:38:40.914+08:00 | INFO    | cid_19ff70e0c86_79f21b50 | src.observability:node_exit:103 | <<< [approval] EXIT (0.00s)
+2026-08-13T01:38:40.917+08:00 | INFO    | cid_19ff70e0c86_79f21b50 | src.observability:write_run_log:163 | Run log written to runs\2026-08-13T01-38-40.json
+2026-08-13T01:38:40.922+08:00 | INFO    | cid_19ff70e0c86_79f21b50 | src.observability:write_run_log:163 | Run log written to runs\2026-08-13T01-38-40.json
+2026-08-13T01:38:40.948+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:40.949+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:40.978+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=263 chars, output=263 chars)
+2026-08-13T01:38:40.978+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.03s)
+2026-08-13T01:38:40.987+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:40.987+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:40.987+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=313 chars, output=313 chars)
+2026-08-13T01:38:40.987+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:40.999+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:40.999+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:40.999+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=399 chars, output=399 chars)
+2026-08-13T01:38:41.000+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.007+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.007+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.007+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=64 chars, output=64 chars)
+2026-08-13T01:38:41.007+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.015+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.016+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.016+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=312 chars, output=312 chars)
+2026-08-13T01:38:41.016+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.025+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.026+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.026+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=241 chars, output=241 chars)
+2026-08-13T01:38:41.026+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.034+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.034+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.035+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=250 chars, output=250 chars)
+2026-08-13T01:38:41.035+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.044+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.044+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.045+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=231 chars, output=231 chars)
+2026-08-13T01:38:41.045+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.055+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.055+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.055+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=318 chars, output=318 chars)
+2026-08-13T01:38:41.055+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.064+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.064+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.065+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=283 chars, output=283 chars)
+2026-08-13T01:38:41.065+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.073+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.074+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.074+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=297 chars, output=297 chars)
+2026-08-13T01:38:41.074+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.084+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.084+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.084+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=274 chars, output=274 chars)
+2026-08-13T01:38:41.085+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.093+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.094+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.094+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=265 chars, output=265 chars)
+2026-08-13T01:38:41.094+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.102+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.103+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.103+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=62 chars, output=62 chars)
+2026-08-13T01:38:41.103+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.110+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.110+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.110+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=67 chars, output=67 chars)
+2026-08-13T01:38:41.111+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.119+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.119+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.119+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=252 chars, output=252 chars)
+2026-08-13T01:38:41.120+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.128+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.128+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.128+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=230 chars, output=230 chars)
+2026-08-13T01:38:41.128+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.137+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.137+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.138+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=223 chars, output=223 chars)
+2026-08-13T01:38:41.138+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.146+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.146+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.146+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=213 chars, output=213 chars)
+2026-08-13T01:38:41.146+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.155+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.155+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.156+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=242 chars, output=242 chars)
+2026-08-13T01:38:41.156+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.162+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.162+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.163+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=263 chars, output=263 chars)
+2026-08-13T01:38:41.163+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.164+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.164+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.164+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=313 chars, output=313 chars)
+2026-08-13T01:38:41.164+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.165+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.165+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.166+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=399 chars, output=399 chars)
+2026-08-13T01:38:41.166+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.167+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.167+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.167+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=64 chars, output=64 chars)
+2026-08-13T01:38:41.167+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.167+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.167+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.168+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=312 chars, output=312 chars)
+2026-08-13T01:38:41.168+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.169+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.169+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.169+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=241 chars, output=241 chars)
+2026-08-13T01:38:41.169+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.170+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.170+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.170+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=250 chars, output=250 chars)
+2026-08-13T01:38:41.171+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.171+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.171+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.172+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=231 chars, output=231 chars)
+2026-08-13T01:38:41.172+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.173+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.173+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.173+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=318 chars, output=318 chars)
+2026-08-13T01:38:41.173+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.174+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.174+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.174+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=283 chars, output=283 chars)
+2026-08-13T01:38:41.174+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.175+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.175+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.176+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=297 chars, output=297 chars)
+2026-08-13T01:38:41.176+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.177+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.177+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.177+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=274 chars, output=274 chars)
+2026-08-13T01:38:41.177+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.178+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.178+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.178+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=265 chars, output=265 chars)
+2026-08-13T01:38:41.179+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.179+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.180+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.180+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=62 chars, output=62 chars)
+2026-08-13T01:38:41.180+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.180+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.180+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.180+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=67 chars, output=67 chars)
+2026-08-13T01:38:41.180+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.181+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.181+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.181+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=252 chars, output=252 chars)
+2026-08-13T01:38:41.181+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.182+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.182+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.182+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=230 chars, output=230 chars)
+2026-08-13T01:38:41.182+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.183+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.183+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.184+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=223 chars, output=223 chars)
+2026-08-13T01:38:41.184+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.185+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.185+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.185+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=213 chars, output=213 chars)
+2026-08-13T01:38:41.185+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.186+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [format_optimize] ENTER
+2026-08-13T01:38:41.186+08:00 | DEBUG   |  | src.nodes.format_optimize:format_optimize_node:600 | Starting format optimization pipeline
+2026-08-13T01:38:41.186+08:00 | INFO    |  | src.nodes.format_optimize:format_optimize_node:640 | Format optimization complete (mode=rule, input=242 chars, output=242 chars)
+2026-08-13T01:38:41.186+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [format_optimize] EXIT (0.00s)
+2026-08-13T01:38:41.200+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [image_process] ENTER
+2026-08-13T01:38:41.200+08:00 | DEBUG   |  | src.nodes.image_process:image_process_node:249 | Reusing existing OSS mapping for image 1/1
+2026-08-13T01:38:41.201+08:00 | INFO    |  | src.nodes.image_process:image_process_node:289 | Image processing complete: 1 uploaded, 0 failed, cover=set
+2026-08-13T01:38:41.201+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [image_process] EXIT (0.00s)
+2026-08-13T01:38:41.204+08:00 | WARNING |  | src.observability:record_retry:137 | Retry 1/2 for test_retry_decorator_records_structured_event.<locals>.flaky: temporary OSS failure; waiting 1.0s
+2026-08-13T01:38:41.206+08:00 | WARNING |  | src.nodes.publish:_run_single_publish:57 | [wechat] Attempt 1 failed: temporary publish failure
+2026-08-13T01:38:41.206+08:00 | WARNING |  | src.observability:record_retry:137 | Retry 1/2 for publish.wechat: temporary publish failure; waiting 2.0s
+2026-08-13T01:38:41.207+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [summary_meta] ENTER
+2026-08-13T01:38:41.207+08:00 | DEBUG   |  | src.nodes.summary_meta:summary_meta_node:165 | Calling LLM for summary/metadata generation...
+2026-08-13T01:38:41.207+08:00 | INFO    |  | src.nodes.summary_meta:summary_meta_node:203 | Summary/meta generated: title='Article', tags=['one', 'two', 'three'], words=100, reading_time=1 min read
+2026-08-13T01:38:41.207+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [summary_meta] EXIT (0.00s)
+2026-08-13T01:38:41.217+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [publish_blog] ENTER
+2026-08-13T01:38:41.217+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [publish_blog] EXIT (0.00s)
+2026-08-13T01:38:41.218+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [publish_wechat] ENTER
+2026-08-13T01:38:41.220+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [publish_wechat] EXIT (0.00s)
+2026-08-13T01:38:41.264+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [quality_check] ENTER
+2026-08-13T01:38:41.265+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [quality_check] EXIT (0.00s)
+2026-08-13T01:38:41.265+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [quality_check] ENTER
+2026-08-13T01:38:41.266+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [quality_check] EXIT (0.00s)
+2026-08-13T01:38:41.268+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [quality_check] ENTER
+2026-08-13T01:38:41.269+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [quality_check] EXIT (0.00s)
+2026-08-13T01:38:41.269+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [quality_check] ENTER
+2026-08-13T01:38:41.270+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [quality_check] EXIT (0.00s)
+2026-08-13T01:38:41.276+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [quality_repair] ENTER
+2026-08-13T01:38:41.276+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [quality_repair] EXIT (0.00s)
+2026-08-13T01:38:41.277+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [quality_repair] ENTER
+2026-08-13T01:38:41.277+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [quality_repair] EXIT (0.00s)
+2026-08-13T01:38:41.330+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [quality_check] ENTER
+2026-08-13T01:38:41.331+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [quality_check] EXIT (0.00s)
+2026-08-13T01:38:41.332+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [quality_repair] ENTER
+2026-08-13T01:38:41.332+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [quality_repair] EXIT (0.00s)
+2026-08-13T01:38:41.335+08:00 | INFO    |  | src.observability:node_enter:97 | >>> [quality_check] ENTER
+2026-08-13T01:38:41.336+08:00 | INFO    |  | src.observability:node_exit:103 | <<< [quality_check] EXIT (0.00s)

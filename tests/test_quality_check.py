@@ -8,6 +8,7 @@ from copy import deepcopy
 import pytest
 
 from src.nodes.quality_check import quality_check_node, run_quality_checks
+from src.nodes.summary_meta import _normalize_summary
 
 
 BODY = """# Reliable workflow
@@ -113,6 +114,29 @@ def test_changed_code_block_and_formula_are_reported(valid_state):
     codes = _codes(valid_state)
     assert "structure.code_block_lost" in codes
     assert "structure.formula_lost" in codes
+
+
+def test_code_language_annotation_does_not_count_as_lost_code(valid_state):
+    valid_state["hexo_document"] = valid_state["hexo_document"].replace(
+        "```python", "```"
+    )
+    valid_state["wechat_draft"] = valid_state["wechat_draft"].replace(
+        "```python", "```"
+    )
+    assert "structure.code_block_lost" not in _codes(valid_state)
+
+
+def test_summary_is_trimmed_to_quality_gate_limit():
+    long_summary = "第一句保留。" + "x" * 220
+    summary = _normalize_summary(long_summary)
+    assert len(summary) <= 200
+    assert summary.startswith("第一句保留。")
+    assert len(summary) == 200
+
+
+def test_summary_hard_limits_when_no_sentence_boundary_exists():
+    summary = _normalize_summary("x" * 201)
+    assert summary == "x" * 200
 
 
 def test_unclosed_markdown_structures_are_reported(valid_state):

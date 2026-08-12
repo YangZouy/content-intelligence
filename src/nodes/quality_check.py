@@ -105,7 +105,19 @@ def _extract_images(content: str) -> List[str]:
 
 
 def _extract_code_blocks(content: str) -> List[str]:
-    return [match.group(0).lstrip("\n") for match in _FENCED_CODE_PATTERN.finditer(content)]
+    """Extract fenced code bodies without treating the language label as code.
+
+    The format optimizer may safely convert ````` into `````python``. Comparing
+    the complete fenced string would report that harmless metadata change as a
+    lost code block. The quality gate instead compares the code payload.
+    """
+    blocks: List[str] = []
+    for match in _FENCED_CODE_PATTERN.finditer(content):
+        fenced = match.group(0).lstrip("\n")
+        lines = fenced.splitlines()
+        if len(lines) >= 2:
+            blocks.append("\n".join(lines[1:-1]).strip())
+    return blocks
 
 
 def _extract_formulas(content: str) -> List[str]:
