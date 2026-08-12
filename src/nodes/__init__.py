@@ -10,6 +10,7 @@ from src.nodes.content_adapt import content_adapt_node
 from src.nodes.publish import publish_node
 from src.nodes.quality_check import quality_check_node
 from src.nodes.quality_repair import quality_repair_node
+from src.nodes.approval import approval_node
 
 # 声明对外公开的成成
 __all__ = [
@@ -21,4 +22,5 @@ __all__ = [
     "publish_node",
     "quality_check_node",
     "quality_repair_node",
+    "approval_node",
 ]

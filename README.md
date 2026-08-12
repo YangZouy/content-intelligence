@@ -18,6 +18,8 @@
 - **双平台发布**：GitHub Pages（Hexo）与微信公众号（通过 wenyan 服务 HTTP 接口）各自独立发布
 - **发布前质量门禁**：确定性检查元数据、Front Matter、Markdown 结构、代码、公式和 OSS 图片替换
 - **有限质量修复**：首次不通过时携带问题重新生成一次；二次不通过立即终止，不进入发布
+- **人工发布审批**：质量通过后暂停，展示标题、摘要、标签、封面和平台；支持确认、拒绝、修改后重检
+- **跨进程恢复**：审批状态持久化到本地 SQLite，可通过运行 ID 在新进程中继续
 - **故障隔离**：博客与微信各自独立重试，单平台失败绝不阻塞另一平台
 - **全链路可观测**：`trace_id` 贯穿每次运行，节点耗时、Token 消耗、发布结果持久化为 `runs/<timestamp>.json`
 
@@ -38,7 +40,12 @@ ingest → format_optimize → summary_meta → image_process
                               └── 未通过 ─ quality_check
                                                 │ 通过
                                                 ▼
-                                             publish
+                                             approval
+                                          /     |      \
+                                      拒绝    修改     确认
+                                       END   重新检查    │
+                                                        ▼
+                                                     publish
                                             /       \
                                        GitHub       微信
   │                    │              │
@@ -171,6 +178,7 @@ content_intelligence_dispatcher/
 │   │   ├── content_adapt.py # 平台内容适配（Hexo / 微信 共用 front-matter）
 │   │   ├── quality_check.py # 确定性发布前质量门禁
 │   │   ├── quality_repair.py # 有限修复反馈（最多一次）
+│   │   ├── approval.py      # 人工审批暂停、决策和修改路由
 │   │   └── publish.py       # 平台发布编排器
 │   └── publishers/
 │       ├── base.py          # 发布器接口协议
@@ -235,6 +243,28 @@ content_intelligence_dispatcher/
 - 当前按目标平台依次发布（`blog` / `wechat`），每个平台故障隔离
 - 各自独立重试逻辑（指数退避；博客最多 3 次，微信最多 2 次）
 - **单平台失败绝不阻塞另一平台**；结果汇总为 `PublishResultItem[]`
+
+### 发布前人工审批
+
+质量门禁通过后，工作流不会直接发布，而是展示：
+
+- 标题、摘要、标签和封面
+- 本次目标平台
+- 可跨进程恢复的运行 ID
+
+审批动作：
+
+- **确认发布**：继续执行 Git push / 微信草稿创建
+- **拒绝终止**：正常结束工作流，不执行任何发布操作
+- **修改后重检**：修改标题、摘要、标签、封面或平台，重新适配并再次经过质量门禁；通过后再次审批
+
+审批 checkpoint 保存于 `checkpoints/workflow.sqlite`。关闭终端后可恢复：
+
+```bash
+content-dispatcher resume <run-id>
+# 或
+python -m src.cli resume <run-id>
+```
 
 ## 微信发布架构
 

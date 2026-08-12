@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 import src.graph as graph_module
@@ -70,7 +72,8 @@ def test_compiled_graph_contains_bounded_quality_branch():
     edges = {(edge.source, edge.target) for edge in drawable.edges}
 
     assert ("content_adapt", "quality_check") in edges
-    assert ("quality_check", "publish") in edges
+    assert ("quality_check", "approval") in edges
+    assert ("approval", "publish") in edges
     assert ("quality_check", "quality_repair") in edges
     assert ("quality_repair", "summary_meta") in edges
     assert ("content_adapt", "publish") not in edges
@@ -124,10 +127,13 @@ Body"""
     monkeypatch.setattr(graph_module, "content_adapt_node", adapt)
     monkeypatch.setattr(graph_module, "publish_node", publish)
 
-    final_state = PipelineGraph()._graph.invoke({
-        "requested_platforms": ["blog"],
-        "quality_repair_count": 0,
-    })
+    final_state = PipelineGraph(Path(":memory:"))._graph.invoke(
+        {
+            "requested_platforms": ["blog"],
+            "quality_repair_count": 0,
+        },
+        config={"configurable": {"thread_id": "quality-failure-test"}},
+    )
 
     assert final_state["quality_status"] == "failed"
     assert final_state["quality_check_count"] == 2

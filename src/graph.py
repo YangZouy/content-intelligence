@@ -14,9 +14,14 @@
 from __future__ import annotations
 
 import time
+import sqlite3
+import uuid
+from pathlib import Path
 from typing import Any, Dict, Literal, Optional
 
+from langgraph.checkpoint.sqlite import SqliteSaver
 from langgraph.graph import StateGraph, END
+from langgraph.types import Command
 
 from src.state import AgentState
 from src.nodes.ingest import ingest_node
@@ -28,6 +33,7 @@ from src.nodes.content_adapt import content_adapt_node
 from src.nodes.publish import publish_node
 from src.nodes.quality_check import quality_check_node
 from src.nodes.quality_repair import quality_repair_node
+from src.nodes.approval import approval_node, route_after_approval
 from src.config_loader import get_config
 from src.observability import TraceLogger, get_trace_logger
 
@@ -37,8 +43,14 @@ class PipelineGraph:
     构建并管理LangGraph StateGraph流水线。
     """
 
-    def __init__(self) -> None:
-        # 编译图，需要单例缓存
+    def __init__(self, checkpoint_path: Optional[Path] = None) -> None:
+        checkpoint_file = checkpoint_path or Path("checkpoints/workflow.sqlite")
+        checkpoint_file.parent.mkdir(parents=True, exist_ok=True)
+        self._checkpoint_connection = sqlite3.connect(
+            checkpoint_file,
+            check_same_thread=False,
+        )
+        self._checkpointer = SqliteSaver(self._checkpoint_connection)
         self._graph = self._build_graph()
         self._trace_logger = get_trace_logger()
 
@@ -54,6 +66,7 @@ class PipelineGraph:
         graph.add_node("content_adapt", content_adapt_node)
         graph.add_node("quality_check", quality_check_node)
         graph.add_node("quality_repair", quality_repair_node)
+        graph.add_node("approval", approval_node)
         graph.add_node("publish", publish_node)
 
         graph.add_edge("ingest", "format_optimize")
@@ -66,23 +79,33 @@ class PipelineGraph:
             "quality_check",
             route_after_quality_check,
             {
-                "publish": "publish",
+                "publish": "approval",
                 "repair": "quality_repair",
                 "stop": END,
             },
         )
         graph.add_edge("quality_repair", "summary_meta")
+        graph.add_conditional_edges(
+            "approval",
+            route_after_approval,
+            {
+                "publish": "publish",
+                "readapt": "content_adapt",
+                "stop": END,
+            },
+        )
         graph.add_edge("publish", END)
 
         # Set entry point
         graph.set_entry_point("ingest")
 
         # 图编译
-        return graph.compile()
+        return graph.compile(checkpointer=self._checkpointer)
 
     def run(
         self,
-        input_state: Dict[str, Any]
+        input_state: Dict[str, Any],
+        run_id: Optional[str] = None,
     ) -> Dict[str, Any]:
         """
         """
@@ -91,11 +114,13 @@ class PipelineGraph:
         trace_logger = get_trace_logger(force_new=True)
         # cid + time stamp + 密码学rand
         trace_id = trace_logger.generate_trace_id()
+        resolved_run_id = run_id or uuid.uuid4().hex
         run_start_time = time.time()
 
         # 将运行日志也记录到state中
         input_state["run_log"] = {
             "trace_id": trace_id,
+            "run_id": resolved_run_id,
             "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
             "source_type": input_state.get("source_type", "unknown"),
             "file_name": "",
@@ -121,29 +146,18 @@ class PipelineGraph:
         )
 
         try:
-            final_state = self._graph.invoke(input_state)
+            config = {"configurable": {"thread_id": resolved_run_id}}
+            result = self._graph.invoke(input_state, config=config)
+            final_state = self._state_with_interrupt(result, config, resolved_run_id)
+
+            if final_state.get("approval_status") == "pending":
+                return final_state
 
             # 记录用时
             total_duration = round(time.time() - run_start_time, 2)
             final_state.setdefault("run_log", {})["total_duration_seconds"] = total_duration
 
-            # 节点用时
-            node_durations = trace_logger.get_node_durations()
-            final_state["run_log"]["node_durations"] = node_durations
-
-            final_state["run_log"]["quality_gate"] = {
-                "status": final_state.get("quality_status", "pending"),
-                "check_count": final_state.get("quality_check_count", 0),
-                "repair_count": final_state.get("quality_repair_count", 0),
-                "issues": final_state.get("quality_issues", []),
-            }
-
-            # token消耗
-            if "token_usage_info" in final_state:
-                final_state["run_log"]["token_usage"] = final_state.pop("token_usage_info")
-
-            # 将run_log持久化到runs/...json文件中
-            log_path = trace_logger.write_run_log(dict(final_state.get("run_log", {})))
+            log_path = self._finalize_run(final_state)
 
             if final_state.get("quality_status") == "failed":
                 logger.bind(trace_id=trace_id).warning(
@@ -174,6 +188,67 @@ class PipelineGraph:
                 pass  # Don't mask original error with write failure
 
             raise
+
+    def resume(self, run_id: str, decision: Dict[str, Any]) -> Dict[str, Any]:
+        """Resume a checkpointed approval using its stable run identifier."""
+        config = {"configurable": {"thread_id": run_id}}
+        snapshot = self._graph.get_state(config)
+        if not snapshot.values:
+            raise ValueError(f"No checkpoint found for run_id={run_id}")
+        if not snapshot.interrupts:
+            raise ValueError(f"Run {run_id} is not waiting for approval")
+
+        result = self._graph.invoke(Command(resume=decision), config=config)
+        final_state = self._state_with_interrupt(result, config, run_id)
+        if final_state.get("approval_status") != "pending":
+            self._finalize_run(final_state)
+        return final_state
+
+    def pending_approval(self, run_id: str) -> Dict[str, Any]:
+        """Read a paused approval without advancing the graph."""
+        config = {"configurable": {"thread_id": run_id}}
+        snapshot = self._graph.get_state(config)
+        if not snapshot.values:
+            raise ValueError(f"No checkpoint found for run_id={run_id}")
+        if not snapshot.interrupts:
+            raise ValueError(f"Run {run_id} is not waiting for approval")
+        state = dict(snapshot.values)
+        state["approval_status"] = "pending"
+        state["approval_request"] = snapshot.interrupts[0].value
+        state["run_id"] = run_id
+        return state
+
+    def _state_with_interrupt(
+        self,
+        result: Dict[str, Any],
+        config: Dict[str, Any],
+        run_id: str,
+    ) -> Dict[str, Any]:
+        final_state = dict(result)
+        snapshot = self._graph.get_state(config)
+        if snapshot.interrupts:
+            final_state["approval_status"] = "pending"
+            final_state["approval_request"] = snapshot.interrupts[0].value
+            final_state["run_id"] = run_id
+        return final_state
+
+    def _finalize_run(self, final_state: Dict[str, Any]) -> Path:
+        run_log = final_state.setdefault("run_log", {})
+        run_log["node_durations"] = get_trace_logger().get_node_durations()
+        run_log["quality_gate"] = {
+            "status": final_state.get("quality_status", "pending"),
+            "check_count": final_state.get("quality_check_count", 0),
+            "repair_count": final_state.get("quality_repair_count", 0),
+            "issues": final_state.get("quality_issues", []),
+        }
+        run_log["approval"] = {
+            "status": final_state.get("approval_status", "not_requested"),
+            "decision": final_state.get("approval_decision", ""),
+            "note": final_state.get("approval_note", ""),
+        }
+        if "token_usage_info" in final_state:
+            run_log["token_usage"] = final_state.pop("token_usage_info")
+        return get_trace_logger().write_run_log(dict(run_log))
 
 # 模块级实例 初始化为None
 _pipeline_instance: Optional[PipelineGraph] = None
@@ -224,3 +299,13 @@ def run_pipeline(
     pipeline = get_pipeline()
     # 返回图
     return pipeline.run(input_state)
+
+
+def resume_pipeline(run_id: str, decision: Dict[str, Any]) -> Dict[str, Any]:
+    """Resume a workflow paused at its publish approval checkpoint."""
+    return get_pipeline().resume(run_id, decision)
+
+
+def get_pending_approval(run_id: str) -> Dict[str, Any]:
+    """Return the preview for a workflow waiting at human approval."""
+    return get_pipeline().pending_approval(run_id)

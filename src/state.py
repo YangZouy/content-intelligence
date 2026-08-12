@@ -154,6 +154,13 @@ class QualityState(TypedDict, total=False):
     quality_feedback: str
 
 
+class ApprovalState(TypedDict, total=False):
+    """Human decision made after the quality gate passes."""
+    approval_status: Literal["pending", "approved", "rejected", "modified"]
+    approval_decision: str
+    approval_note: str
+
+
 # ---------------------------------------------------------------------------
 # Publish Result Item (set by PublishNode)
 # ---------------------------------------------------------------------------
@@ -203,6 +210,7 @@ class AgentState(
     ImageProcessedState,
     AdaptState,
     QualityState,
+    ApprovalState,
     TypedDict,
     total=False,
 ):

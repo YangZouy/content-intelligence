@@ -16,12 +16,13 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import typer
+import questionary
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 
 from src.config_loader import get_config
-from src.graph import run_pipeline
+from src.graph import get_pending_approval, resume_pipeline, run_pipeline
 
 # --- Typer app instance ---
 # 创建整个CLI应用对象，后续所有的@app.command()
@@ -143,6 +144,89 @@ def _display_result_summary(final_state: Dict[str, Any], elapsed: float) -> None
     if token_usage:
         console.print(f"\n[bold]Token Usage:[/bold] {token_usage}")
 
+
+def _display_approval_preview(state: Dict[str, Any]) -> None:
+    request = state.get("approval_request", {})
+    preview = request.get("preview", {})
+    table = Table(title="Publish Approval", show_header=False)
+    table.add_column("Field", style="cyan", width=18)
+    table.add_column("Value")
+    table.add_row("Run ID", state.get("run_id", ""))
+    table.add_row("Title", preview.get("title", ""))
+    table.add_row("Summary", preview.get("summary", ""))
+    table.add_row("Tags", ", ".join(preview.get("tags", [])))
+    table.add_row("Cover", preview.get("cover_url", "") or "(none)")
+    table.add_row("Platforms", ", ".join(preview.get("requested_platforms", [])))
+    console.print(table)
+    console.print(
+        f"[dim]This approval can be resumed later with: content-dispatcher resume "
+        f"{state.get('run_id', '')}[/dim]"
+    )
+
+
+def _collect_approval_decision(state: Dict[str, Any]) -> Dict[str, Any]:
+    _display_approval_preview(state)
+    action = questionary.select(
+        "Choose the next action:",
+        choices=[
+            questionary.Choice("Approve and publish", value="approve"),
+            questionary.Choice("Modify and recheck", value="modify"),
+            questionary.Choice("Reject and stop", value="reject"),
+        ],
+    ).ask()
+    if action is None:
+        raise KeyboardInterrupt
+    if action != "modify":
+        return {"action": action}
+
+    preview = state.get("approval_request", {}).get("preview", {})
+    title = questionary.text("Title:", default=preview.get("title", "")).ask()
+    summary = questionary.text("Summary:", default=preview.get("summary", "")).ask()
+    tags_text = questionary.text(
+        "Tags (comma-separated):",
+        default=", ".join(preview.get("tags", [])),
+    ).ask()
+    cover_url = questionary.text(
+        "Cover URL:",
+        default=preview.get("cover_url", ""),
+    ).ask()
+    platforms = questionary.checkbox(
+        "Target platforms:",
+        choices=[
+            questionary.Choice(
+                "Blog",
+                value="blog",
+                checked="blog" in preview.get("requested_platforms", []),
+            ),
+            questionary.Choice(
+                "WeChat",
+                value="wechat",
+                checked="wechat" in preview.get("requested_platforms", []),
+            ),
+        ],
+        validate=lambda selected: bool(selected) or "Select at least one platform",
+    ).ask()
+    if None in (title, summary, tags_text, cover_url, platforms):
+        raise KeyboardInterrupt
+    tags = [tag.strip() for tag in tags_text.split(",") if tag.strip()]
+    return {
+        "action": "modify",
+        "changes": {
+            "title": title.strip(),
+            "summary": summary.strip(),
+            "tags": tags,
+            "cover_url": cover_url.strip(),
+            "requested_platforms": platforms,
+        },
+    }
+
+
+def _complete_approval(state: Dict[str, Any]) -> Dict[str, Any]:
+    while state.get("approval_status") == "pending":
+        decision = _collect_approval_decision(state)
+        state = resume_pipeline(state["run_id"], decision)
+    return state
+
 def _execute_publish(
     file_path: str,
     platforms: List[str],
@@ -161,6 +245,8 @@ def _execute_publish(
                 platforms=platforms,
                 format_optimize_mode=format_optimize_mode,
             )
+
+        final_state = _complete_approval(final_state)
 
         elapsed = time.time() - start_time
         # 打印overview信息（标题、来源等）和publish信息
@@ -229,6 +315,24 @@ def publish(
         target_platforms,
         format_optimize_mode=format_optimize,
     )
+
+
+@app.command()
+def resume(
+    run_id: str = typer.Argument(..., help="Run ID shown by a paused approval"),
+) -> None:
+    """Resume a workflow that is waiting for publish approval."""
+    start_time = time.time()
+    try:
+        state = get_pending_approval(run_id)
+        state = _complete_approval(state)
+        _display_result_summary(state, time.time() - start_time)
+    except KeyboardInterrupt:
+        console.print("\n[yellow]Approval left pending.[/yellow]")
+        raise typer.Exit(130)
+    except Exception as exc:
+        console.print(f"[bold red]Unable to resume:[/bold red] {exc}")
+        raise typer.Exit(1)
 
 
 if __name__ == "__main__":
