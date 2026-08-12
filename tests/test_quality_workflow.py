@@ -73,7 +73,8 @@ def test_compiled_graph_contains_bounded_quality_branch():
 
     assert ("content_adapt", "quality_check") in edges
     assert ("quality_check", "approval") in edges
-    assert ("approval", "publish") in edges
+    assert ("approval", "publish_blog") in edges
+    assert ("publish_blog", "publish_wechat") in edges
     assert ("quality_check", "quality_repair") in edges
     assert ("quality_repair", "summary_meta") in edges
     assert ("content_adapt", "publish") not in edges
@@ -88,6 +89,10 @@ def test_second_quality_failure_stops_before_publish(monkeypatch):
     })
     monkeypatch.setattr(graph_module, "format_optimize_node", lambda state: {
         "formatted_content": state["raw_content"],
+    })
+    monkeypatch.setattr(graph_module, "article_identity_node", lambda state: {
+        "article_id": "article_test",
+        "publication_date": "2026-08-12",
     })
     monkeypatch.setattr(graph_module, "summary_meta_node", lambda state: {
         "title": "Article",
@@ -117,7 +122,7 @@ description: placeholder
 # Article
 
 Body"""
-        return {"hexo_document": document, "wechat_draft": document}
+        return {"hexo_document": document, "wechat_draft": document, "content_version": "version_test"}
 
     def publish(state):
         nonlocal publish_called
@@ -125,11 +130,13 @@ Body"""
         return {"publish_results": []}
 
     monkeypatch.setattr(graph_module, "content_adapt_node", adapt)
-    monkeypatch.setattr(graph_module, "publish_node", publish)
+    monkeypatch.setattr(graph_module, "publish_blog_node", publish)
+    monkeypatch.setattr(graph_module, "publish_wechat_node", publish)
 
     final_state = PipelineGraph(Path(":memory:"))._graph.invoke(
         {
-            "requested_platforms": ["blog"],
+                "requested_platforms": ["blog"],
+                "file_path": "article.md",
             "quality_repair_count": 0,
         },
         config={"configurable": {"thread_id": "quality-failure-test"}},

@@ -20,6 +20,7 @@
 - **有限质量修复**：首次不通过时携带问题重新生成一次；二次不通过立即终止，不进入发布
 - **人工发布审批**：质量通过后暂停，展示标题、摘要、标签、封面和平台；支持确认、拒绝、修改后重检
 - **跨进程恢复**：审批状态持久化到本地 SQLite，可通过运行 ID 在新进程中继续
+- **文章级幂等发布**：使用 `article_id + content_version` 和 SQLite 发布账本，跨全新运行复用已成功结果
 - **故障隔离**：博客与微信各自独立重试，单平台失败绝不阻塞另一平台
 - **全链路可观测**：`trace_id` 贯穿每次运行，节点耗时、Token 消耗、发布结果持久化为 `runs/<timestamp>.json`
 
@@ -169,8 +170,10 @@ content_intelligence_dispatcher/
 │   ├── oss_client.py        # 阿里云 OSS 上传客户端
 │   ├── errors.py            # 异常层级 + 指数退避重试装饰器
 │   ├── observability.py     # loguru 追踪 + 运行日志持久化（trace_id）
+│   ├── publication_ledger.py # 文章身份、稳定资产和平台发布账本
 │   ├── nodes/
 │   │   ├── ingest.py        # 多源内容导入
+│   │   ├── article_identity.py # article_id、首次发布日期和持久封面
 │   │   ├── format_optimize.py  # 规则引擎（+可选 LLM 润色 / 安全护栏）
 │   │   ├── summary_meta.py  # LLM 摘要 / 元数据提取
 │   │   ├── image_process.py # OSS 上传 + 链接替换 + 首图选取
@@ -220,7 +223,7 @@ content_intelligence_dispatcher/
 - 装饰性博客封面（展示层素材，不占用 LLM 调用）
 - 主源 Unsplash（按标签取主题图），失败 / 被墙时回退 Picsum（零 key、国内通常可达，解析最终 CDN 直链）
 - 默认把封面上传 OSS，落在与正文图片**同一文件夹**（文件名固定 `cover.jpg`）
-- **同文同封面（幂等）**：已有装饰性封面则直接复用，重跑不漂移
+- **同文同封面（幂等）**：封面按 `article_id` 保存到 SQLite；以后即使是新的 `run_id` 也直接复用
 - 任何异常返回 `{}`，**绝不阻断流水线**
 
 ### 6. ContentAdaptNode（`content_adapt` 内容适配节点）
@@ -240,9 +243,35 @@ content_intelligence_dispatcher/
 - `quality_repair_count` 硬限制为 1，不存在开放循环
 
 ### 9. PublishNode（`publish` 发布节点）
-- 当前按目标平台依次发布（`blog` / `wechat`），每个平台故障隔离
+- 博客和微信拆为两个独立 checkpoint 步骤，按目标平台依次执行
 - 各自独立重试逻辑（指数退避；博客最多 3 次，微信最多 2 次）
 - **单平台失败绝不阻塞另一平台**；结果汇总为 `PublishResultItem[]`
+- `article_id` 默认由规范化源文件绝对路径生成；文件可能移动时可通过 `--slug` 提供稳定身份
+- `content_version` 只计算标题、摘要、标签、正文和正文图片 URL
+- 日期、封面、运行 ID 和临时路径不参与 `content_version`，不会制造虚假新版本
+- SQLite 发布账本按 `article_id + platform + content_version` 保存外部 ID、成功状态和发布时间
+- checkpoint 或发布账本已有相同成功版本时，该平台显示 `REUSED`，不会重复调用发布器
+- 博客目标文件内容未变化时不创建空 commit、不执行 Git push
+- 微信成功后的 `media_id` 保存在 checkpoint；恢复时直接复用
+
+日期和封面规则：
+
+- Front Matter 日期只写 `YYYY-MM-DD`
+- 日期在文章第一次进入工作流生成 Front Matter 时确定，并立即保存到文章资料表
+- 后续审批、跨天恢复、内容更新和重新发布始终复用该日期，不会静默改变已经预览的文档
+- 封面首次生成后立即按 `article_id` 保存，后续运行不再随机获取
+
+发布部分失败后可按运行 ID 重试：
+
+```bash
+content-dispatcher retry-publish <run-id>
+# 或
+python -m src.cli retry-publish <run-id>
+```
+
+恢复会重新经过博客和微信发布步骤，但成功平台会被幂等检查跳过，只有失败平台发生外部调用。
+即使启动了全新的工作流、产生了新的 `run_id`，发布账本仍能识别同一文章的同一内容版本。
+微信服务目前不接受客户端幂等键，因此如果服务端已创建草稿、但连接在返回 `Media ID` 前中断，客户端无法百分之百判断该次请求是否成功；正常收到 `Media ID` 后的恢复不会重复创建。
 
 ### 发布前人工审批
 

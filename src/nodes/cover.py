@@ -29,6 +29,7 @@ import httpx
 from src.config_loader import get_config
 from src.nodes.image_process import _generate_title_abbr
 from src.observability import get_trace_logger
+from src.publication_ledger import get_publication_ledger
 from src.state import AgentState
 
 _UNSPLASH_API = "https://api.unsplash.com/photos/random"
@@ -191,6 +192,9 @@ def cover_image_node(state: AgentState) -> Dict[str, Any]:
 
         title = state.get("title", "") or ""
         tags = state.get("tags", []) or []
+        persisted_cover = state.get("persisted_cover_url", "")
+        if persisted_cover:
+            return {"cover_url": persisted_cover}
         inline_cover = state.get("cover_url", "")
 
         # ── 同文同封面：已有装饰性封面 → 直接复用，不重新获取 ──
@@ -242,6 +246,9 @@ def cover_image_node(state: AgentState) -> Dict[str, Any]:
             log.bind(trace_id=trace_id).info(
                 f"Cover image resolved: {cover_url[:70]}... (source={cover_source})"
             )
+            article_id = state.get("article_id", "")
+            if article_id:
+                get_publication_ledger().save_cover(article_id, cover_url)
         else:
             log.bind(trace_id=trace_id).warning(
                 "Cover image fetch failed from all sources; preserving existing cover"

@@ -132,6 +132,18 @@ class GitHubPagesPublisher(Publisher):
             posts_path.mkdir(parents=True, exist_ok=True)
             filepath = posts_path / filename
 
+            # Same final document means this side effect already happened.
+            # Return the stable repository URL without creating an empty commit.
+            if filepath.exists() and filepath.read_text(encoding="utf-8") == content:
+                return PublishResultItem(
+                    platform="blog",
+                    success=True,
+                    url=self._build_file_url(filepath),
+                    attempt=1,
+                    error=None,
+                    skipped=True,
+                )
+
             # Step 3: Write file
             is_update = filepath.exists()
             filepath.write_text(content, encoding="utf-8")
@@ -270,6 +282,19 @@ class GitHubPagesPublisher(Publisher):
             f"{default_branch}/{rel_path}"
         )
         return url
+
+    def _build_file_url(self, filepath: Path) -> str:
+        repo_root = self._local_path.resolve()
+        rel_path = filepath.resolve().relative_to(repo_root).as_posix()
+        try:
+            from git import Repo as GitRepo
+            branch = GitRepo(self._local_path).active_branch.name
+        except Exception:
+            branch = "main"
+        return (
+            f"https://github.com/{self._repo_owner}/{self._repo_name}/blob/"
+            f"{branch}/{rel_path}"
+        )
 
 
 class GitHubPushFailedError(GitHubPublishError):

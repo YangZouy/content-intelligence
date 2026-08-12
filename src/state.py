@@ -71,6 +71,11 @@ class InputState(TypedDict, total=False):
     file_path: str
     requested_platforms: List[str]
     brand: BrandConfig
+    article_slug: str
+    article_id: str
+    publication_date: str
+    persisted_cover_url: str
+    content_version: str
 
 
 # ---------------------------------------------------------------------------
@@ -175,6 +180,9 @@ class PublishResultItem(TypedDict, total=False):
     url: Optional[str]
     attempt: int
     error: Optional[str]
+    idempotency_key: str
+    # 是否复用已有成功结果
+    skipped: bool
 
 
 # ---------------------------------------------------------------------------

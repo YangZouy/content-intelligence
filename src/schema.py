@@ -123,7 +123,7 @@ class HexoFrontMatter(BaseModel):
         """
         return cls(
             title=title,
-            date=date_iso or datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
+            date=date_iso or datetime.now(timezone.utc).strftime("%Y-%m-%d"),
             tags=tags or [],
             categories=categories or [],
             cover=cover_url,

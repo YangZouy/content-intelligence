@@ -19,6 +19,8 @@ from src.categorizer import categorize
 from src.schema import HexoFrontMatter
 from src.state import AgentState
 from src.observability import get_trace_logger
+from src.publication_ledger import build_content_version
+from src.nodes.quality_check import _extract_images
 
 
 def _build_hexo_front_matter(state: AgentState) -> HexoFrontMatter:
@@ -49,6 +51,7 @@ def _build_hexo_front_matter(state: AgentState) -> HexoFrontMatter:
         summary=state.get("summary", ""),
         author=brand.get("author"),
         source_url=brand.get("source_url"),
+        date_iso=state.get("publication_date"),
     )
 
 
@@ -107,6 +110,13 @@ def content_adapt_node(state: AgentState) -> Dict[str, Any]:
         fm = _build_hexo_front_matter(state)
         fm_yaml = fm.to_yaml_string()
         body = _strip_front_matter(oss_content)
+        content_version = build_content_version(
+            title=state.get("title", ""),
+            summary=state.get("summary", ""),
+            tags=state.get("tags", []),
+            body=body,
+            image_urls=_extract_images(body),
+        )
 
         # Hexo post: front-matter + body
         hexo_doc = f"---\n{fm_yaml}\n---\n\n{body}"
@@ -125,6 +135,7 @@ def content_adapt_node(state: AgentState) -> Dict[str, Any]:
         return {
             "hexo_document": hexo_doc,
             "wechat_draft": wechat_draft,
+            "content_version": content_version,
         }
 
     except Exception as e:

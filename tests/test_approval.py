@@ -49,6 +49,11 @@ def _mock_valid_pipeline(monkeypatch, publish_calls):
     monkeypatch.setattr(graph_module, "format_optimize_node", lambda state: {
         "formatted_content": state["raw_content"],
     })
+    monkeypatch.setattr(graph_module, "article_identity_node", lambda state: {
+        "article_id": "article_test",
+        "publication_date": "2026-08-12",
+        "persisted_cover_url": "",
+    })
     monkeypatch.setattr(graph_module, "summary_meta_node", lambda state: {
         "title": "Article",
         "summary": "A valid summary.",
@@ -77,14 +82,21 @@ description: {state['summary']}
 # Article
 
 Body"""
-        return {"hexo_document": document, "wechat_draft": document}
+        return {
+            "hexo_document": document,
+            "wechat_draft": document,
+            "content_version": "version_test",
+        }
 
     def publish(state):
         publish_calls.append(state["title"])
         return {"publish_results": [{"platform": "blog", "success": True}]}
 
     monkeypatch.setattr(graph_module, "content_adapt_node", adapt)
-    monkeypatch.setattr(graph_module, "publish_node", publish)
+    monkeypatch.setattr(graph_module, "publish_blog_node", publish)
+    monkeypatch.setattr(graph_module, "publish_wechat_node", lambda state: {
+        "publish_results": state.get("publish_results", []),
+    })
 
 
 def test_graph_pauses_before_publish_and_approve_resumes(monkeypatch):
@@ -92,7 +104,7 @@ def test_graph_pauses_before_publish_and_approve_resumes(monkeypatch):
     _mock_valid_pipeline(monkeypatch, publish_calls)
     pipeline = PipelineGraph(Path(":memory:"))
 
-    paused = pipeline.run({"requested_platforms": ["blog"]}, run_id="approve-run")
+    paused = pipeline.run({"file_path": "article.md", "requested_platforms": ["blog"]}, run_id="approve-run")
     assert paused["approval_status"] == "pending"
     assert paused["approval_request"]["preview"]["title"] == "Article"
     assert publish_calls == []
@@ -106,7 +118,7 @@ def test_reject_stops_without_publish(monkeypatch):
     publish_calls = []
     _mock_valid_pipeline(monkeypatch, publish_calls)
     pipeline = PipelineGraph(Path(":memory:"))
-    pipeline.run({"requested_platforms": ["blog"]}, run_id="reject-run")
+    pipeline.run({"file_path": "article.md", "requested_platforms": ["blog"]}, run_id="reject-run")
 
     completed = pipeline.resume("reject-run", {"action": "reject"})
     assert completed["approval_status"] == "rejected"
@@ -117,7 +129,7 @@ def test_modify_readapts_rechecks_and_pauses_again(monkeypatch):
     publish_calls = []
     _mock_valid_pipeline(monkeypatch, publish_calls)
     pipeline = PipelineGraph(Path(":memory:"))
-    pipeline.run({"requested_platforms": ["blog"]}, run_id="modify-run")
+    pipeline.run({"file_path": "article.md", "requested_platforms": ["blog"]}, run_id="modify-run")
 
     paused_again = pipeline.resume("modify-run", {
         "action": "modify",
@@ -136,3 +148,60 @@ def test_modify_readapts_rechecks_and_pauses_again(monkeypatch):
     completed = pipeline.resume("modify-run", {"action": "approve"})
     assert completed["approval_status"] == "approved"
     assert publish_calls == ["Edited article"]
+
+
+def test_retry_publish_skips_successful_blog_and_retries_wechat(monkeypatch):
+    blog_calls = []
+    wechat_calls = []
+    _mock_valid_pipeline(monkeypatch, blog_calls)
+
+    def blog(state):
+        previous = state.get("publish_results", [])
+        completed = next(
+            (item for item in previous if item.get("platform") == "blog" and item.get("success")),
+            None,
+        )
+        if completed:
+            reused = dict(completed)
+            reused["skipped"] = True
+            return {"publish_results": [reused]}
+        blog_calls.append("blog")
+        return {
+            "publish_results": [{
+                "platform": "blog",
+                "success": True,
+                "url": "https://example.com/blog",
+                "idempotency_key": "blog:stable",
+            }]
+        }
+
+    def wechat(state):
+        wechat_calls.append("wechat")
+        previous = state.get("publish_results", [])
+        success = len(wechat_calls) > 1
+        return {
+            "publish_results": previous + [{
+                "platform": "wechat",
+                "success": success,
+                "url": "media_id:success" if success else None,
+                "error": None if success else "temporary failure",
+                "idempotency_key": "wechat:stable",
+            }]
+        }
+
+    monkeypatch.setattr(graph_module, "publish_blog_node", blog)
+    monkeypatch.setattr(graph_module, "publish_wechat_node", wechat)
+    pipeline = PipelineGraph(Path(":memory:"))
+    pipeline.run(
+        {"file_path": "article.md", "requested_platforms": ["blog", "wechat"]},
+        run_id="retry-platform-run",
+    )
+    first = pipeline.resume("retry-platform-run", {"action": "approve"})
+    assert first["publish_results"][-1]["success"] is False
+    assert blog_calls == ["blog"]
+    assert wechat_calls == ["wechat"]
+
+    completed = pipeline.retry_publish("retry-platform-run")
+    assert completed["publish_results"][-1]["success"] is True
+    assert blog_calls == ["blog"]
+    assert wechat_calls == ["wechat", "wechat"]

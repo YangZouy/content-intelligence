@@ -22,7 +22,12 @@ from rich.panel import Panel
 from rich.table import Table
 
 from src.config_loader import get_config
-from src.graph import get_pending_approval, resume_pipeline, run_pipeline
+from src.graph import (
+    get_pending_approval,
+    resume_pipeline,
+    retry_pipeline_publish,
+    run_pipeline,
+)
 
 # --- Typer app instance ---
 # 创建整个CLI应用对象，后续所有的@app.command()
@@ -129,6 +134,8 @@ def _display_result_summary(final_state: Dict[str, Any], elapsed: float) -> None
                 "[bold green]SUCCESS[/bold green]" if r.get("success")
                 else "[bold red]FAILED[/bold red]"
             )
+            if r.get("skipped"):
+                success_str = "[cyan]REUSED[/cyan]"
             url_or_error = r.get("url") or r.get("error") or ""
             pub_table.add_row(
                 r.get("platform", "?"),
@@ -231,6 +238,7 @@ def _execute_publish(
     file_path: str,
     platforms: List[str],
     format_optimize_mode: Optional[str] = None,
+    article_slug: Optional[str] = None,
 ) -> Dict[str, Any]:
     
     start_time = time.time()
@@ -244,6 +252,7 @@ def _execute_publish(
                 file_path=file_path,
                 platforms=platforms,
                 format_optimize_mode=format_optimize_mode,
+                article_slug=article_slug,
             )
 
         final_state = _complete_approval(final_state)
@@ -285,6 +294,11 @@ def publish(
         "--format-optimize", "-fo",
         help="Override format_optimize mode: rule | llm (default: from config.yaml)",
     ),
+    slug: Optional[str] = typer.Option(
+        None,
+        "--slug",
+        help="Stable article identity; use this if the source file may move",
+    ),
 ) -> None:
     parsed_platforms: Optional[List[str]] = None
     if platforms:
@@ -314,6 +328,7 @@ def publish(
         file_path,
         target_platforms,
         format_optimize_mode=format_optimize,
+        article_slug=slug,
     )
 
 
@@ -332,6 +347,20 @@ def resume(
         raise typer.Exit(130)
     except Exception as exc:
         console.print(f"[bold red]Unable to resume:[/bold red] {exc}")
+        raise typer.Exit(1)
+
+
+@app.command("retry-publish")
+def retry_publish(
+    run_id: str = typer.Argument(..., help="Run ID with failed platform publishing"),
+) -> None:
+    """Retry failed publications while reusing successful platform results."""
+    start_time = time.time()
+    try:
+        state = retry_pipeline_publish(run_id)
+        _display_result_summary(state, time.time() - start_time)
+    except Exception as exc:
+        console.print(f"[bold red]Unable to retry publishing:[/bold red] {exc}")
         raise typer.Exit(1)
 
 

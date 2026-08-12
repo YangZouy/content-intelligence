@@ -25,12 +25,13 @@ from langgraph.types import Command
 
 from src.state import AgentState
 from src.nodes.ingest import ingest_node
+from src.nodes.article_identity import article_identity_node
 from src.nodes.format_optimize import format_optimize_node
 from src.nodes.summary_meta import summary_meta_node
 from src.nodes.image_process import image_process_node
 from src.nodes.cover import cover_image_node
 from src.nodes.content_adapt import content_adapt_node
-from src.nodes.publish import publish_node
+from src.nodes.publish import publish_blog_node, publish_wechat_node
 from src.nodes.quality_check import quality_check_node
 from src.nodes.quality_repair import quality_repair_node
 from src.nodes.approval import approval_node, route_after_approval
@@ -59,6 +60,7 @@ class PipelineGraph:
         graph = StateGraph(AgentState)
 
         graph.add_node("ingest", ingest_node)
+        graph.add_node("article_identity", article_identity_node)
         graph.add_node("format_optimize", format_optimize_node)
         graph.add_node("summary_meta", summary_meta_node)
         graph.add_node("image_process", image_process_node)
@@ -67,9 +69,11 @@ class PipelineGraph:
         graph.add_node("quality_check", quality_check_node)
         graph.add_node("quality_repair", quality_repair_node)
         graph.add_node("approval", approval_node)
-        graph.add_node("publish", publish_node)
+        graph.add_node("publish_blog", publish_blog_node)
+        graph.add_node("publish_wechat", publish_wechat_node)
 
-        graph.add_edge("ingest", "format_optimize")
+        graph.add_edge("ingest", "article_identity")
+        graph.add_edge("article_identity", "format_optimize")
         graph.add_edge("format_optimize", "summary_meta")
         graph.add_edge("summary_meta", "image_process")
         graph.add_edge("image_process", "cover_image")
@@ -89,12 +93,13 @@ class PipelineGraph:
             "approval",
             route_after_approval,
             {
-                "publish": "publish",
+                "publish": "publish_blog",
                 "readapt": "content_adapt",
                 "stop": END,
             },
         )
-        graph.add_edge("publish", END)
+        graph.add_edge("publish_blog", "publish_wechat")
+        graph.add_edge("publish_wechat", END)
 
         # Set entry point
         graph.set_entry_point("ingest")
@@ -218,6 +223,30 @@ class PipelineGraph:
         state["run_id"] = run_id
         return state
 
+    def retry_publish(self, run_id: str) -> Dict[str, Any]:
+        """Retry failed platforms from a completed checkpointed run."""
+        config = {"configurable": {"thread_id": run_id}}
+        snapshot = self._graph.get_state(config)
+        if not snapshot.values:
+            raise ValueError(f"No checkpoint found for run_id={run_id}")
+        if snapshot.interrupts:
+            raise ValueError(f"Run {run_id} is still waiting for approval")
+        state = dict(snapshot.values)
+        if state.get("approval_status") != "approved":
+            raise ValueError(f"Run {run_id} was not approved for publishing")
+        if all(
+            item.get("success")
+            for item in state.get("publish_results", [])
+            if item.get("platform") in state.get("requested_platforms", [])
+        ) and len(state.get("publish_results", [])) >= len(state.get("requested_platforms", [])):
+            return state
+
+        self._graph.update_state(config, {}, as_node="approval")
+        result = self._graph.invoke(None, config=config)
+        final_state = self._state_with_interrupt(result, config, run_id)
+        self._finalize_run(final_state)
+        return final_state
+
     def _state_with_interrupt(
         self,
         result: Dict[str, Any],
@@ -246,6 +275,7 @@ class PipelineGraph:
             "decision": final_state.get("approval_decision", ""),
             "note": final_state.get("approval_note", ""),
         }
+        run_log["publish_results"] = list(final_state.get("publish_results", []))
         if "token_usage_info" in final_state:
             run_log["token_usage"] = final_state.pop("token_usage_info")
         return get_trace_logger().write_run_log(dict(run_log))
@@ -277,6 +307,7 @@ def run_pipeline(
     file_path: str,
     platforms: Optional[list[str]] = None,
     format_optimize_mode: Optional[str] = None,
+    article_slug: Optional[str] = None,
 ) -> Dict[str, Any]:
     """
     运行完整流水线的便捷函数。
@@ -293,6 +324,7 @@ def run_pipeline(
         "requested_platforms": platforms or list(config.get_platforms()),
         "brand": config.get_brand_config(),
         "format_optimize_mode": format_optimize_mode,
+        "article_slug": article_slug or "",
     }
 
     # 拿到全局图实例
@@ -309,3 +341,8 @@ def resume_pipeline(run_id: str, decision: Dict[str, Any]) -> Dict[str, Any]:
 def get_pending_approval(run_id: str) -> Dict[str, Any]:
     """Return the preview for a workflow waiting at human approval."""
     return get_pipeline().pending_approval(run_id)
+
+
+def retry_pipeline_publish(run_id: str) -> Dict[str, Any]:
+    """Retry only failed platform publications from a checkpoint."""
+    return get_pipeline().retry_publish(run_id)
