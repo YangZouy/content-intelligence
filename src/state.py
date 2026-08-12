@@ -149,6 +149,9 @@ class QualityState(TypedDict, total=False):
     quality_passed: bool
     quality_issues: List[QualityIssue]
     quality_check_count: int
+    quality_repair_count: int
+    quality_status: Literal["pending", "needs_repair", "passed", "failed"]
+    quality_feedback: str
 
 
 # ---------------------------------------------------------------------------
@@ -186,6 +189,7 @@ class RunLogEntry(TypedDict, total=False):
     publish_results: List[PublishResultItem]
     total_duration_seconds: float
     oss_uploads: List[Dict[str, str]]
+    quality_gate: Dict[str, Any]
 
 
 # ---------------------------------------------------------------------------

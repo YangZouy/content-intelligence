@@ -1,8 +1,8 @@
 # Content Intelligence Dispatcher（内容智能分发助手）
 
-**个人知识内容智能分发系统**
+**可恢复、可审计、可控制发布副作用的 AI 内容工作流**
 
-一个纯 Python + LangGraph 构建的流水线系统：导入你撰写的各类 Markdown 内容（Obsidian 笔记 / 带外链的 Markdown），用规则引擎优化排版，调用一次大模型生成元数据，将图片上传至 OSS，并针对两个平台（Hexo 博客 / 微信公众号）做内容适配，最终实现并行发布。
+一个面向多平台内容发布的可靠 AI 工作流。系统通过显式状态、确定性质量门禁、有限修复和发布隔离，控制模型输出与 GitHub Pages、微信公众号等外部发布副作用。内容处理步骤相对固定，因此采用确定性工作流，而非多 Agent 对话或开放式 ReAct 循环。
 
 > **零低代码平台依赖。零检索增强。纯代码实现。**
 >
@@ -16,6 +16,8 @@
 - **OSS 图床托管**：自动上传至阿里云 OSS，并以拼音生成全 ASCII 英文路径（避免 CDN 编码问题）
 - **装饰性封面**：Unsplash 主源 + Picsum 兜底，自动落 OSS，同文同封面（重跑不漂移），失败不阻断流水线
 - **双平台发布**：GitHub Pages（Hexo）与微信公众号（通过 wenyan 服务 HTTP 接口）各自独立发布
+- **发布前质量门禁**：确定性检查元数据、Front Matter、Markdown 结构、代码、公式和 OSS 图片替换
+- **有限质量修复**：首次不通过时携带问题重新生成一次；二次不通过立即终止，不进入发布
 - **故障隔离**：博客与微信各自独立重试，单平台失败绝不阻塞另一平台
 - **全链路可观测**：`trace_id` 贯穿每次运行，节点耗时、Token 消耗、发布结果持久化为 `runs/<timestamp>.json`
 
@@ -25,20 +27,20 @@
 CLI (Typer + Rich)
   │
   ▼
-┌─────────────────────────────────────────────────────┐
-│                 LangGraph StateGraph                 │
-│                                                     │
-│  ingest → format_optimize → summary_meta → image_process
-│    │           │              │              │       │
-│  [原始]    [格式化后]       [元数据]       [OSS 图片] │
-│                              │                    │  │
-│                              ▼                    ▼  ▼
-│                       cover_image → content_adapt → publish
-│                          │             │            │
-│                       [封面图]      [平台适配]    [并行发布]
-│                                            /      \
-│                                      GitHub    微信 │
-└─────────────────────────────────────────────────────┘
+ingest → format_optimize → summary_meta → image_process
+                              ▲                 │
+                              │                 ▼
+                       quality_repair      cover_image
+                         （最多一次）            │
+                              ▲                 ▼
+                              │           content_adapt
+                              │                 │
+                              └── 未通过 ─ quality_check
+                                                │ 通过
+                                                ▼
+                                             publish
+                                            /       \
+                                       GitHub       微信
   │                    │              │
   ▼                    ▼              ▼
  runs/*.json        Hexo 仓库     wenyan server
@@ -167,12 +169,14 @@ content_intelligence_dispatcher/
 │   │   ├── image_process.py # OSS 上传 + 链接替换 + 首图选取
 │   │   ├── cover.py         # 装饰性封面（Unsplash/Picsum，不走 LLM）
 │   │   ├── content_adapt.py # 平台内容适配（Hexo / 微信 共用 front-matter）
-│   │   └── publish.py       # 并行发布编排器
+│   │   ├── quality_check.py # 确定性发布前质量门禁
+│   │   ├── quality_repair.py # 有限修复反馈（最多一次）
+│   │   └── publish.py       # 平台发布编排器
 │   └── publishers/
 │       ├── base.py          # 发布器接口协议
 │       ├── github_pages.py  # GitHub Pages 发布器（GitPython）
 │       └── wechat.py        # 微信公众号发布器（wenyan server CLI）
-├── tests/                   # 测试目录（pytest 已在 pyproject.toml 配置，用例规划中）
+├── tests/                   # pytest 自动化测试
 ├── runs/                    # 运行日志 JSON（每次运行自动创建）
 └── logs/                    # 应用日志（自动创建）
 ```
@@ -216,8 +220,19 @@ content_intelligence_dispatcher/
 - **Hexo 文档**：Front-Matter + 正文，可直写 `source/_posts/<title>.md`
 - **微信草稿**：同样带 Front-Matter（wenyan 要求每篇顶部至少含 `title`），正文使用 OSS 图片链接；wenyan 读取 title/cover/author/source_url，忽略 Hexo 专属字段
 
-### 7. PublishNode（`publish` 发布节点）
-- 各平台独立并行发布（`blog` / `wechat`）
+### 7. QualityCheckNode（`quality_check` 质量门禁）
+- 检查元数据长度、Front Matter 完整性和平台格式
+- 对照原文验证代码块、公式和图片未被破坏
+- 验证图片均已替换为 OSS 映射地址
+- 首次失败进入有限修复；修复后仍失败则终止，不触发发布
+
+### 8. QualityRepairNode（`quality_repair` 有限修复）
+- 将具体问题代码和原因反馈给元数据生成阶段
+- 重新执行元数据、图片、封面、平台适配和质量检查
+- `quality_repair_count` 硬限制为 1，不存在开放循环
+
+### 9. PublishNode（`publish` 发布节点）
+- 当前按目标平台依次发布（`blog` / `wechat`），每个平台故障隔离
 - 各自独立重试逻辑（指数退避；博客最多 3 次，微信最多 2 次）
 - **单平台失败绝不阻塞另一平台**；结果汇总为 `PublishResultItem[]`
 

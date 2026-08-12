@@ -222,6 +222,10 @@ def image_process_node(state: AgentState) -> Dict[str, Any]:
             )
             images = images[:max_images]
 
+        # Existing mappings come from a previous quality-check attempt. Reuse
+        # successful uploads so bounded regeneration only retries missing ones.
+        existing_mapping = dict(state.get("image_mapping", {}))
+
         # Get OSS client
         oss_client = get_oss_client()
         title_abbr = _generate_title_abbr(state)
@@ -233,6 +237,20 @@ def image_process_node(state: AgentState) -> Dict[str, Any]:
 
         for i, img_ref in enumerate(images):
             try:
+                original_ref = img_ref["url_or_path"]
+                existing_url = existing_mapping.get(original_ref)
+                if existing_url:
+                    image_mapping[original_ref] = existing_url
+                    successful_uploads.append({
+                        "index": i,
+                        "original": original_ref,
+                        "oss_url": existing_url,
+                    })
+                    log.bind(trace_id=trace_id).debug(
+                        f"Reusing existing OSS mapping for image {i+1}/{len(images)}"
+                    )
+                    continue
+
                 original, oss_url = _upload_single_image(
                     img_ref, oss_client, title_abbr, trace_id
                 )

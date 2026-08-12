@@ -97,6 +97,19 @@ def _display_result_summary(final_state: Dict[str, Any], elapsed: float) -> None
     console.print(overview_table)
     console.print()
 
+    quality_status = final_state.get("quality_status")
+    if quality_status == "failed":
+        issues = final_state.get("quality_issues", [])
+        issue_text = "\n".join(
+            f"- {item.get('code', 'quality.unknown')}: {item.get('message', '')}"
+            for item in issues
+        )
+        console.print(Panel(
+            issue_text or "Quality gate failed.",
+            title="Quality Gate Blocked Publishing",
+            border_style="red",
+        ))
+
     # --- Publish results table ---
     publish_results = final_state.get("publish_results", [])
     if publish_results:

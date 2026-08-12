@@ -62,6 +62,30 @@ def _extract_existing_h1_title(content: str) -> str | None:
     return None
 
 
+def _build_user_message(
+    formatted_content: str,
+    existing_title: str | None,
+    quality_feedback: str = "",
+) -> str:
+    repair_instruction = ""
+    if quality_feedback:
+        repair_instruction = f"""
+
+这是一次且仅一次的质量修复。上次输出存在以下问题：
+{quality_feedback}
+请重新生成元数据并逐项修正可由元数据生成解决的问题。不要改写代码、公式、图片或正文事实。
+"""
+    title_instruction = (
+        "\n\n注意：原文已有合规的 H1 标题，请直接使用该标题。"
+        if existing_title and len(existing_title) <= 30
+        else ""
+    )
+    return f"""请分析以下 Markdown 文章内容并提取元数据：
+
+{formatted_content[:8000]}{title_instruction}{repair_instruction}
+"""
+
+
 # ---------------------------------------------------------------------------
 # Main node function
 # ---------------------------------------------------------------------------
@@ -103,12 +127,12 @@ def summary_meta_node(state: AgentState) -> Dict[str, Any]:
         # Check for existing H1 title
         existing_title = _extract_existing_h1_title(formatted_content)
 
-        # Build user message
-        user_message = f"""请分析以下 Markdown 文章内容并提取元数据：
-
-{formatted_content[:8000]}
-{"\n\n注意：原文已有 H1 标题，请直接使用该标题。" if existing_title else ""}
-"""
+        quality_feedback = state.get("quality_feedback", "")
+        user_message = _build_user_message(
+            formatted_content,
+            existing_title,
+            quality_feedback,
+        )
 
         # Get configured model
         model = get_summary_model()
@@ -126,8 +150,12 @@ def summary_meta_node(state: AgentState) -> Dict[str, Any]:
 
         result: SummaryMetaOutput = structured_model.invoke(messages)
 
-        # If original had an H1, prefer it over LLM-generated title
-        final_title = existing_title or result.title
+        # Preserve only a compliant H1; an overlong H1 must be repaired.
+        final_title = (
+            existing_title
+            if existing_title and len(existing_title) <= 30
+            else result.title
+        )
 
         # Calculate word count and reading time
         word_count = result.word_count if result.word_count > 0 else _count_words(formatted_content)

@@ -1,9 +1,11 @@
 """
 图编排 —— LangGraph StateGraph 流水线定义。
 
-定义完整的 7 步线性流水线：
+定义带质量门禁和一次有限修复的确定性工作流：
     ingest → format_optimize → summary_meta → image_process
-    → cover_image → content_adapt → publish
+    → cover_image → content_adapt → quality_check
+    → passed: publish
+    → failed: quality_repair → summary_meta（最多一次）
 
 提供 `run()` 入口函数，包装执行过程并附带可观测性
 （追踪生成、节点耗时、运行日志持久化）。
@@ -12,7 +14,7 @@
 from __future__ import annotations
 
 import time
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Literal, Optional
 
 from langgraph.graph import StateGraph, END
 
@@ -24,6 +26,8 @@ from src.nodes.image_process import image_process_node
 from src.nodes.cover import cover_image_node
 from src.nodes.content_adapt import content_adapt_node
 from src.nodes.publish import publish_node
+from src.nodes.quality_check import quality_check_node
+from src.nodes.quality_repair import quality_repair_node
 from src.config_loader import get_config
 from src.observability import TraceLogger, get_trace_logger
 
@@ -42,22 +46,32 @@ class PipelineGraph:
         # Create graph with AgentState schema
         graph = StateGraph(AgentState)
 
-        # Add all 7 nodes
         graph.add_node("ingest", ingest_node)
         graph.add_node("format_optimize", format_optimize_node)
         graph.add_node("summary_meta", summary_meta_node)
         graph.add_node("image_process", image_process_node)
         graph.add_node("cover_image", cover_image_node)
         graph.add_node("content_adapt", content_adapt_node)
+        graph.add_node("quality_check", quality_check_node)
+        graph.add_node("quality_repair", quality_repair_node)
         graph.add_node("publish", publish_node)
 
-        # Define edges (linear pipeline)
         graph.add_edge("ingest", "format_optimize")
         graph.add_edge("format_optimize", "summary_meta")
         graph.add_edge("summary_meta", "image_process")
         graph.add_edge("image_process", "cover_image")
         graph.add_edge("cover_image", "content_adapt")
-        graph.add_edge("content_adapt", "publish")
+        graph.add_edge("content_adapt", "quality_check")
+        graph.add_conditional_edges(
+            "quality_check",
+            route_after_quality_check,
+            {
+                "publish": "publish",
+                "repair": "quality_repair",
+                "stop": END,
+            },
+        )
+        graph.add_edge("quality_repair", "summary_meta")
         graph.add_edge("publish", END)
 
         # Set entry point
@@ -117,6 +131,13 @@ class PipelineGraph:
             node_durations = trace_logger.get_node_durations()
             final_state["run_log"]["node_durations"] = node_durations
 
+            final_state["run_log"]["quality_gate"] = {
+                "status": final_state.get("quality_status", "pending"),
+                "check_count": final_state.get("quality_check_count", 0),
+                "repair_count": final_state.get("quality_repair_count", 0),
+                "issues": final_state.get("quality_issues", []),
+            }
+
             # token消耗
             if "token_usage_info" in final_state:
                 final_state["run_log"]["token_usage"] = final_state.pop("token_usage_info")
@@ -124,10 +145,16 @@ class PipelineGraph:
             # 将run_log持久化到runs/...json文件中
             log_path = trace_logger.write_run_log(dict(final_state.get("run_log", {})))
 
-            logger.bind(trace_id=trace_id).success(
-                f"Pipeline completed successfully in {total_duration}s | "
-                f"log={log_path.name}"
-            )
+            if final_state.get("quality_status") == "failed":
+                logger.bind(trace_id=trace_id).warning(
+                    f"Pipeline stopped by quality gate after {total_duration}s | "
+                    f"log={log_path.name}"
+                )
+            else:
+                logger.bind(trace_id=trace_id).success(
+                    f"Pipeline completed successfully in {total_duration}s | "
+                    f"log={log_path.name}"
+                )
 
             return final_state
 
@@ -150,6 +177,18 @@ class PipelineGraph:
 
 # 模块级实例 初始化为None
 _pipeline_instance: Optional[PipelineGraph] = None
+
+# 判断下一步去哪儿，不负责执行修复或发布
+def route_after_quality_check(
+    state: AgentState,
+) -> Literal["publish", "repair", "stop"]:
+    """Route only passed content to side-effecting publishers."""
+    status = state.get("quality_status")
+    if status == "passed":
+        return "publish"
+    if status == "needs_repair" and state.get("quality_repair_count", 0) < 1:
+        return "repair"
+    return "stop"
 
 def get_pipeline() -> PipelineGraph:
     # 全局实例

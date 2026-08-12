@@ -154,5 +154,18 @@ def test_node_records_result_and_check_count(valid_state):
         "quality_passed": True,
         "quality_issues": [],
         "quality_check_count": 1,
+        "quality_status": "passed",
     }
+    assert second["quality_check_count"] == 2
+
+
+def test_failed_check_requests_one_repair_then_stops(valid_state):
+    valid_state["summary"] = ""
+    first = quality_check_node(valid_state)
+    assert first["quality_status"] == "needs_repair"
+
+    valid_state.update(first)
+    valid_state["quality_repair_count"] = 1
+    second = quality_check_node(valid_state)
+    assert second["quality_status"] == "failed"
     assert second["quality_check_count"] == 2

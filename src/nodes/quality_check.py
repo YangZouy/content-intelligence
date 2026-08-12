@@ -284,10 +284,17 @@ def quality_check_node(state: AgentState) -> Dict[str, Any]:
     trace_logger.node_enter("quality_check", trace_id)
     try:
         issues = run_quality_checks(state)
+        if not issues:
+            status = "passed"
+        elif state.get("quality_repair_count", 0) < 1:
+            status = "needs_repair"
+        else:
+            status = "failed"
         return {
             "quality_passed": not issues,
             "quality_issues": issues,
             "quality_check_count": state.get("quality_check_count", 0) + 1,
+            "quality_status": status,
         }
     finally:
         trace_logger.node_exit("quality_check", trace_id)
